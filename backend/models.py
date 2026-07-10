@@ -1,5 +1,22 @@
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy.orm import relationship
 from database import Base
+
+
+class Match(Base):
+    __tablename__ = "matches"
+
+    id = Column(Integer, primary_key=True, index=True)
+    home_team_id = Column(Integer, ForeignKey("teams.id"), index=True)
+    away_team_id = Column(Integer, ForeignKey("teams.id"), index=True)
+    date = Column(String)
+    location = Column(String)
+    result = Column(String)
+    referee_id = Column(Integer, ForeignKey("referees.id"), index=True)
+
+    home_team = relationship("Team", foreign_keys=[home_team_id], back_populates="home_matches")
+    away_team = relationship("Team", foreign_keys=[away_team_id], back_populates="away_matches")
+    referee = relationship("Referee", back_populates="matches")
 
 class Team(Base):
     __tablename__ = "teams"
@@ -7,3 +24,97 @@ class Team(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, unique=True, index=True)
     city = Column(String)
+
+    president_id = Column(Integer, ForeignKey("presidents.id"), index=True)
+    coach_id = Column(Integer, ForeignKey("coaches.id"), index=True)
+    stadium_id = Column(Integer, ForeignKey("stadiums.id"), index=True)
+    league_id = Column(Integer, ForeignKey("leagues.id"), index=True)
+
+    stadium = relationship("Stadium", back_populates="team")
+    president = relationship("President", back_populates="team")
+    coach = relationship("Coach", back_populates="team")
+    players = relationship("Player", back_populates="team")
+    home_matches = relationship("Match", foreign_keys=[Match.home_team_id], back_populates="home_team")
+    away_matches = relationship("Match", foreign_keys=[Match.away_team_id], back_populates="away_team")
+    league = relationship("League", back_populates="teams")
+
+class Player(Base):
+    __tablename__ = "players"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String, index=True)
+    position = Column(String)
+    age = Column(Integer, index=True)
+    salary = Column(Integer)
+    main_foot = Column(String)
+    team_id = Column(Integer, ForeignKey("teams.id"), index=True)
+
+    team = relationship("Team", back_populates="players")
+
+class President(Base):
+    __tablename__ = "presidents"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String, unique=True, index=True)
+    age = Column(Integer, index=True)
+    salary = Column(Integer)
+
+    team = relationship("Team", back_populates="president")
+
+class Coach(Base):
+    __tablename__ = "coaches"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String, index=True)
+    age = Column(Integer, index=True)
+    salary = Column(Integer)
+
+    team = relationship("Team", back_populates="coach")
+
+class Stadium(Base):
+    __tablename__ = "stadiums"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String, unique=True, index=True)
+    location = Column(String)
+    capacity = Column(Integer)
+
+    team = relationship("Team", back_populates="stadium")
+
+class Referee(Base):
+    __tablename__ = "referees"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String, index=True)
+    age = Column(Integer, index=True)
+    salary = Column(Integer)
+
+    matches = relationship("Match", back_populates="referee")
+
+class League(Base):
+    __tablename__ = "leagues"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String, unique=True, index=True)
+    country = Column(String)
+
+    teams = relationship("Team", back_populates="league")
+
+class User(Base):
+    __tablename__ = "users"
+
+    id = Column(Integer, primary_key=True, index=True)
+    username = Column(String, unique=True, index=True)
+    email = Column(String, unique=True, index=True)
+    hashed_password = Column(String)
+
+    tokens = relationship("Token", back_populates="user")
+
+class Token(Base):
+    __tablename__ = "tokens"
+
+    id = Column(Integer, primary_key=True, index=True)
+    token = Column(String, unique=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), index=True)
+
+    user = relationship("User", back_populates="tokens")
