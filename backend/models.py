@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy import Column, Integer, String, ForeignKey, Boolean
 from sqlalchemy.orm import relationship
 from database import Base
 
@@ -107,6 +107,7 @@ class User(Base):
     username = Column(String, unique=True, index=True)
     email = Column(String, unique=True, index=True)
     hashed_password = Column(String)
+    is_admin = Column(Boolean, default=False)
 
     tokens = relationship("Token", back_populates="user")
 
@@ -118,3 +119,4 @@ class Token(Base):
     user_id = Column(Integer, ForeignKey("users.id"), index=True)
 
     user = relationship("User", back_populates="tokens")
+
