@@ -1,0 +1,10 @@
+from .user import User, UserCreate, UserUpdate
+from .token import Token, TokenCreate, TokenUpdate
+from .team import Team, TeamCreate, TeamUpdate
+from .league import League, LeagueCreate, LeagueUpdate
+from .match import Match, MatchCreate, MatchUpdate
+from .player import Player, PlayerCreate, PlayerUpdate
+from .coach import Coach, CoachCreate, CoachUpdate
+from .president import President, PresidentCreate, PresidentUpdate
+from .referee import Referee, RefereeCreate, RefereeUpdate
+from .stadium import Stadium, StadiumCreate, StadiumUpdate
