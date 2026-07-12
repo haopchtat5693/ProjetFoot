@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from typing import Optional
 
 
@@ -17,12 +17,10 @@ class PresidentUpdate(BaseModel):
 	age: Optional[int] = None
 	salary: Optional[int] = None
 
-	class Config:
-		from_attributes = True
+	model_config = ConfigDict(from_attributes=True)
 
 
 class President(PresidentBase):
 	id: int
 
-	class Config:
-		from_attributes = True
+	model_config = ConfigDict(from_attributes=True)

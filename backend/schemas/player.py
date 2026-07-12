@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict
 from typing import Optional
 
 class PlayerBase(BaseModel):
@@ -20,11 +20,9 @@ class PlayerUpdate(PlayerBase):
     main_foot: Optional[str] = None
     team_id: Optional[int] = None
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
         
 class Player(PlayerBase):
     id: int
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)

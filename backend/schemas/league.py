@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from typing import Optional
 
 
@@ -15,12 +15,10 @@ class LeagueUpdate(BaseModel):
 	name: Optional[str] = None
 	country: Optional[str] = None
 
-	class Config:
-		from_attributes = True
+	model_config = ConfigDict(from_attributes=True)
 
 
 class League(LeagueBase):
 	id: int
 
-	class Config:
-		from_attributes = True
+	model_config = ConfigDict(from_attributes=True)

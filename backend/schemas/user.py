@@ -1,6 +1,6 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 from typing import Optional
-from .token import Token
+from .auth_token import Token
 
 class UserBase(BaseModel):
     username: str
@@ -20,5 +20,4 @@ class User(UserBase):
     id: int
     tokens: list[Token] = Field(default_factory=list)
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
