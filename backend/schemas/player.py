@@ -1,0 +1,30 @@
+from pydantic import BaseModel, Field
+from typing import Optional
+
+class PlayerBase(BaseModel):
+    name: str
+    position: str
+    age: int
+    salary: int
+    main_foot: str
+    team_id: Optional[int] = None 
+
+class PlayerCreate(PlayerBase):
+    pass
+
+class PlayerUpdate(PlayerBase):
+    name: Optional[str] = None
+    position: Optional[str] = None
+    age: Optional[int] = None
+    salary: Optional[int] = None
+    main_foot: Optional[str] = None
+    team_id: Optional[int] = None
+
+    class Config:
+        from_attributes = True
+        
+class Player(PlayerBase):
+    id: int
+
+    class Config:
+        from_attributes = True
