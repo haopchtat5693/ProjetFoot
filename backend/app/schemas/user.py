@@ -1,6 +1,6 @@
 from pydantic import BaseModel, ConfigDict, Field
 from typing import Optional
-from auth_token import Token
+from backend.app.schemas.auth_token import Token
 
 class UserBase(BaseModel):
     username: str

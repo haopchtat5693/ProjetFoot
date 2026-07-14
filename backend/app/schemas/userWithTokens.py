@@ -1,7 +1,7 @@
 from pydantic import ConfigDict, Field
 
-from auth_token import Token
-from user import UserBase
+from backend.app.schemas.auth_token import Token
+from backend.app.schemas.user import UserBase
 
 
 class UserWithTokens(UserBase):
