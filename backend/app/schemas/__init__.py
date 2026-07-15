@@ -1,5 +1,4 @@
 from .user import User, UserCreate, UserUpdate
-from .userWithTokens import UserWithTokens
 from .auth_token import Token, TokenCreate, TokenUpdate
 from .team import Team, TeamCreate, TeamUpdate
 from .league import League, LeagueCreate, LeagueUpdate
