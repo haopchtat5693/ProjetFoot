@@ -1,0 +1,10 @@
+from . import auth_token_crud as auth_token
+from . import coach_crud as coach
+from . import league_crud as league
+from . import match_crud as match
+from . import player_crud as player
+from . import president_crud as president
+from . import referee_crud as referee
+from . import stadium_crud as stadium
+from . import team_crud as team
+from . import user_crud as user
