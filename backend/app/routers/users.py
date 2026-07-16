@@ -39,7 +39,7 @@ def update_user(
     user = crud.user.get_user(db, user_id)
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
-    return crud.user.update_user(db, user, user_in)
+    return crud.user.update_user(db, user_id, user_in)
 
 @router.delete("/{user_id}", response_model=schemas.User)
 def delete_user(
