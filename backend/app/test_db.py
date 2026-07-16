@@ -1,5 +1,5 @@
-from database import engine, Base
-from models import Team
+from app.database import engine, Base
+from app.models import Team
 
 print("Trying to connect to the database...")
 
