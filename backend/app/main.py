@@ -1,6 +1,15 @@
 from fastapi import FastAPI
-from app.routers import users 
+
+from app.routers import coach, league, match, player, president, referee, stadium, team, users
 
 app = FastAPI()
 
 app.include_router(users.router)
+app.include_router(team.router)
+app.include_router(league.router)
+app.include_router(match.router)
+app.include_router(player.router)
+app.include_router(coach.router)
+app.include_router(president.router)
+app.include_router(referee.router)
+app.include_router(stadium.router)
