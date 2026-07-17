@@ -1,8 +1,17 @@
 from fastapi import FastAPI
 
 from app.routers import coach, league, match, player, president, referee, stadium, team, users, auth
+from fastapi.middleware.cors import CORSMiddleware
 
-app = FastAPI()
+app = FastAPI(title="FootballStats API")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:4200"], 
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 app.include_router(users.router)
 app.include_router(team.router)
