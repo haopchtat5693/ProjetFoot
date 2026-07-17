@@ -1,4 +1,4 @@
-from . import auth_token_crud as auth_token
+from . import auth_token_crud as token
 from . import coach_crud as coach
 from . import league_crud as league
 from . import match_crud as match
