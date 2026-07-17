@@ -1,6 +1,8 @@
 # ProjetFoot #
 
-Projet de développement d'une application Full Stack de gestion de ligues sportives. L'API backend est actuellement opérationnelle, avec une architecture basée sur FastAPI et PostgreSQL, et le développement de l'interface frontend (Angular) est prévu pour la suite du projet.
+**État du projet :** En développement actif (Backend en cours, Frontend prévu).
+
+Ce projet vise à créer une plateforme de gestion de ligues sportives complète. Actuellement, l'accent est mis sur la solidité de l'API REST et la modélisation des données.
 
 ## Technologies utilisées ##
 **Backend(En cours)** : Python, FastAPI, SQLAlchemy (ORM), PostgreSQL
