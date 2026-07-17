@@ -8,3 +8,6 @@ from .coach import Coach, CoachCreate, CoachUpdate
 from .president import President, PresidentCreate, PresidentUpdate
 from .referee import Referee, RefereeCreate, RefereeUpdate
 from .stadium import Stadium, StadiumCreate, StadiumUpdate
+from .season import Season, SeasonCreate, SeasonUpdate
+from .contract import Contract, ContractCreate, ContractUpdate
+from .player_stats import PlayerStats, PlayerStatsCreate, PlayerStatsUpdate
