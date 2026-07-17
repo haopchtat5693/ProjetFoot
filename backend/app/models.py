@@ -1,6 +1,7 @@
 from sqlalchemy import Column, Integer, String, ForeignKey, Boolean
 from sqlalchemy.orm import relationship
 from app.database import Base
+from app.core.constants import VIEWER
 
 
 class Match(Base):
@@ -108,7 +109,7 @@ class User(Base):
     username = Column(String, unique=True, index=True)
     email = Column(String, unique=True, index=True)
     hashed_password = Column(String)
-    role = Column(String, default="viewer")
+    role = Column(String, default=VIEWER)
 
     tokens = relationship("Token", back_populates="user")
 

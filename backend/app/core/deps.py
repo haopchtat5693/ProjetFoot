@@ -2,6 +2,7 @@
 from app import crud
 from fastapi import Depends, HTTPException, status
 from app.models import User
+from app.core.constants import ADMIN, MANAGER
 from dotenv import load_dotenv
 import os
 from fastapi.security import OAuth2PasswordBearer
@@ -41,7 +42,7 @@ async def get_current_user(db=Depends(get_db), token: str = Depends(oauth2_schem
 
 
 async def get_current_admin(current_user: User = Depends(get_current_user)):
-    if current_user.role != "admin":
+    if current_user.role != ADMIN:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Accès refusé : Droits administrateur requis."
@@ -49,7 +50,7 @@ async def get_current_admin(current_user: User = Depends(get_current_user)):
     return current_user
 
 async def get_current_manager(current_user: User = Depends(get_current_user)):
-    if current_user.role not in ["admin", "manager"]:
+    if current_user.role not in [ADMIN, MANAGER]:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Accès refusé : Droits de manager requis."
@@ -60,7 +61,7 @@ async def get_owner_or_admin(
     user_id: int, 
     current_user: User = Depends(get_current_user)
 ):
-    if current_user.id != user_id and current_user.role != "admin":
+    if current_user.id != user_id and current_user.role != ADMIN:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN, 
             detail="Tu ne peux pas modifier/supprimer les données d'un autre utilisateur."

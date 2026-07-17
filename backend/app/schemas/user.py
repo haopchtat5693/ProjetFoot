@@ -1,11 +1,12 @@
 from pydantic import BaseModel, ConfigDict, Field
 from typing import Optional
 from app.schemas.auth_token import Token
+from app.core.constants import VIEWER
 
 class UserBase(BaseModel):
     username: str
     email: str
-    role: str = "viewer"  
+    role: str = VIEWER
 
 class UserCreate(UserBase):
     password: str
