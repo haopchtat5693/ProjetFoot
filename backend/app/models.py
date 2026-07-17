@@ -50,6 +50,7 @@ class Player(Base):
     team_id = Column(Integer, ForeignKey("teams.id"), index=True)
 
     team = relationship("Team", back_populates="players")
+    stats = relationship("PlayerStats", back_populates="player")
 
 class President(Base):
     __tablename__ = "presidents"
@@ -120,3 +121,41 @@ class Token(Base):
 
     user = relationship("User", back_populates="tokens")
 
+class Season(Base):
+    __tablename__ = "seasons"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String, unique=True, index=True)
+    is_active = Column(Boolean, default=True)
+
+    contracts = relationship("Contract", back_populates="season")
+    stats = relationship("PlayerStats", back_populates="season")
+
+class Contract(Base):
+    __tablename__ = "contracts"
+    id = Column(Integer, primary_key=True)
+    player_id = Column(Integer, ForeignKey("players.id"))
+    team_id = Column(Integer, ForeignKey("teams.id"))
+    season_id = Column(Integer, ForeignKey("seasons.id")) 
+
+    player = relationship("Player")
+    team = relationship("Team")
+    season = relationship("Season", back_populates="contracts")
+
+
+class PlayerStats(Base):
+    __tablename__ = "player_stats"
+
+    id = Column(Integer, primary_key=True, index=True)
+    player_id = Column(Integer, ForeignKey("players.id"), index=True)
+    match_id = Column(Integer, ForeignKey("matches.id"), index=True) 
+    season_id = Column(Integer, ForeignKey("seasons.id"), index=True) 
+    
+    goals = Column(Integer, default=0)
+    assists = Column(Integer, default=0)
+    yellow_cards = Column(Integer, default=0)
+    minutes_played = Column(Integer, default=0)
+
+    player = relationship("Player", back_populates="stats")
+    match = relationship("Match")
+    season = relationship("Season")
