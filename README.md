@@ -1,11 +1,11 @@
-# ProjetFoot (Backend API) #
+# ProjetFoot #
 
-Projet de développement Full Stack d'une application de gestion de ligues sportives. Ce projet a pour but de modéliser des relations entre entités sportives (équipes, joueurs, matchs, stades) et de proposer une API REST robuste.
+Projet de développement d'une application Full Stack de gestion de ligues sportives. L'API backend est actuellement opérationnelle, avec une architecture basée sur FastAPI et PostgreSQL, et le développement de l'interface frontend (Angular) est prévu pour la suite du projet.
 
 ## Technologies utilisées ##
-**Backend** : Python, FastAPI, SQLAlchemy (ORM), PostgreSQL
+**Backend(En cours)** : Python, FastAPI, SQLAlchemy (ORM), PostgreSQL
 
-**Frontend** : Angular, TypeScript
+**Frontend(Dans le futur)** : Angular, TypeScript
 
 **Authentification** : JWT (JSON Web Tokens)
 
