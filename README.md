@@ -42,7 +42,7 @@ Le backend suit une architecture propre pour séparer les responsabilités :
 
 1.  Cloner le dépôt :
 
-    git clone [https://github.com/ton-utilisateur/ProjetFoot.git](https://github.com/ton-utilisateur/ProjetFoot.git)
+    git clone https://github.com/haopchtat5693/ProjetFoot.git
     
     cd ProjetFoot
 
