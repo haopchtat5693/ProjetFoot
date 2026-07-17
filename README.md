@@ -76,3 +76,5 @@ Le backend suit une architecture propre pour séparer les responsabilités :
 5.  Lancer le serveur :
 
     uvicorn app.main:app --reload
+
+    Une fois le serveur lancé, accédez à la documentation interactive sur [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
