@@ -5,7 +5,7 @@ from app.schemas.auth_token import Token
 class UserBase(BaseModel):
     username: str
     email: str
-    is_admin: bool = False
+    role: str = "viewer"  
 
 class UserCreate(UserBase):
     password: str
@@ -14,7 +14,7 @@ class UserUpdate(BaseModel):
     username: Optional[str] = None
     email: Optional[str] = None
     password: Optional[str] = None
-    is_admin: Optional[bool] = None
+    role: Optional[str] = None
 
 class User(UserBase):
     id: int
