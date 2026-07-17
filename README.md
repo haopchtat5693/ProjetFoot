@@ -1,0 +1,76 @@
+# ProjetFoot (Backend API) #
+
+Projet de développement Full Stack d'une application de gestion de ligues sportives. Ce projet a pour but de modéliser des relations entre entités sportives (équipes, joueurs, matchs, stades) et de proposer une API REST robuste.
+
+## Technologies utilisées ##
+**Backend** : Python, FastAPI, SQLAlchemy (ORM), PostgreSQL
+
+**Frontend** : Angular, TypeScript
+
+**Authentification** : JWT (JSON Web Tokens)
+
+**Tests** : pytest
+
+**Outils** : Git, pgAdmin
+
+## Architecture du projet ##
+
+Le backend suit une architecture propre pour séparer les responsabilités :
+
+**app/routers/** : Endpoints de l'API.
+
+**app/crud/** : Logique de manipulation des données.
+
+**app/models/** : Schémas SQLAlchemy (base de données).
+
+**app/schemas/** : Schémas Pydantic (validation des données).
+
+## Fonctionnalités principales
+
+**Gestion complète (CRUD)** : Équipes, joueurs, entraîneurs, arbitres et stades.
+
+**Sécurité** : Authentification sécurisée des utilisateurs et gestion des droits d'accès.
+
+**Documentation** : API documentée automatiquement via Swagger UI (accessible sur /docs).
+
+## Installation et exécution
+**Prérequis** : Python 3.10+
+
+**PostgreSQL** installé et configuré
+
+**Étapes :**
+
+1.  Cloner le dépôt :
+
+    git clone [https://github.com/ton-utilisateur/ProjetFoot.git](https://github.com/ton-utilisateur/ProjetFoot.git)
+    
+    cd ProjetFoot
+
+
+2.  Configuration de l'environnement :
+
+    Créer le dossier venv : python -m venv venv
+    
+    Activer l'environnement :
+    
+    Sur Windows : venv\Scripts\activate
+    
+    Sur macOS/Linux : source venv/bin/activate
+    
+3.  Installer les dépendances :
+
+    pip install -r requirements.txt
+    
+4.  Configurer les variables d'environnement :
+
+    Créer un fichier .env à la racine
+
+    Ajouter la configuration :
+    
+    DATABASE_URL=postgresql://votre_utilisateur:votre_mot_de_passe@localhost:5432/nom_de_votre_base
+    
+    SECRET_KEY=votre_cle_secrete
+    
+5.  Lancer le serveur :
+
+    uvicorn app.main:app --reload
