@@ -9,7 +9,7 @@ Projet de développement d'une application Full Stack de gestion de ligues sport
 
 **Authentification** : JWT (JSON Web Tokens)
 
-**Tests** : pytest
+**Test(Dans le futur)** : pytest
 
 **Outils** : Git, pgAdmin
 
