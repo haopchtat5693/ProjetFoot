@@ -1,3 +1,5 @@
+from app import schemas
+from app.core.deps import get_current_user, oauth2_scheme
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
@@ -5,6 +7,7 @@ from datetime import timedelta
 from app.database import get_db
 from app import crud
 from app.core.security import verify_password, create_access_token
+from app.models import User
 
 router = APIRouter(tags=["Auth"])
 
@@ -23,4 +26,17 @@ def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depend
         data={"sub": user.username}, expires_delta=timedelta(minutes=30)
     )
     
+    token_in = schemas.TokenCreate(token=access_token, user_id=user.id)
+    crud.token.createToken(db, token_in)
+    
     return {"access_token": access_token, "token_type": "bearer"}
+
+@router.post("/logout")
+def logout(db: Session = Depends(get_db), current_user: User = Depends(get_current_user), token: str = Depends(oauth2_scheme)):
+
+    token_in_db = crud.token.get_token_by_value(db, token_value=token)
+    
+    if token_in_db:
+        crud.token.deleteToken(db, token_id=token_in_db.id)
+        
+    return {"detail": "Déconnexion réussie"}
