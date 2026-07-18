@@ -18,6 +18,7 @@ class Match(Base):
     home_team = relationship("Team", foreign_keys=[home_team_id], back_populates="home_matches")
     away_team = relationship("Team", foreign_keys=[away_team_id], back_populates="away_matches")
     referee = relationship("Referee", back_populates="matches")
+    stats = relationship("PlayerMatchStats", back_populates="match")
 
 class Team(Base):
     __tablename__ = "teams"
@@ -51,7 +52,7 @@ class Player(Base):
     team_id = Column(Integer, ForeignKey("teams.id"), index=True)
 
     team = relationship("Team", back_populates="players")
-    stats = relationship("PlayerStats", back_populates="player")
+    stats = relationship("PlayerMatchStats", back_populates="player")
 
 class President(Base):
     __tablename__ = "presidents"
@@ -130,7 +131,7 @@ class Season(Base):
     is_active = Column(Boolean, default=True)
 
     contracts = relationship("Contract", back_populates="season")
-    stats = relationship("PlayerStats", back_populates="season")
+    stats = relationship("PlayerMatchStats", back_populates="season")
 
 class Contract(Base):
     __tablename__ = "contracts"
@@ -144,7 +145,7 @@ class Contract(Base):
     season = relationship("Season", back_populates="contracts")
 
 
-class PlayerStats(Base):
+class PlayerMatchStats(Base):
     __tablename__ = "player_stats"
 
     id = Column(Integer, primary_key=True, index=True)
@@ -155,6 +156,7 @@ class PlayerStats(Base):
     goals = Column(Integer, default=0)
     assists = Column(Integer, default=0)
     yellow_cards = Column(Integer, default=0)
+    red_cards = Column(Integer, default=0)
     minutes_played = Column(Integer, default=0)
 
     player = relationship("Player", back_populates="stats")
