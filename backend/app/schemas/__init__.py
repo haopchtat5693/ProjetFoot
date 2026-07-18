@@ -10,4 +10,5 @@ from .referee import Referee, RefereeCreate, RefereeUpdate
 from .stadium import Stadium, StadiumCreate, StadiumUpdate
 from .season import Season, SeasonCreate, SeasonUpdate
 from .contract import Contract, ContractCreate, ContractUpdate
-from .player_stats import PlayerStats, PlayerStatsCreate, PlayerStatsUpdate
+from .player_match_stats import PlayerMatchStats, PlayerMatchStatsCreate, PlayerMatchStatsUpdate
+from .player_season_summary import PlayerSeasonSummary
