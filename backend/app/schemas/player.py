@@ -1,3 +1,4 @@
+from app.schemas.contract import ContractBase
 from pydantic import BaseModel, ConfigDict
 from typing import Optional
 
@@ -24,5 +25,8 @@ class PlayerUpdate(PlayerBase):
         
 class Player(PlayerBase):
     id: int
+    contracts: list[ContractBase] = []
+    stats: list = []
+    season_stats: list = []
 
     model_config = ConfigDict(from_attributes=True)
