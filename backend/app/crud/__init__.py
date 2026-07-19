@@ -7,7 +7,8 @@ from . import president_crud as president
 from . import referee_crud as referee
 from . import season_crud as season
 from . import contract_crud as contract
-from . import player_stats_crud as player_stats
+from . import player_match_stats_crud as player_match_stats
+from . import player_season_stats_crud as player_season_stats
 from . import stadium_crud as stadium
 from . import team_crud as team
 from . import user_crud as user
