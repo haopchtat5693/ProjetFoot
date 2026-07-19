@@ -24,5 +24,6 @@ class MatchUpdate(MatchBase):
 
 class Match(MatchBase):
     id: int
+    stats: list = []
 
     model_config = ConfigDict(from_attributes=True)
