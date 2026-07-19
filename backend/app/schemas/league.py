@@ -20,5 +20,6 @@ class LeagueUpdate(BaseModel):
 
 class League(LeagueBase):
 	id: int
+	teams: list = []
 
 	model_config = ConfigDict(from_attributes=True)
