@@ -4,7 +4,6 @@ from typing import Optional
 
 class SeasonBase(BaseModel):
     name: str
-    is_active: Optional[bool] = True
 
 
 class SeasonCreate(SeasonBase):
@@ -13,12 +12,14 @@ class SeasonCreate(SeasonBase):
 
 class SeasonUpdate(BaseModel):
     name: Optional[str] = None
-    is_active: Optional[bool] = None
 
     model_config = ConfigDict(from_attributes=True)
 
 
 class Season(SeasonBase):
     id: int
+    contracts: list = []
+    match_stats: list = []
+    season_stats: list = []
 
     model_config = ConfigDict(from_attributes=True)
