@@ -28,5 +28,8 @@ class TeamUpdate(BaseModel):
 
 class Team(TeamBase):
 	id: int
+	players: list = []
+	home_matches: list = []
+	away_matches: list = []
 
 	model_config = ConfigDict(from_attributes=True)
