@@ -1,17 +1,29 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
 from app import crud, schemas
 from app.database import get_db
-from app.services import stats_service
+from app.services.stats_sync_service import sync_and_save_season_stats
 
 router = APIRouter(prefix="/stats", tags=["Stats"])
 
-@router.get("/player/{player_id}/season/{season_id}", response_model=schemas.PlayerSeasonSummary)
-def get_player_stats_for_season(player_id: int, season_id: int, db: Session = Depends(get_db)):
-    stats = stats_service.get_season_stats_for_player(db, player_id, season_id)
+@router.get("/player/{player_id}/season/{season_id}", response_model=schemas.PlayerSeasonStats)
+async def get_player_stats_for_season(player_id: int, season_id: int, db: Session = Depends(get_db)):
+    stats = crud.player_season_stats.get_season_stats_by_player_and_season(db, player_id=player_id, season_id=season_id)
     
     if not stats:
-        raise HTTPException(status_code=404, detail="Stats not found for the given player and season")
+
+        try:
+            stats =  await sync_and_save_season_stats(db, player_id=player_id, season_id=season_id)
+
+        except Exception as e:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, 
+                detail=f"Stats non trouvées en base et échec de synchronisation API : {str(e)}"
+            )
+        
+    if not stats:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, 
+            detail="Stats introuvables"
+        )
     
     return stats
