@@ -22,5 +22,6 @@ class RefereeUpdate(BaseModel):
 
 class Referee(RefereeBase):
 	id: int
+	matches: list = []
 
 	model_config = ConfigDict(from_attributes=True)
