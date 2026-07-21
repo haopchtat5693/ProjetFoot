@@ -1,5 +1,6 @@
 from sqlalchemy import Column, Integer, String, ForeignKey, Boolean, Float, UniqueConstraint
 from sqlalchemy.orm import relationship
+from sqlalchemy.dialects.postgresql import JSONB
 from app.database import Base
 from app.core.constants import VIEWER
 
@@ -26,20 +27,18 @@ class Team(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, unique=True, index=True)
     city = Column(String)
+    logo = Column(String, nullable=True)
 
-    president_id = Column(Integer, ForeignKey("presidents.id"), index=True)
-    coach_id = Column(Integer, ForeignKey("coaches.id"), index=True)
-    stadium_id = Column(Integer, ForeignKey("stadiums.id"), index=True)
-    league_id = Column(Integer, ForeignKey("leagues.id"), index=True)
+    coach_id = Column(Integer, ForeignKey("coaches.id"), nullable=True, index=True)
+    stadium_id = Column(Integer, ForeignKey("stadiums.id"), nullable=True, index=True)
 
     stadium = relationship("Stadium", back_populates="teams")
-    president = relationship("President", back_populates="team")
     coach = relationship("Coach", back_populates="team")
     players = relationship("Player", back_populates="team")
     home_matches = relationship("Match", foreign_keys=[Match.home_team_id], back_populates="home_team")
     away_matches = relationship("Match", foreign_keys=[Match.away_team_id], back_populates="away_team")
-    league = relationship("League", back_populates="teams")
     contracts = relationship("Contract", back_populates="team")
+    season_stats = relationship("TeamSeasonStats", back_populates="team")
 
 class Player(Base):
     __tablename__ = "players"
@@ -53,19 +52,9 @@ class Player(Base):
     team_id = Column(Integer, ForeignKey("teams.id"), index=True)
 
     team = relationship("Team", back_populates="players")
-    stats = relationship("PlayerMatchStats", back_populates="player")
+    match_stats = relationship("PlayerMatchStats", back_populates="player")
     season_stats = relationship("PlayerSeasonStats", back_populates="player")
     contracts = relationship("Contract", back_populates="player")
-
-class President(Base):
-    __tablename__ = "presidents"
-
-    id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, unique=True, index=True)
-    age = Column(Integer, index=True)
-    salary = Column(Integer)
-
-    team = relationship("Team", back_populates="president")
 
 class Coach(Base):
     __tablename__ = "coaches"
@@ -82,7 +71,8 @@ class Stadium(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, unique=True, index=True)
-    location = Column(String)
+    city = Column(String)
+    address = Column(String)
     capacity = Column(Integer)
 
     teams = relationship("Team", back_populates="stadium")
@@ -104,7 +94,7 @@ class League(Base):
     name = Column(String, unique=True, index=True)
     country = Column(String)
 
-    teams = relationship("Team", back_populates="league")
+    season_stats = relationship("TeamSeasonStats", back_populates="league")
 
 class User(Base):
     __tablename__ = "users"
@@ -134,7 +124,8 @@ class Season(Base):
 
     contracts = relationship("Contract", back_populates="season")
     match_stats = relationship("PlayerMatchStats", back_populates="season")
-    season_stats = relationship("PlayerSeasonStats", back_populates="season")
+    player_season_stats = relationship("PlayerSeasonStats", back_populates="season")
+    team_season_stats = relationship("TeamSeasonStats", back_populates="season")
 
 class Contract(Base):
     __tablename__ = "contracts"
@@ -164,7 +155,7 @@ class PlayerMatchStats(Base):
     red_cards = Column(Integer, default=0)
     minutes_played = Column(Integer, default=0)
 
-    player = relationship("Player", back_populates="stats")
+    player = relationship("Player", back_populates="match_stats")
     match = relationship("Match" , back_populates="stats")
     season = relationship("Season", back_populates="match_stats")
 
@@ -183,4 +174,24 @@ class PlayerSeasonStats(Base):
     avg_rating = Column(String, default=None) 
 
     player = relationship("Player", back_populates="season_stats")
-    season = relationship("Season", back_populates="season_stats")
+    season = relationship("Season", back_populates="player_season_stats")
+
+class TeamSeasonStats(Base):
+    __tablename__ = "team_season_stats"
+
+    id = Column(Integer, primary_key=True, index=True)
+    team_id = Column(Integer, ForeignKey("teams.id"), nullable=False)
+    league_id = Column(Integer, ForeignKey("leagues.id"), nullable=False)
+    season_id = Column(Integer, ForeignKey("seasons.id"), nullable=False)
+    
+    fixtures = Column(JSONB, nullable=True)
+    goals = Column(JSONB, nullable=True)
+    clean_sheet = Column(JSONB, nullable=True)
+    failed_to_score = Column(JSONB, nullable=True)
+    penalty = Column(JSONB, nullable=True)
+    cards = Column(JSONB, nullable=True)
+
+    team = relationship("Team", back_populates="season_stats")
+    season = relationship("Season", back_populates="team_season_stats")
+    league = relationship("League", back_populates="season_stats")
+    
