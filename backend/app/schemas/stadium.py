@@ -4,7 +4,8 @@ from typing import Optional
 
 class StadiumBase(BaseModel):
 	name: str
-	location: str
+	city: str
+	address: str
 	capacity: int
 
 
@@ -14,7 +15,8 @@ class StadiumCreate(StadiumBase):
 
 class StadiumUpdate(BaseModel):
 	name: Optional[str] = None
-	location: Optional[str] = None
+	city: Optional[str] = None
+	address: Optional[str] = None
 	capacity: Optional[int] = None
 
 	model_config = ConfigDict(from_attributes=True)
