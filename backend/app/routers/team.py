@@ -1,4 +1,5 @@
-from fastapi import APIRouter, Depends, HTTPException
+from app.services.team_sync_service import sync_and_save_team
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
 from app import crud, schemas
@@ -13,11 +14,22 @@ def create_team(team: schemas.TeamCreate, db: Session = Depends(get_db)):
 
 
 @router.get("/{team_id}", response_model=schemas.Team)
-def get_team(team_id: int, db: Session = Depends(get_db)):
-    team = crud.team.getTeam(db, team_id)
+async def get_team(team_id: int, db: Session = Depends(get_db)):
+    try:
+        team = await sync_and_save_team(db, team_id=team_id)
+    except Exception as e:
+        team = crud.team.getTeam(db, team_id)
+        if not team:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Team non trouvée en base et échec de synchronisation API : {str(e)}",
+            )
+
     if not team:
-        raise HTTPException(status_code=404, detail="Team not found")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Team introuvable")
+
     return team
+
 
 
 @router.get("/", response_model=list[schemas.Team])
