@@ -5,23 +5,21 @@ from typing import Optional
 class TeamBase(BaseModel):
 	name: str
 	city: str
-	president_id: Optional[int] = None
 	coach_id: Optional[int] = None
 	stadium_id: Optional[int] = None
-	league_id: Optional[int] = None
+	logo: Optional[str] = None
 
 
 class TeamCreate(TeamBase):
-	pass
+	id: int
 
 
 class TeamUpdate(BaseModel):
 	name: Optional[str] = None
 	city: Optional[str] = None
-	president_id: Optional[int] = None
+	logo: Optional[str] = None
 	coach_id: Optional[int] = None
 	stadium_id: Optional[int] = None
-	league_id: Optional[int] = None
 
 	model_config = ConfigDict(from_attributes=True)
 
