@@ -5,10 +5,10 @@ from .league import League, LeagueCreate, LeagueUpdate
 from .match import Match, MatchCreate, MatchUpdate
 from .player import Player, PlayerCreate, PlayerUpdate
 from .coach import Coach, CoachCreate, CoachUpdate
-from .president import President, PresidentCreate, PresidentUpdate
 from .referee import Referee, RefereeCreate, RefereeUpdate
 from .stadium import Stadium, StadiumCreate, StadiumUpdate
 from .season import Season, SeasonCreate, SeasonUpdate
 from .contract import Contract, ContractCreate, ContractUpdate
 from .player_match_stats import PlayerMatchStats, PlayerMatchStatsCreate, PlayerMatchStatsUpdate
 from .player_season_stats import PlayerSeasonStats, PlayerSeasonStatsCreate, PlayerSeasonStatsUpdate
+from .team_season_stats import TeamSeasonStats, TeamSeasonStatsCreate, TeamSeasonStatsUpdate
