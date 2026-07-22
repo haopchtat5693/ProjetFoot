@@ -26,7 +26,9 @@ def get_players(db: Session = Depends(get_db)):
 
 
 @router.put("/{player_id}", response_model=schemas.Player)
-def update_player(player_id: int, player_in: schemas.PlayerUpdate, db: Session = Depends(get_db)):
+def update_player(
+    player_id: int, player_in: schemas.PlayerUpdate, db: Session = Depends(get_db)
+):
     player = crud.player.getPlayer(db, player_id)
     if not player:
         raise HTTPException(status_code=404, detail="Player not found")

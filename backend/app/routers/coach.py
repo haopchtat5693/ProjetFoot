@@ -26,7 +26,9 @@ def get_coaches(db: Session = Depends(get_db)):
 
 
 @router.put("/{coach_id}", response_model=schemas.Coach)
-def update_coach(coach_id: int, coach_in: schemas.CoachUpdate, db: Session = Depends(get_db)):
+def update_coach(
+    coach_id: int, coach_in: schemas.CoachUpdate, db: Session = Depends(get_db)
+):
     coach = crud.coach.getCoach(db, coach_id)
     if not coach:
         raise HTTPException(status_code=404, detail="Coach not found")

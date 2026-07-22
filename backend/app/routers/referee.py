@@ -26,7 +26,9 @@ def get_referees(db: Session = Depends(get_db)):
 
 
 @router.put("/{referee_id}", response_model=schemas.Referee)
-def update_referee(referee_id: int, referee_in: schemas.RefereeUpdate, db: Session = Depends(get_db)):
+def update_referee(
+    referee_id: int, referee_in: schemas.RefereeUpdate, db: Session = Depends(get_db)
+):
     referee = crud.referee.getReferee(db, referee_id)
     if not referee:
         raise HTTPException(status_code=404, detail="Referee not found")

@@ -3,26 +3,26 @@ from typing import Optional
 
 
 class StadiumBase(BaseModel):
-	name: str
-	city: str
-	address: str
-	capacity: int
+    name: str
+    city: str
+    address: str
+    capacity: int
 
 
 class StadiumCreate(StadiumBase):
-	pass
+    pass
 
 
 class StadiumUpdate(BaseModel):
-	name: Optional[str] = None
-	city: Optional[str] = None
-	address: Optional[str] = None
-	capacity: Optional[int] = None
+    name: Optional[str] = None
+    city: Optional[str] = None
+    address: Optional[str] = None
+    capacity: Optional[int] = None
 
-	model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(from_attributes=True)
 
 
 class Stadium(StadiumBase):
-	id: int
+    id: int
 
-	model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(from_attributes=True)

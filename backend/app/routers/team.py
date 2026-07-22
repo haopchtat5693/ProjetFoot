@@ -1,3 +1,4 @@
+from app.services.team_players_sync_service import sync_and_get_team_players_for_season
 from app.services.team_sync_service import sync_and_save_team
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
@@ -26,10 +27,41 @@ async def get_team(team_id: int, db: Session = Depends(get_db)):
             )
 
     if not team:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Team introuvable")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Team introuvable"
+        )
 
     return team
 
+
+@router.get(
+    "/{team_id}/seasons/{season_id}/players", response_model=list[schemas.Player]
+)
+async def get_team_players_for_season(
+    team_id: int,
+    season_id: int,
+    db: Session = Depends(get_db),
+):
+    try:
+        players = await sync_and_get_team_players_for_season(
+            db, team_id=team_id, season_id=season_id
+        )
+    except Exception as e:
+        players = crud.player.get_players_by_team_and_season(
+            db, team_id=team_id, season_id=season_id
+        )
+        if not players:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Players non trouvés en base et échec de synchronisation API : {str(e)}",
+            )
+
+    if not players:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Players introuvables"
+        )
+
+    return players
 
 
 @router.get("/", response_model=list[schemas.Team])
@@ -38,7 +70,9 @@ def get_teams(db: Session = Depends(get_db)):
 
 
 @router.put("/{team_id}", response_model=schemas.Team)
-def update_team(team_id: int, team_in: schemas.TeamUpdate, db: Session = Depends(get_db)):
+def update_team(
+    team_id: int, team_in: schemas.TeamUpdate, db: Session = Depends(get_db)
+):
     team = crud.team.getTeam(db, team_id)
     if not team:
         raise HTTPException(status_code=404, detail="Team not found")

@@ -3,25 +3,25 @@ from typing import Optional
 
 
 class RefereeBase(BaseModel):
-	name: str
-	age: int
-	salary: int
+    name: str
+    age: int
+    salary: int
 
 
 class RefereeCreate(RefereeBase):
-	pass
+    pass
 
 
 class RefereeUpdate(BaseModel):
-	name: Optional[str] = None
-	age: Optional[int] = None
-	salary: Optional[int] = None
+    name: Optional[str] = None
+    age: Optional[int] = None
+    salary: Optional[int] = None
 
-	model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(from_attributes=True)
 
 
 class Referee(RefereeBase):
-	id: int
-	matches: list = []
+    id: int
+    matches: list = []
 
-	model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(from_attributes=True)

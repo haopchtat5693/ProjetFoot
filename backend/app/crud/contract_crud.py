@@ -20,7 +20,9 @@ def createContract(db: Session, contract: schemas.ContractCreate):
     return contract_crud.create(db, contract)
 
 
-def updateContract(db: Session, contract_id: int, contract_update: schemas.ContractUpdate):
+def updateContract(
+    db: Session, contract_id: int, contract_update: schemas.ContractUpdate
+):
     return contract_crud.update(db, contract_id, contract_update)
 
 

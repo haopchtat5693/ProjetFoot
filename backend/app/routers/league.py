@@ -26,7 +26,9 @@ def get_leagues(db: Session = Depends(get_db)):
 
 
 @router.put("/{league_id}", response_model=schemas.League)
-def update_league(league_id: int, league_in: schemas.LeagueUpdate, db: Session = Depends(get_db)):
+def update_league(
+    league_id: int, league_in: schemas.LeagueUpdate, db: Session = Depends(get_db)
+):
     league = crud.league.getLeague(db, league_id)
     if not league:
         raise HTTPException(status_code=404, detail="League not found")

@@ -21,7 +21,7 @@ def get_matches_stats_by_player_and_season(db: Session, player_id: int, season_i
         db.query(models.PlayerMatchStats)
         .filter(
             models.PlayerMatchStats.player_id == player_id,
-            models.PlayerMatchStats.season_id == season_id
+            models.PlayerMatchStats.season_id == season_id,
         )
         .all()
     )
@@ -32,11 +32,10 @@ def get_stats_by_player_and_match(db: Session, player_id: int, match_id: int):
         db.query(models.PlayerMatchStats)
         .filter(
             models.PlayerMatchStats.player_id == player_id,
-            models.PlayerMatchStats.match_id == match_id
+            models.PlayerMatchStats.match_id == match_id,
         )
         .first()
     )
-
 
 
 def createPlayerMatchStats(db: Session, player_stats: schemas.PlayerMatchStatsCreate):

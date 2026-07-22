@@ -11,8 +11,10 @@ auth_token_crud = CRUDBase(models.Token)
 def getToken(db: Session, token_id: int):
     return auth_token_crud.get(db, token_id)
 
+
 def get_token_by_value(db: Session, token_value: str):
     return db.query(models.Token).filter(models.Token.token == token_value).first()
+
 
 def getTokens(db: Session, skip: int = 0, limit: int = 100):
     return auth_token_crud.get_multi(db, skip=skip, limit=limit)

@@ -3,23 +3,23 @@ from typing import Optional
 
 
 class LeagueBase(BaseModel):
-	name: str
-	country: str
+    name: str
+    country: str
 
 
 class LeagueCreate(LeagueBase):
-	pass
+    pass
 
 
 class LeagueUpdate(BaseModel):
-	name: Optional[str] = None
-	country: Optional[str] = None
+    name: Optional[str] = None
+    country: Optional[str] = None
 
-	model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(from_attributes=True)
 
 
 class League(LeagueBase):
-	id: int
-	teams: list = []
+    id: int
+    teams: list = []
 
-	model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(from_attributes=True)

@@ -15,15 +15,17 @@ def getPlayerMatchStats(db: Session, player_stats_id: int):
 def getPlayerMatchStatsList(db: Session, skip: int = 0, limit: int = 100):
     return player_stats_crud.get_multi(db, skip=skip, limit=limit)
 
+
 def get_stats_by_player_and_season(db: Session, player_id: int, season_id: int):
     return (
         db.query(models.PlayerMatchStats)
         .filter(
             models.PlayerMatchStats.player_id == player_id,
-            models.PlayerMatchStats.season_id == season_id
+            models.PlayerMatchStats.season_id == season_id,
         )
         .all()
     )
+
 
 def createPlayerMatchStats(db: Session, player_stats: schemas.PlayerMatchStatsCreate):
     return player_stats_crud.create(db, player_stats)

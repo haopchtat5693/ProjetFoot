@@ -26,7 +26,9 @@ def get_seasons(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
 
 
 @router.put("/{season_id}", response_model=schemas.Season)
-def update_season(season_id: int, season_in: schemas.SeasonUpdate, db: Session = Depends(get_db)):
+def update_season(
+    season_id: int, season_in: schemas.SeasonUpdate, db: Session = Depends(get_db)
+):
     season = crud.season.getSeason(db, season_id)
     if not season:
         raise HTTPException(status_code=404, detail="Season not found")

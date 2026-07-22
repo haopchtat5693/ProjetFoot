@@ -7,13 +7,16 @@ from app.core.deps import get_current_user, get_current_admin, get_owner_or_admi
 
 router = APIRouter(prefix="/users", tags=["Users"])
 
+
 @router.post("/", response_model=schemas.User)
 def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
     return user_service.create_new_user(db, user)
 
+
 @router.get("/me", response_model=schemas.User)
 def get_me(current_user: schemas.User = Depends(get_current_user)):
     return current_user
+
 
 @router.get("/{user_id}", response_model=schemas.User)
 def get_user(user_id: int, db: Session = Depends(get_db)):
@@ -22,31 +25,34 @@ def get_user(user_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="User not found")
     return user
 
-@router.get("/" , response_model=list[schemas.User])
+
+@router.get("/", response_model=list[schemas.User])
 def get_users(
     db: Session = Depends(get_db),
     current_admin: schemas.User = Depends(get_current_admin),
 ):
     return user_service.get_users(db)
 
+
 @router.put("/{user_id}", response_model=schemas.User)
 def update_user(
-    user_id: int, 
-    user_in: schemas.UserUpdate, 
+    user_id: int,
+    user_in: schemas.UserUpdate,
     db: Session = Depends(get_db),
-    _: schemas.User = Depends(get_owner_or_admin)
+    _: schemas.User = Depends(get_owner_or_admin),
 ):
-    
+
     user = crud.user.get_user(db, user_id)
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     return crud.user.update_user(db, user_id, user_in)
 
+
 @router.delete("/{user_id}", response_model=schemas.User)
 def delete_user(
-    user_id: int, 
+    user_id: int,
     db: Session = Depends(get_db),
-    _: schemas.User = Depends(get_owner_or_admin)
+    _: schemas.User = Depends(get_owner_or_admin),
 ):
 
     user = crud.user.get_user(db, user_id)

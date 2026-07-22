@@ -21,11 +21,10 @@ def get_season_stats_by_player_and_season(db: Session, player_id: int, season_id
         db.query(models.PlayerSeasonStats)
         .filter(
             models.PlayerSeasonStats.player_id == player_id,
-            models.PlayerSeasonStats.season_id == season_id
+            models.PlayerSeasonStats.season_id == season_id,
         )
         .first()
     )
-
 
 
 def get_stats_by_player(db: Session, player_id: int):
@@ -45,7 +44,9 @@ def updatePlayerSeasonStats(
     player_season_stats_id: int,
     player_stats_update: schemas.PlayerSeasonStatsUpdate,
 ):
-    return player_season_stats_crud.update(db, player_season_stats_id, obj_in=player_stats_update)
+    return player_season_stats_crud.update(
+        db, player_season_stats_id, obj_in=player_stats_update
+    )
 
 
 def deletePlayerSeasonStats(db: Session, player_season_stats_id: int):

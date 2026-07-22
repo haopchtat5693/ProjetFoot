@@ -26,7 +26,9 @@ def get_matches(db: Session = Depends(get_db)):
 
 
 @router.put("/{match_id}", response_model=schemas.Match)
-def update_match(match_id: int, match_in: schemas.MatchUpdate, db: Session = Depends(get_db)):
+def update_match(
+    match_id: int, match_in: schemas.MatchUpdate, db: Session = Depends(get_db)
+):
     match = crud.match.getMatch(db, match_id)
     if not match:
         raise HTTPException(status_code=404, detail="Match not found")
