@@ -1,4 +1,6 @@
-from app.schemas.contract import ContractBase
+from app.schemas.contract import Contract
+from app.schemas.player_match_stats import PlayerMatchStats
+from app.schemas.player_season_stats import PlayerSeasonStats
 from pydantic import BaseModel, ConfigDict
 from typing import Optional
 
@@ -6,8 +8,8 @@ class PlayerBase(BaseModel):
     name: str
     position: str
     age: int
-    salary: int
-    main_foot: str
+    salary: Optional[int] = None
+    main_foot: Optional[str] = None
     team_id: Optional[int] = None 
 
 class PlayerCreate(PlayerBase):
@@ -25,8 +27,8 @@ class PlayerUpdate(PlayerBase):
         
 class Player(PlayerBase):
     id: int
-    contracts: list[ContractBase] = []
-    stats: list = []
-    season_stats: list = []
+    contracts: list[Contract] = []
+    match_stats: list[PlayerMatchStats] = []
+    season_stats: list[PlayerSeasonStats] = []
 
     model_config = ConfigDict(from_attributes=True)
