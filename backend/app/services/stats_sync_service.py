@@ -36,7 +36,7 @@ async def sync_and_save_season_stats(db: Session, player_id: int, season_id: int
 
     schema_data = map_api_data_to_schema(stats_block, player_id, season_id)
 
-    return player_season_stats_crud.createPlayerSeasonStats(
+    return player_season_stats_crud.create_player_season_stats(
         db, player_stats=schema_data
     )
 
@@ -97,8 +97,8 @@ async def sync_and_save_team_stats(
     )
 
     if existing_stats:
-        return team_season_stats_crud.updateTeamSeasonStats(
+        return team_season_stats_crud.update_team_season_stats(
             db, existing_stats.id, schema_data
         )
 
-    return team_season_stats_crud.createTeamSeasonStats(db, team_stats=schema_data)
+    return team_season_stats_crud.create_team_season_stats(db, team_stats=schema_data)

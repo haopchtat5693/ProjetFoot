@@ -12,7 +12,7 @@ def ensure_stadium_exists(db: Session, stadium_id: int, stadium_data: dict):
     capacity = stadium_data.get("capacity") or 0
 
     if not stadium:
-        return crud.stadium.createStadium(
+        return crud.stadium.create_stadium(
             db,
             {
                 "id": stadium_id,

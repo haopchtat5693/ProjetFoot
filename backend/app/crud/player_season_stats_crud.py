@@ -8,11 +8,11 @@ from .base import CRUDBase
 player_season_stats_crud = CRUDBase(models.PlayerSeasonStats)
 
 
-def getPlayerSeasonStats(db: Session, player_season_stats_id: int):
+def get_player_season_stats(db: Session, player_season_stats_id: int):
     return player_season_stats_crud.get(db, player_season_stats_id)
 
 
-def getPlayerSeasonStatsList(db: Session, skip: int = 0, limit: int = 100):
+def get_player_season_stats_list(db: Session, skip: int = 0, limit: int = 100):
     return player_season_stats_crud.get_multi(db, skip=skip, limit=limit)
 
 
@@ -35,11 +35,11 @@ def get_stats_by_player(db: Session, player_id: int):
     )
 
 
-def createPlayerSeasonStats(db: Session, player_stats: schemas.PlayerSeasonStatsCreate):
+def create_player_season_stats(db: Session, player_stats: schemas.PlayerSeasonStatsCreate):
     return player_season_stats_crud.create(db, obj_in=player_stats)
 
 
-def updatePlayerSeasonStats(
+def update_player_season_stats(
     db: Session,
     player_season_stats_id: int,
     player_stats_update: schemas.PlayerSeasonStatsUpdate,
@@ -49,5 +49,5 @@ def updatePlayerSeasonStats(
     )
 
 
-def deletePlayerSeasonStats(db: Session, player_season_stats_id: int):
+def delete_player_season_stats(db: Session, player_season_stats_id: int):
     return player_season_stats_crud.delete(db, player_season_stats_id)

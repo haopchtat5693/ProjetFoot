@@ -9,12 +9,12 @@ router = APIRouter(prefix="/referees", tags=["Referees"])
 
 @router.post("/", response_model=schemas.Referee)
 def create_referee(referee: schemas.RefereeCreate, db: Session = Depends(get_db)):
-    return crud.referee.createReferee(db, referee)
+    return crud.referee.create_referee(db, referee)
 
 
 @router.get("/{referee_id}", response_model=schemas.Referee)
 def get_referee(referee_id: int, db: Session = Depends(get_db)):
-    referee = crud.referee.getReferee(db, referee_id)
+    referee = crud.referee.get_referee(db, referee_id)
     if not referee:
         raise HTTPException(status_code=404, detail="Referee not found")
     return referee
@@ -22,22 +22,22 @@ def get_referee(referee_id: int, db: Session = Depends(get_db)):
 
 @router.get("/", response_model=list[schemas.Referee])
 def get_referees(db: Session = Depends(get_db)):
-    return crud.referee.getReferees(db)
+    return crud.referee.get_referees(db)
 
 
 @router.put("/{referee_id}", response_model=schemas.Referee)
 def update_referee(
     referee_id: int, referee_in: schemas.RefereeUpdate, db: Session = Depends(get_db)
 ):
-    referee = crud.referee.getReferee(db, referee_id)
+    referee = crud.referee.get_referee(db, referee_id)
     if not referee:
         raise HTTPException(status_code=404, detail="Referee not found")
-    return crud.referee.updateReferee(db, referee_id, referee_in)
+    return crud.referee.update_referee(db, referee_id, referee_in)
 
 
 @router.delete("/{referee_id}", response_model=schemas.Referee)
 def delete_referee(referee_id: int, db: Session = Depends(get_db)):
-    referee = crud.referee.getReferee(db, referee_id)
+    referee = crud.referee.get_referee(db, referee_id)
     if not referee:
         raise HTTPException(status_code=404, detail="Referee not found")
-    return crud.referee.deleteReferee(db, referee_id)
+    return crud.referee.delete_referee(db, referee_id)

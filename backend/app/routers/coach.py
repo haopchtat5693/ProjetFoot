@@ -9,12 +9,12 @@ router = APIRouter(prefix="/coaches", tags=["Coaches"])
 
 @router.post("/", response_model=schemas.Coach)
 def create_coach(coach: schemas.CoachCreate, db: Session = Depends(get_db)):
-    return crud.coach.createCoach(db, coach)
+    return crud.coach.create_coach(db, coach)
 
 
 @router.get("/{coach_id}", response_model=schemas.Coach)
 def get_coach(coach_id: int, db: Session = Depends(get_db)):
-    coach = crud.coach.getCoach(db, coach_id)
+    coach = crud.coach.get_coach(db, coach_id)
     if not coach:
         raise HTTPException(status_code=404, detail="Coach not found")
     return coach
@@ -22,22 +22,22 @@ def get_coach(coach_id: int, db: Session = Depends(get_db)):
 
 @router.get("/", response_model=list[schemas.Coach])
 def get_coaches(db: Session = Depends(get_db)):
-    return crud.coach.getCoaches(db)
+    return crud.coach.get_coaches(db)
 
 
 @router.put("/{coach_id}", response_model=schemas.Coach)
 def update_coach(
     coach_id: int, coach_in: schemas.CoachUpdate, db: Session = Depends(get_db)
 ):
-    coach = crud.coach.getCoach(db, coach_id)
+    coach = crud.coach.get_coach(db, coach_id)
     if not coach:
         raise HTTPException(status_code=404, detail="Coach not found")
-    return crud.coach.updateCoach(db, coach_id, coach_in)
+    return crud.coach.update_coach(db, coach_id, coach_in)
 
 
 @router.delete("/{coach_id}", response_model=schemas.Coach)
 def delete_coach(coach_id: int, db: Session = Depends(get_db)):
-    coach = crud.coach.getCoach(db, coach_id)
+    coach = crud.coach.get_coach(db, coach_id)
     if not coach:
         raise HTTPException(status_code=404, detail="Coach not found")
-    return crud.coach.deleteCoach(db, coach_id)
+    return crud.coach.delete_coach(db, coach_id)

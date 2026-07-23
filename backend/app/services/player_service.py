@@ -5,11 +5,11 @@ from app import crud
 def ensure_player_exists(
     db: Session, player_id: int, player_data: dict, stats_data: dict = None
 ):
-    player = crud.player.getPlayer(db, player_id)
+    player = crud.player.get_player(db, player_id)
 
     if not player:
         print(f"Création automatique du joueur : {player_data.get('name')}")
-        player = crud.player.createPlayer(
+        player = crud.player.create_player(
             db,
             {
                 "id": player_id,

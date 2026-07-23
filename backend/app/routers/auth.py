@@ -29,7 +29,7 @@ def login(
     )
 
     token_in = schemas.TokenCreate(token=access_token, user_id=user.id)
-    crud.token.createToken(db, token_in)
+    crud.token.create_token(db, token_in)
 
     return {"access_token": access_token, "token_type": "bearer"}
 
@@ -44,6 +44,6 @@ def logout(
     token_in_db = crud.token.get_token_by_value(db, token_value=token)
 
     if token_in_db:
-        crud.token.deleteToken(db, token_id=token_in_db.id)
+        crud.token.delete_token(db, token_id=token_in_db.id)
 
     return {"detail": "Déconnexion réussie"}

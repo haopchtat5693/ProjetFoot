@@ -7,7 +7,7 @@ def ensure_league_exists(db: Session, league_id: int, league_data: dict):
     league = db.query(models.League).filter(models.League.id == league_id).first()
 
     if not league:
-        return crud.league.createLeague(
+        return crud.league.create_league(
             db,
             {
                 "id": league_id,

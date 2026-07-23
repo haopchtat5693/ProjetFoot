@@ -8,11 +8,11 @@ from .base import CRUDBase
 player_match_stats_crud = CRUDBase(models.PlayerMatchStats)
 
 
-def getPlayerMatchStats(db: Session, player_stats_id: int):
+def get_player_match_stats(db: Session, player_stats_id: int):
     return player_match_stats_crud.get(db, player_stats_id)
 
 
-def getPlayerMatchStatsList(db: Session, skip: int = 0, limit: int = 100):
+def get_player_match_stats_list(db: Session, skip: int = 0, limit: int = 100):
     return player_match_stats_crud.get_multi(db, skip=skip, limit=limit)
 
 
@@ -38,11 +38,11 @@ def get_stats_by_player_and_match(db: Session, player_id: int, match_id: int):
     )
 
 
-def createPlayerMatchStats(db: Session, player_stats: schemas.PlayerMatchStatsCreate):
+def create_player_match_stats(db: Session, player_stats: schemas.PlayerMatchStatsCreate):
     return player_match_stats_crud.create(db, player_stats)
 
 
-def updatePlayerMatchStats(
+def update_player_match_stats(
     db: Session,
     player_stats_id: int,
     player_stats_update: schemas.PlayerMatchStatsUpdate,
@@ -50,5 +50,5 @@ def updatePlayerMatchStats(
     return player_match_stats_crud.update(db, player_stats_id, player_stats_update)
 
 
-def deletePlayerMatchStats(db: Session, player_stats_id: int):
+def delete_player_match_stats(db: Session, player_stats_id: int):
     return player_match_stats_crud.delete(db, player_stats_id)

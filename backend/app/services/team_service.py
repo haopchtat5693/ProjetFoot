@@ -7,7 +7,7 @@ def ensure_team_exists(db: Session, team_data: schemas.TeamCreate):
     team = db.query(models.Team).filter(models.Team.id == team_data.id).first()
 
     if not team:
-        return crud.team.createTeam(
+        return crud.team.create_team(
             db,
             {
                 "id": team_data.id,
