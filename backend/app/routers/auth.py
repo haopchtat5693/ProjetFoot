@@ -17,7 +17,7 @@ def login(
     form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)
 ):
 
-    user = crud.user.get_user_by_username(db, username=form_data.username)
+    user = crud.user_crud.get_user_by_username(db, username=form_data.username)
 
     if not user or not verify_password(form_data.password, user.hashed_password):
         raise HTTPException(
@@ -29,7 +29,7 @@ def login(
     )
 
     token_in = schemas.TokenCreate(token=access_token, user_id=user.id)
-    crud.token.create_token(db, token_in)
+    crud.auth_token_crud.create_token(db, token_in)
 
     return {"access_token": access_token, "token_type": "bearer"}
 
@@ -41,9 +41,9 @@ def logout(
     token: str = Depends(oauth2_scheme),
 ):
 
-    token_in_db = crud.token.get_token_by_value(db, token_value=token)
+    token_in_db = crud.auth_token_crud.get_token_by_value(db, token_value=token)
 
     if token_in_db:
-        crud.token.delete_token(db, token_id=token_in_db.id)
+        crud.auth_token_crud.delete_token(db, token_id=token_in_db.id)
 
     return {"detail": "Déconnexion réussie"}
