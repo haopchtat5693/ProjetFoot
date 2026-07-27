@@ -1,0 +1,43 @@
+<main class="login-shell">
+	<section class="login-card">
+		<p class="eyebrow">Account access</p>
+		<h1>Log in to continue</h1>
+		<p class="intro">
+			Enter a name, email, and role to simulate a connected account for the home page.
+		</p>
+
+		<form class="login-form" (ngSubmit)="submit()">
+			<label>
+				<span>Name</span>
+				<input name="name" [(ngModel)]="form.name" placeholder="John Doe" required />
+			</label>
+
+			<label>
+				<span>Email</span>
+				<input
+					name="email"
+					[(ngModel)]="form.email"
+					type="email"
+					placeholder="john@example.com"
+					required
+				/>
+			</label>
+
+			<label>
+				<span>Password</span>
+				<input
+					name="password"
+					[(ngModel)]="form.password"
+					type="password"
+					placeholder="••••••••"
+					required
+				/>
+			</label>
+
+			<div class="actions">
+				<button type="submit" class="button">Login</button>
+				<a class="button button-ghost" routerLink="/">Cancel</a>
+			</div>
+		</form>
+	</section>
+</main>
