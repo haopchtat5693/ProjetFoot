@@ -1,27 +1,25 @@
 <main class="login-shell">
 	<section class="login-card">
 		<p class="eyebrow">Account access</p>
-		<h1>Log in to continue</h1>
-		<p class="intro">
-			Enter a name, email, and role to simulate a connected account for the home page.
-		</p>
+		<h1>{{ pageTitle }}</h1>
+		<p class="intro">{{ introText }}</p>
 
 		<form class="login-form" (ngSubmit)="submit()">
 			<label>
-				<span>Name</span>
-				<input name="name" [(ngModel)]="form.name" placeholder="John Doe" required />
+				<span>Username</span>
+				<input name="username" [(ngModel)]="form.username" placeholder="johndoe" required />
 			</label>
 
-			<label>
-				<span>Email</span>
-				<input
-					name="email"
-					[(ngModel)]="form.email"
-					type="email"
-					placeholder="john@example.com"
-					required
-				/>
-			</label>
+			@if (isRegisterMode) {
+				<label>
+					<span>Role</span>
+					<select name="role" [(ngModel)]="form.role">
+						@for (role of roles; track role.value) {
+							<option [value]="role.value">{{ role.label }}</option>
+						}
+					</select>
+				</label>
+			}
 
 			<label>
 				<span>Password</span>
@@ -35,7 +33,10 @@
 			</label>
 
 			<div class="actions">
-				<button type="submit" class="button">Login</button>
+				<button type="submit" class="button">{{ submitLabel }}</button>
+				<button type="button" class="button button-ghost" (click)="toggleMode()">
+					{{ isRegisterMode ? 'I already have an account' : 'Create a new account' }}
+				</button>
 				<a class="button button-ghost" routerLink="/">Cancel</a>
 			</div>
 		</form>
