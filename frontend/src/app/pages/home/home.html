@@ -1,0 +1,39 @@
+<main class="home-shell">
+	<section class="hero-card">
+		<p class="eyebrow">ProjetFoot</p>
+		<h1>Manage your football workspace from one clean home screen.</h1>
+		<p class="intro">
+			See your account state at a glance, jump to login when needed, and sign out when you're done.
+		</p>
+
+		@if (isConnected()) {
+			<div class="profile-card">
+				<div>
+					<span class="label">Name</span>
+					<strong>{{ 123 }}</strong>
+				</div>
+				<div>
+					<span class="label">Mail</span>
+					<strong>{{ 456 }}</strong>
+				</div>
+				<div>
+					<span class="label">Role</span>
+					<strong>{{ 789 }}</strong>
+				</div>
+			</div>
+
+			<div class="actions">
+				<button type="button" class="button button-ghost" (click)="logout()">Logout</button>
+			</div>
+		} @else {
+			<div class="status-card">
+				<span class="status-dot"></span>
+				<span>You are not connected yet.</span>
+			</div>
+
+			<div class="actions">
+				<a class="button" routerLink="/login">Login</a>
+			</div>
+		}
+	</section>
+</main>
