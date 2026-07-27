@@ -5,7 +5,7 @@ ModelType = TypeVar("ModelType")
 SchemaCreateType = TypeVar("SchemaCreateType")
 SchemaUpdateType = TypeVar("SchemaUpdateType")
 
-
+#AI used
 class CRUDBase(Generic[ModelType, SchemaCreateType, SchemaUpdateType]):
     def __init__(self, model: Type[ModelType]):
         self.model = model
