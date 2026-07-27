@@ -11,7 +11,7 @@ router = APIRouter(prefix="/teams", tags=["Teams"])
 
 @router.post("/", response_model=schemas.Team)
 def create_team(team: schemas.TeamCreate, db: Session = Depends(get_db)):
-    return crud.team.create_team(db, team)
+    return crud.team_crud.create_team(db, team)
 
 
 @router.get("/{team_id}", response_model=schemas.Team)
@@ -19,7 +19,7 @@ async def get_team(team_id: int, db: Session = Depends(get_db)):
     try:
         team = await sync_and_save_team(db, team_id=team_id)
     except Exception as e:
-        team = crud.team.get_team(db, team_id)
+        team = crud.team_crud.get_team(db, team_id)
         if not team:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
@@ -47,7 +47,7 @@ async def get_team_players_for_season(
             db, team_id=team_id, season_id=season_id
         )
     except Exception as e:
-        players = crud.player.get_players_by_team_and_season(
+        players = crud.player_crud.get_players_by_team_and_season(
             db, team_id=team_id, season_id=season_id
         )
         if not players:
@@ -66,22 +66,22 @@ async def get_team_players_for_season(
 
 @router.get("/", response_model=list[schemas.Team])
 def get_teams(db: Session = Depends(get_db)):
-    return crud.team.get_teams(db)
+    return crud.team_crud.get_teams(db)
 
 
 @router.put("/{team_id}", response_model=schemas.Team)
 def update_team(
     team_id: int, team_in: schemas.TeamUpdate, db: Session = Depends(get_db)
 ):
-    team = crud.team.get_team(db, team_id)
+    team = crud.team_crud.get_team(db, team_id)
     if not team:
         raise HTTPException(status_code=404, detail="Team not found")
-    return crud.team.update_team(db, team_id, team_in)
+    return crud.team_crud.update_team(db, team_id, team_in)
 
 
 @router.delete("/{team_id}", response_model=schemas.Team)
 def delete_team(team_id: int, db: Session = Depends(get_db)):
-    team = crud.team.get_team(db, team_id)
+    team = crud.team_crud.get_team(db, team_id)
     if not team:
         raise HTTPException(status_code=404, detail="Team not found")
-    return crud.team.delete_team(db, team_id)
+    return crud.team_crud.delete_team(db, team_id)

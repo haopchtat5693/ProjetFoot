@@ -17,7 +17,7 @@ router = APIRouter(prefix="/stats", tags=["Stats"])
 async def get_player_stats_for_season(
     player_id: int, season_id: int, db: Session = Depends(get_db)
 ):
-    stats = crud.player_season_stats.get_season_stats_by_player_and_season(
+    stats = crud.player_season_stats_crud.get_season_stats_by_player_and_season(
         db, player_id=player_id, season_id=season_id
     )
 
@@ -59,7 +59,7 @@ async def get_team_stats_for_team_league_season(
             season_id=season_id,
         )
     except Exception as e:
-        stats = crud.team_season_stats.get_team_season_stats_by_team_league_and_season(
+        stats = crud.team_season_stats_crud.get_team_season_stats_by_team_league_and_season(
             db,
             team_id=team_id,
             league_id=league_id,

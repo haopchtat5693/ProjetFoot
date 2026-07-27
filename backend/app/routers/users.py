@@ -20,7 +20,7 @@ def get_me(current_user: schemas.User = Depends(get_current_user)):
 
 @router.get("/{user_id}", response_model=schemas.User)
 def get_user(user_id: int, db: Session = Depends(get_db)):
-    user = crud.user.get_user(db, user_id)
+    user = crud.user_crud.get_user(db, user_id)
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     return user
@@ -42,10 +42,10 @@ def update_user(
     _: schemas.User = Depends(get_owner_or_admin),
 ):
 
-    user = crud.user.get_user(db, user_id)
+    user = crud.user_crud.get_user(db, user_id)
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
-    return crud.user.update_user(db, user_id, user_in)
+    return crud.user_crud.update_user(db, user_id, user_in)
 
 
 @router.delete("/{user_id}", response_model=schemas.User)
@@ -55,7 +55,7 @@ def delete_user(
     _: schemas.User = Depends(get_owner_or_admin),
 ):
 
-    user = crud.user.get_user(db, user_id)
+    user = crud.user_crud.get_user(db, user_id)
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
-    return crud.user.delete_user(db, user_id)
+    return crud.user_crud.delete_user(db, user_id)
