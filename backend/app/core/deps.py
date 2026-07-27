@@ -30,11 +30,11 @@ async def get_current_user(db=Depends(get_db), token: str = Depends(oauth2_schem
     except JWTError:
         raise credentials_exception
 
-    token_in_db = crud.token.get_token_by_value(db, token_value=token)
+    token_in_db = crud.auth_token_crud.get_token_by_value(db, token_value=token)
     if token_in_db is None:
         raise credentials_exception
 
-    user = crud.user.get_user_by_username(db, username=username)
+    user = crud.user_crud.get_user_by_username(db, username=username)
 
     if user is None:
         raise credentials_exception
