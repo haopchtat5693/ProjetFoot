@@ -10,19 +10,17 @@ const TOKEN_KEY = 'projet-foot.auth-token';
 })
 export class AuthService {
   private readonly http = inject(HttpClient);
-  private readonly apiUrl = ' http://127.0.0.1:8000'; 
+  private readonly apiUrl = 'http://127.0.0.1:8000';
 
   private readonly tokenState = signal<string | null>(this.readToken());
 
   readonly token = this.tokenState.asReadonly();
   readonly isAuthenticated = computed(() => this.token() !== null);
 
-  login(username: string, password: string, email: string): Observable<TokenResponse> {
-
+  login(username: string, password: string): Observable<TokenResponse> {
     const body = new URLSearchParams();
     body.set('username', username);
     body.set('password', password);
-    body.set('email', email);
 
     const headers = new HttpHeaders({
       'Content-Type': 'application/x-www-form-urlencoded',
@@ -36,6 +34,14 @@ export class AuthService {
     );
   }
 
+  register(username: string, password: string, role: string): Observable<unknown> {
+    return this.http.post<unknown>(`${this.apiUrl}/users/`, {
+      username,
+      password,
+      role,
+    });
+  }
+
   logout(): Observable<unknown> {
     const currentToken = this.token();
 
@@ -47,7 +53,7 @@ export class AuthService {
     }
 
     const headers = new HttpHeaders({
-      'Authorization': `Bearer ${currentToken}`
+      'Authorization': `Bearer ${currentToken}`,
     });
 
     return this.http.post<unknown>(`${this.apiUrl}/logout`, {}, { headers });
