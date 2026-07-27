@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, UniqueConstraint
+from sqlalchemy import Column, Integer, String, ForeignKey, UniqueConstraint, TIMESTAMP
 from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.postgresql import JSONB
 from app.database import Base
@@ -124,6 +124,7 @@ class Token(Base):
     id = Column(Integer, primary_key=True, index=True)
     token = Column(String, unique=True, index=True)
     user_id = Column(Integer, ForeignKey("users.id"), index=True)
+    expires_at = Column(TIMESTAMP(timezone=True), index=True)
 
     user = relationship("User", back_populates="tokens")
 
