@@ -1,6 +1,7 @@
 from sqlalchemy.orm import Session
 from app import schemas, crud
 from app.core.security import get_password_hash
+from app.core.constants import VIEWER
 
 
 def create_new_user(db: Session, user_in: schemas.UserCreate):
@@ -9,5 +10,6 @@ def create_new_user(db: Session, user_in: schemas.UserCreate):
 
     password = user_data.pop("password")
     user_data["hashed_password"] = get_password_hash(password)
+    user_data["role"] = VIEWER
 
     return crud.user_crud.create_user(db, user_data)
