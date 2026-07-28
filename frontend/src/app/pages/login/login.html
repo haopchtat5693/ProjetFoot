@@ -7,18 +7,11 @@
 		<form class="login-form" (ngSubmit)="submit()">
 			<label>
 				<span>Username</span>
-				<input name="username" [(ngModel)]="form.username" placeholder="johndoe" required />
+				<input name="username" [(ngModel)]="form.username" required />
 			</label>
 
 			@if (isRegisterMode) {
-				<label>
-					<span>Role</span>
-					<select name="role" [(ngModel)]="form.role">
-						@for (role of roles; track role.value) {
-							<option [value]="role.value">{{ role.label }}</option>
-						}
-					</select>
-				</label>
+			
 			}
 
 			<label>
