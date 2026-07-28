@@ -3,7 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { switchMap } from 'rxjs';
 
-import { DEFAULT_ROLE, ROLE_OPTIONS } from '../../constants/roles';
+import { ROLE_OPTIONS } from '../../constants/roles';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
@@ -22,7 +22,6 @@ export class Login {
   protected form = {
     username: '',
     password: '',
-    role: DEFAULT_ROLE,
   };
 
   protected get submitLabel(): string {
@@ -46,10 +45,8 @@ export class Login {
   protected submit(): void {
     const username = this.form.username.trim();
     const password = this.form.password.trim();
-    const role = this.form.role;
-
     const request$ = this.isRegisterMode
-      ? this.auth.register(username, password, role).pipe(
+      ? this.auth.register(username, password).pipe(
           switchMap(() => this.auth.login(username, password))
         )
       : this.auth.login(username, password);
