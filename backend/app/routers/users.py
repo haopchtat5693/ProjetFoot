@@ -10,6 +10,8 @@ router = APIRouter(prefix="/users", tags=["Users"])
 
 @router.post("/", response_model=schemas.User)
 def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
+    if crud.user_crud.get_user_by_username(db, username=user.username):
+        raise HTTPException(status_code=400, detail="Username already registered")
     return user_service.create_new_user(db, user)
 
 
