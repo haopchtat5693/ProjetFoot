@@ -34,11 +34,10 @@ export class AuthService {
     );
   }
 
-  register(username: string, password: string, role: string): Observable<unknown> {
+  register(username: string, password: string): Observable<unknown> {
     return this.http.post<unknown>(`${this.apiUrl}/users/`, {
       username,
       password,
-      role,
     });
   }
 
