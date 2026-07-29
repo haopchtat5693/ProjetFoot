@@ -23,7 +23,7 @@ class Match(Base):
         "Team", foreign_keys=[away_team_id], back_populates="away_matches"
     )
     referee = relationship("Referee", back_populates="matches")
-    stats = relationship("PlayerMatchStats", back_populates="match")
+    players_stats = relationship("PlayerMatchStats", back_populates="match")
 
 
 class Team(Base):
@@ -133,10 +133,8 @@ class Season(Base):
     __tablename__ = "seasons"
 
     id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, unique=True, index=True)
 
     contracts = relationship("Contract", back_populates="season")
-    match_stats = relationship("PlayerMatchStats", back_populates="season")
     player_season_stats = relationship("PlayerSeasonStats", back_populates="season")
     team_season_stats = relationship("TeamSeasonStats", back_populates="season")
 
@@ -172,9 +170,7 @@ class PlayerMatchStats(Base):
     minutes_played = Column(Integer, default=0)
 
     player = relationship("Player", back_populates="match_stats")
-    match = relationship("Match", back_populates="stats")
-    season = relationship("Season", back_populates="match_stats")
-
+    match = relationship("Match", back_populates="players_stats")
 
 class PlayerSeasonStats(Base):
     __tablename__ = "player_season_stats"
