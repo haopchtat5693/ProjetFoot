@@ -1,5 +1,6 @@
 from pydantic import BaseModel, ConfigDict
 from typing import Optional
+from app.schemas.player_match_stats import PlayerMatchStats
 
 
 class MatchBase(BaseModel):
@@ -28,6 +29,6 @@ class MatchUpdate(MatchBase):
 
 class Match(MatchBase):
     id: int
-    stats: list = []
+    players_stats: list[PlayerMatchStats] = []
 
     model_config = ConfigDict(from_attributes=True)
