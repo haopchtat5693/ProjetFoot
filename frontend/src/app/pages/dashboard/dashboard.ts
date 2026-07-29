@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { forkJoin, map, of, switchMap } from 'rxjs';
+import { catchError, forkJoin, map, of, switchMap } from 'rxjs';
 import { DashboardService } from '../../services/dashboard.service';
 import type { Team, Season, Player, PlayerWithSeasonStats } from '../../interfaces/dashboard';
 
@@ -39,27 +39,40 @@ export class Dashboard {
   }
 
   protected onFetchPlayers(): void {
-    if (!this.selectedTeamId || !this.selectedSeasonId) return;
+      if (!this.selectedTeamId || !this.selectedSeasonId) return;
 
-    this.selectedEntity = 'players';
-    
-    this.svc
-      .getTeamPlayersForSeason(this.selectedTeamId, this.selectedSeasonId)
-      .pipe(
-        switchMap((players: Player[]) =>
-          players.length
-            ? forkJoin(
-                players.map((player) =>
-                  this.svc.getPlayerSeasonStats(player.id, this.selectedSeasonId as number),
-                ),
-              ).pipe(
-                map((stats) =>
-                  players.map((player, index) => ({ player, stats: stats[index] })),
-                ),
-              )
-            : of([]),
-        ),
-      )
-      .subscribe((res) => (this.playerStats = res || []));
-  }
+      this.selectedEntity = 'players';
+
+      this.svc
+        .getTeamPlayersForSeason(this.selectedTeamId, this.selectedSeasonId)
+        .pipe(
+          switchMap((players: Player[]) =>
+            players.length
+              ? forkJoin(
+                  players.map((player) =>
+                    this.svc.getPlayerSeasonStats(player.id, this.selectedSeasonId as number).pipe(
+                      catchError(() => {
+                        console.warn(`Stats introuvables pour le joueur ${player.id}, valeur par défaut appliquée.`);
+                        return of({
+                          id: -1,
+                          player_id: player.id,
+                          season_id: this.selectedSeasonId as number,
+                          total_goals: null,
+                          total_assists: null,
+                          total_minutes: null,
+                          avg_rating: null
+                        });
+                      })
+                    ),
+                  ),
+                ).pipe(
+                  map((stats) =>
+                    players.map((player, index) => ({ player, stats: stats[index] })),
+                  ),
+                )
+              : of([]),
+          ),
+        )
+        .subscribe((res) => (this.playerStats = res || []));
+    }
 }
