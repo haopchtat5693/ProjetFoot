@@ -1,1 +1,6 @@
-from .roles import ADMIN as ADMIN, MANAGER as MANAGER, USER_ROLES as USER_ROLES, VIEWER as VIEWER
+from .roles import (
+    ADMIN as ADMIN,
+    MANAGER as MANAGER,
+    USER_ROLES as USER_ROLES,
+    VIEWER as VIEWER,
+)

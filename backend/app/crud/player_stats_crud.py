@@ -27,7 +27,9 @@ def get_stats_by_player_and_season(db: Session, player_id: int, season_id: int):
     )
 
 
-def create_player_match_stats(db: Session, player_stats: schemas.PlayerMatchStatsCreate):
+def create_player_match_stats(
+    db: Session, player_stats: schemas.PlayerMatchStatsCreate
+):
     return player_stats_crud.create(db, player_stats)
 
 

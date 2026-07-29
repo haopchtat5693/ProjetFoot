@@ -17,7 +17,6 @@ def login(
     form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)
 ):
 
-
     user = crud.user_crud.get_user_by_username(db, username=form_data.username)
 
     if not user or not verify_password(form_data.password, user.hashed_password):
@@ -25,11 +24,9 @@ def login(
             status_code=status.HTTP_401_UNAUTHORIZED, detail="Identifiants incorrects"
         )
 
-
     db.query(Token).filter(
-        Token.user_id == user.id,
-        Token.expires_at < datetime.now(timezone.utc)
-        ).delete()
+        Token.user_id == user.id, Token.expires_at < datetime.now(timezone.utc)
+    ).delete()
     db.commit()
 
     access_token_expires = timedelta(minutes=30)
@@ -39,7 +36,9 @@ def login(
         data={"sub": user.username}, expires_at=expires_at
     )
 
-    token_in = schemas.TokenCreate(token=access_token, user_id=user.id, expires_at=expires_at)
+    token_in = schemas.TokenCreate(
+        token=access_token, user_id=user.id, expires_at=expires_at
+    )
 
     crud.auth_token_crud.create_token(db, token_in)
 

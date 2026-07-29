@@ -35,7 +35,9 @@ def get_stats_by_player(db: Session, player_id: int):
     )
 
 
-def create_player_season_stats(db: Session, player_stats: schemas.PlayerSeasonStatsCreate):
+def create_player_season_stats(
+    db: Session, player_stats: schemas.PlayerSeasonStatsCreate
+):
     return player_season_stats_crud.create(db, obj_in=player_stats)
 
 

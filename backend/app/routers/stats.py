@@ -59,11 +59,13 @@ async def get_team_stats_for_team_league_season(
             season_id=season_id,
         )
     except Exception as e:
-        stats = crud.team_season_stats_crud.get_team_season_stats_by_team_league_and_season(
-            db,
-            team_id=team_id,
-            league_id=league_id,
-            season_id=season_id,
+        stats = (
+            crud.team_season_stats_crud.get_team_season_stats_by_team_league_and_season(
+                db,
+                team_id=team_id,
+                league_id=league_id,
+                season_id=season_id,
+            )
         )
 
         if not stats:

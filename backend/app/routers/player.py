@@ -11,6 +11,7 @@ router = APIRouter(prefix="/players", tags=["Players"])
 def create_player(player: schemas.PlayerCreate, db: Session = Depends(get_db)):
     return crud.player_crud.create_player(db, player)
 
+
 @router.get("/{player_id}", response_model=schemas.Player)
 def get_player(player_id: int, db: Session = Depends(get_db)):
     player = crud.player_crud.get_player(db, player_id)

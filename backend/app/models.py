@@ -172,6 +172,7 @@ class PlayerMatchStats(Base):
     player = relationship("Player", back_populates="match_stats")
     match = relationship("Match", back_populates="players_stats")
 
+
 class PlayerSeasonStats(Base):
     __tablename__ = "player_season_stats"
 

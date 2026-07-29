@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 
-from app import crud, models
+from app import crud
 
 
 def ensure_stadium_exists(db: Session, stadium_id: int, stadium_data: dict):

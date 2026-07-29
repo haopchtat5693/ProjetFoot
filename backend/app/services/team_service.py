@@ -1,6 +1,5 @@
 from sqlalchemy.orm import Session
 from app import crud, schemas
-from app import models
 
 
 def ensure_team_exists(db: Session, team_data: schemas.TeamCreate):

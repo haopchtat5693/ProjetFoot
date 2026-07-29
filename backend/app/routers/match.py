@@ -32,7 +32,7 @@ def update_match(
     match = crud.match_crud.get_match(db, match_id)
     if not match:
         raise HTTPException(status_code=404, detail="Match not found")
-    return crud.match_crud .update_match(db, match_id, match_in)
+    return crud.match_crud.update_match(db, match_id, match_in)
 
 
 @router.delete("/{match_id}", response_model=schemas.Match)

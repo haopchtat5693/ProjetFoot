@@ -38,7 +38,9 @@ def get_stats_by_player_and_match(db: Session, player_id: int, match_id: int):
     )
 
 
-def create_player_match_stats(db: Session, player_stats: schemas.PlayerMatchStatsCreate):
+def create_player_match_stats(
+    db: Session, player_stats: schemas.PlayerMatchStatsCreate
+):
     return player_match_stats_crud.create(db, player_stats)
 
 

@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from app import crud, models
+from app import crud
 
 
 def ensure_season_exists(db: Session, season_id: int):
