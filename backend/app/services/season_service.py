@@ -3,7 +3,7 @@ from app import crud, models
 
 
 def ensure_season_exists(db: Session, season_id: int):
-    season = db.query(models.Season).filter(models.Season.id == season_id).first()
+    season = crud.season_crud.get_season(db, season_id)
     if not season:
-        return crud.season.create_season(db, {"id": season_id, "name": str(season_id)})
+        return crud.season_crud.create_season(db, {"id": season_id})
     return season

@@ -19,7 +19,7 @@ def map_player_api_data_to_payload(player_raw: dict, stats_block: dict) -> dict:
 async def sync_and_get_team_players_for_season(
     db: Session, team_id: int, season_id: int
 ):
-    players = crud.player.get_players_by_team_and_season(
+    players = crud.player_crud.get_players_by_team_and_season(
         db, team_id=team_id, season_id=season_id
     )
 
@@ -43,6 +43,6 @@ async def sync_and_get_team_players_for_season(
         ensure_player_exists(db, player_payload["id"], player_payload, stats_block)
         ensure_contract_exists(db, player_id, team_id, season_id)
 
-    return crud.player.get_players_by_team_and_season(
+    return crud.player_crud.get_players_by_team_and_season(
         db, team_id=team_id, season_id=season_id
     )

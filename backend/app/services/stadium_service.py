@@ -4,7 +4,7 @@ from app import crud, models
 
 
 def ensure_stadium_exists(db: Session, stadium_id: int, stadium_data: dict):
-    stadium = db.query(models.Stadium).filter(models.Stadium.id == stadium_id).first()
+    stadium = crud.stadium_crud.get_stadium(db, stadium_id)
 
     city = stadium_data.get("city") or "Unknown"
     address = stadium_data.get("address") or "Unknown"
@@ -12,7 +12,7 @@ def ensure_stadium_exists(db: Session, stadium_id: int, stadium_data: dict):
     capacity = stadium_data.get("capacity") or 0
 
     if not stadium:
-        return crud.stadium.create_stadium(
+        return crud.stadium_crud.create_stadium(
             db,
             {
                 "id": stadium_id,

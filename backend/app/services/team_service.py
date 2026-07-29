@@ -4,10 +4,10 @@ from app import models
 
 
 def ensure_team_exists(db: Session, team_data: schemas.TeamCreate):
-    team = db.query(models.Team).filter(models.Team.id == team_data.id).first()
+    team = crud.team_crud.get_team(db, team_data.id)
 
     if not team:
-        return crud.team.create_team(
+        return crud.team_crud.create_team(
             db,
             {
                 "id": team_data.id,

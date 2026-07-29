@@ -4,10 +4,10 @@ from app import crud, models
 
 
 def ensure_league_exists(db: Session, league_id: int, league_data: dict):
-    league = db.query(models.League).filter(models.League.id == league_id).first()
+    league = crud.league_crud.get_league(db, league_id)
 
     if not league:
-        return crud.league.create_league(
+        return crud.league_crud.create_league(
             db,
             {
                 "id": league_id,
