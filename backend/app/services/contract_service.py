@@ -17,7 +17,7 @@ def ensure_contract_exists(db: Session, player_id: int, team_id: int, season_id:
     if contract:
         return contract
 
-    return crud.contract.createContract(
+    return crud.contract_crud.create_contract(
         db,
         schemas.ContractCreate(
             player_id=player_id,
