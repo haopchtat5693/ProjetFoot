@@ -53,7 +53,7 @@ export class Login {
 
     request$.subscribe({
       next: () => {
-        void this.router.navigateByUrl('/');
+        void this.router.navigateByUrl('dashboard');
       },
       error: (err) => {
         console.error('Erreur lors de l’authentification', err);
