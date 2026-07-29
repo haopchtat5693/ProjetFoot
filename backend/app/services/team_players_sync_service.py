@@ -19,7 +19,6 @@ def map_player_api_data_to_payload(player_raw: dict, stats_block: dict) -> dict:
 async def sync_and_get_team_players_for_season(
     db: Session, team_id: int, season_id: int
 ):
-
     players = crud.player_crud.get_players_by_team_and_season(
         db, team_id=team_id, season_id=season_id
     )
@@ -28,9 +27,9 @@ async def sync_and_get_team_players_for_season(
         return players
 
     current_page = 1
-    total_pages = 1
+    max_free_pages = 3  # LIMITED TO 3 PAGES DUE TO API LIMITATIONS
 
-    while current_page <= total_pages:
+    while current_page <= max_free_pages:
         data = await fetch_from_api(
             "/players", {"season": season_id, "team": team_id, "page": current_page}
         )
@@ -38,20 +37,17 @@ async def sync_and_get_team_players_for_season(
         if not data:
             break
 
-        paging = data.get("paging", {})
-        total_pages = paging.get("total", 1)
-
         response = data.get("response")
         if not response:
             break
 
-        for item in response:
-            player_raw = item.get("player", {})
+        for player in response:
+            player_raw = player.get("player", {})
             player_id = player_raw.get("id")
             if not player_id:
                 continue
 
-            stats_block = (item.get("statistics") or [{}])[0]
+            stats_block = (player.get("statistics") or [{}])[0]
             player_payload = map_player_api_data_to_payload(player_raw, stats_block)
             ensure_player_exists(db, player_payload["id"], player_payload, stats_block)
             ensure_contract_exists(db, player_id, team_id, season_id)
