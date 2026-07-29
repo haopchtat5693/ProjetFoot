@@ -1,25 +1,18 @@
 from pydantic import BaseModel, ConfigDict
-from typing import Optional
+from app.schemas.contract import Contract
+from app.schemas.player_season_stats import PlayerSeasonStats
 
-
-class SeasonBase(BaseModel):
-    name: str
-
-
-class SeasonCreate(SeasonBase):
-    pass
+class SeasonCreate(BaseModel):
+    id: int
 
 
 class SeasonUpdate(BaseModel):
-    name: Optional[str] = None
-
     model_config = ConfigDict(from_attributes=True)
 
 
-class Season(SeasonBase):
+class Season(BaseModel):
     id: int
-    contracts: list = []
-    match_stats: list = []
-    season_stats: list = []
+    contracts: list[Contract] = []
+    player_season_stats: list[PlayerSeasonStats] = []
 
     model_config = ConfigDict(from_attributes=True)
