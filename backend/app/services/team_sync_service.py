@@ -4,7 +4,10 @@ from app import schemas
 from app.services.football_api_client import fetch_from_api
 from app.services.team_service import ensure_team_exists
 
-from app.services.stadium_service import ensure_stadium_exists
+from app.services.stadium_service import (
+    ensure_stadium_exists,
+    map_stadium_api_data_to_payload,
+)
 from sqlalchemy.orm import Session
 
 
@@ -40,7 +43,8 @@ async def sync_and_save_team(db: Session, team_id: int):
 
     stadium_id = venue_raw.get("id")
     if stadium_id:
-        ensure_stadium_exists(db, stadium_id, venue_raw)
+        stadium_payload = map_stadium_api_data_to_payload(venue_raw)
+        ensure_stadium_exists(db, stadium_id, stadium_payload)
 
     team_create_schema = map_team_api_data_to_schema(
         team_raw=team_raw, venue_raw=venue_raw, team_id=team_id
