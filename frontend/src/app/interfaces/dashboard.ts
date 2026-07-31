@@ -16,7 +16,7 @@ export interface Player {
   name: string;
   position?: string | null;
   age?: number | null;
-  salary?: number | null;
+  photo?: string | null;
 }
 
 export interface PlayerSeasonStats {
