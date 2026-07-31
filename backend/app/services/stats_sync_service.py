@@ -1,8 +1,14 @@
 from app import schemas
 from app.crud import player_season_stats_crud, team_season_stats_crud
 from app.services.football_api_client import fetch_from_api
-from app.services.league_service import ensure_league_exists
-from app.services.player_service import ensure_player_exists
+from app.services.league_service import (
+    ensure_league_exists,
+    map_league_api_data_to_payload,
+)
+from app.services.player_service import (
+    ensure_player_exists,
+    map_player_api_data_to_payload,
+)
 from app.services.season_service import ensure_season_exists
 from app.services.team_service import ensure_team_exists
 
@@ -30,8 +36,9 @@ async def sync_and_save_season_stats(db: Session, player_id: int, season_id: int
 
     player_raw = data["response"][0].get("player", {})
     stats_block = data["response"][0].get("statistics", [])[0]
+    player_payload = map_player_api_data_to_payload(player_raw, stats_block)
 
-    ensure_player_exists(db, player_id, player_raw, stats_block)
+    ensure_player_exists(db, player_id, player_payload)
     ensure_season_exists(db, season_id)
 
     schema_data = map_api_data_to_schema(stats_block, player_id, season_id)
@@ -75,7 +82,9 @@ async def sync_and_save_team_stats(
     league_raw = response.get("league", {})
     team_raw = response.get("team", {})
 
-    ensure_league_exists(db, league_id, league_raw)
+    league_payload = map_league_api_data_to_payload(league_raw)
+    league_payload["id"] = league_id
+    ensure_league_exists(db, league_id, league_payload)
     ensure_season_exists(db, season_id)
 
     team_create_schema = map_team_api_data_to_schema(
