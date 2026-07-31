@@ -15,7 +15,6 @@
             <span>Team</span>
             <select [ngModel]="selectedTeamId()" (ngModelChange)="onTeamChange($event)">
                 <option [ngValue]="null">-- choose --</option>
-                <!-- teams() avec des parenthèses si tu l'as transformé en signal -->
                 @for (t of teams(); track t.id) {
                     <option [ngValue]="t.id">{{ t.name }}{{ t.city ? ' — ' + t.city : '' }}</option>
                 }
@@ -26,7 +25,6 @@
             <span>Season</span>
             <select [ngModel]="selectedSeasonId()" (ngModelChange)="onSeasonChange($event)">
                 <option [ngValue]="null">-- choose --</option>
-                <!-- seasons() avec des parenthèses si tu l'as transformé en signal -->
                 @for(season of seasons(); track season.id) {
                     <option [ngValue]="season.id">{{ season.id }}</option>
                 }
@@ -70,11 +68,9 @@
     </section>
 
     <section class="results">
-        <!-- Appel du signal selectedEntity() -->
         @if (selectedEntity() === 'players') {
             <h2>Player Stats</h2>
             <ul>
-                <!-- Appel du signal playerStats() -->
                 @for (entry of playerStats(); track entry.player.id) {
                     <li>
                         @if(entry.player.photo) {
