@@ -1,9 +1,16 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { catchError, forkJoin, map, of, switchMap } from 'rxjs';
+import { catchError, forkJoin, of } from 'rxjs';
 import { DashboardService } from '../../services/dashboard.service';
-import type { Team, Season, Player, PlayerWithSeasonStats } from '../../interfaces/dashboard';
+import type {
+  Team,
+  Season,
+  Player,
+  PlayerSeasonStats,
+  PlayerWithSeasonStats,
+} from '../../interfaces/dashboard';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-dashboard',
@@ -19,60 +26,147 @@ export class Dashboard {
     { label: 'Players', value: 'players' },
   ];
 
-  protected selectedEntity = 'teams';
+  protected selectedEntity = signal('teams');
 
-  protected teams: Team[] = [];
-  protected seasons: Season[] = [];
+  protected teams = toSignal(this.svc.getTeams(), { initialValue: [] as Team[] });
+  protected seasons = toSignal(this.svc.getSeasons(), { initialValue: [] as Season[] });
 
-  protected selectedTeamId: number | null = null;
-  protected selectedSeasonId: number | null = null;
+  protected selectedTeamId = signal<number | null>(null);
+  protected selectedSeasonId = signal<number | null>(null);
+  protected selectedPlayerId = signal<number | null>(null);
+  protected availablePlayers = signal<Player[]>([]);
+  protected playerSearchName = signal('');
 
-  protected playerStats: PlayerWithSeasonStats[] = [];
+  protected playerStats = signal<PlayerWithSeasonStats[]>([]);
 
-  constructor() {
-    this.loadInitialData();
+  protected onTeamChange(teamId: number | string | null): void {
+    this.selectedTeamId.set(this.toNumberOrNull(teamId));
+    this.loadAvailablePlayers();
   }
 
-  private loadInitialData(): void {
-    this.svc.getTeams().subscribe((res: Team[]) => (this.teams = res || []));
-    this.svc.getSeasons().subscribe((res: Season[]) => (this.seasons = res || []));
+  protected onSeasonChange(seasonId: number | string | null): void {
+    this.selectedSeasonId.set(this.toNumberOrNull(seasonId));
+    this.loadAvailablePlayers();
   }
 
-  protected onFetchPlayers(): void {
-      if (!this.selectedTeamId || !this.selectedSeasonId) return;
+  protected onPlayerChange(playerId: number | string | null): void {
+    this.selectedPlayerId.set(this.toNumberOrNull(playerId));
+  }
 
-      this.selectedEntity = 'players';
-
-      this.svc
-        .getTeamPlayersForSeason(this.selectedTeamId, this.selectedSeasonId)
-        .pipe(
-          switchMap((players: Player[]) =>
-            players.length
-              ? forkJoin(
-                  players.map((player) =>
-                    this.svc.getPlayerSeasonStats(player.id, this.selectedSeasonId as number).pipe(
-                      catchError(() => {
-                        console.warn(`Stats introuvables pour le joueur ${player.id}, valeur par défaut appliquée.`);
-                        return of({
-                          id: -1,
-                          player_id: player.id,
-                          season_id: this.selectedSeasonId as number,
-                          total_goals: null,
-                          total_assists: null,
-                          total_minutes: null,
-                          avg_rating: null
-                        });
-                      })
-                    ),
-                  ),
-                ).pipe(
-                  map((stats) =>
-                    players.map((player, index) => ({ player, stats: stats[index] })),
-                  ),
-                )
-              : of([]),
-          ),
-        )
-        .subscribe((res) => (this.playerStats = res || []));
+  protected onSearchPlayers(): void {
+    const searchTerm = this.playerSearchName().trim();
+    if (!searchTerm) {
+      this.loadAvailablePlayers();
+      return;
     }
+
+    this.selectedEntity.set('players');
+    this.playerStats.set([]);
+
+    this.svc
+      .searchPlayersByName(searchTerm)
+      .pipe(
+        catchError(() => {
+          console.warn(`Impossible de rechercher le joueur "${searchTerm}".`);
+          return of([] as Player[]);
+        }),
+      )
+      .subscribe((players) => {
+        this.availablePlayers.set(players);
+        this.playerStats.set(
+          players.map((player) => ({
+            player,
+            stats: {
+              id: -1,
+              player_id: player.id,
+              season_id: this.selectedSeasonId() ?? -1,
+              total_goals: null,
+              total_assists: null,
+              total_minutes: null,
+              avg_rating: null,
+            } as PlayerSeasonStats,
+          })),
+        );
+        this.selectedPlayerId.set(players.length ? players[0].id : null);
+      });
+  }
+
+  private toNumberOrNull(value: number | string | null): number | null {
+    if (value === null || value === '') return null;
+    const parsed = Number(value);
+    return Number.isFinite(parsed) ? parsed : null;
+  }
+
+  private loadAvailablePlayers(): void {
+    const teamId = this.selectedTeamId();
+    const seasonId = this.selectedSeasonId();
+
+    this.playerStats.set([]);
+
+    if (!teamId || !seasonId) {
+      this.availablePlayers.set([]);
+      this.selectedPlayerId.set(null);
+      return;
+    }
+
+    this.svc
+      .getTeamPlayersForSeason(teamId, seasonId)
+      .pipe(
+        catchError(() => {
+          console.warn('Impossible de charger la liste des joueurs pour cette equipe/saison.');
+          return of([] as Player[]);
+        }),
+      )
+      .subscribe((players) => {
+        this.availablePlayers.set(players);
+
+        const selectedPlayerId = this.selectedPlayerId();
+        const selectedStillAvailable =
+          selectedPlayerId !== null && players.some((player) => player.id === selectedPlayerId);
+
+        if (!selectedStillAvailable) {
+          this.selectedPlayerId.set(players.length ? players[0].id : null);
+        }
+      });
+  }
+
+  protected onFetchPlayerStats(): void {
+    const seasonId = this.selectedSeasonId();
+    const playerId = this.selectedPlayerId();
+
+    if (!seasonId || !playerId) return;
+
+    this.selectedEntity.set('players');
+
+    forkJoin({
+      player: this.svc.getPlayerById(playerId),
+      stats: this.svc.getPlayerSeasonStats(playerId, seasonId),
+    })
+      .pipe(
+        catchError(() => {
+          console.warn(`Impossible de charger joueur/stats pour player=${playerId}, season=${seasonId}.`);
+          return of({
+            player: {
+              id: playerId,
+              name: `Player #${playerId}`,
+              position: null,
+              age: null,
+              photo: null,
+            } as Player,
+            stats: {
+              id: -1,
+              player_id: playerId,
+              season_id: seasonId,
+              total_goals: null,
+              total_assists: null,
+              total_minutes: null,
+              avg_rating: null,
+            },
+          });
+        }),
+      )
+      .subscribe(({ player, stats }) => {
+        this.playerStats.set([{ player, stats }]);
+      });
+  }
 }
