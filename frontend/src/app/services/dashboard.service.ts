@@ -22,6 +22,18 @@ export class DashboardService {
     return this.http.get<Player[]>(`${this.apiUrl}/teams/${teamId}/seasons/${seasonId}/players`);
   }
 
+  getPlayerById(playerId: number): Observable<Player> {
+    return this.http.get<Player>(`${this.apiUrl}/players/${playerId}`);
+  }
+
+  searchPlayersByName(
+    name: string,
+  ): Observable<Player[]> {
+    const params = new URLSearchParams({ name });
+
+    return this.http.get<Player[]>(`${this.apiUrl}/players/search?${params.toString()}`);
+  }
+
   getPlayerSeasonStats(playerId: number, seasonId: number): Observable<PlayerSeasonStats> {
     return this.http.get<PlayerSeasonStats>(`${this.apiUrl}/stats/player/${playerId}/season/${seasonId}`);
   }
