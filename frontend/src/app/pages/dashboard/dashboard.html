@@ -1,45 +1,87 @@
 <main class="dashboard-shell">
-	<h1>Dashboard</h1>
+    <h1>Dashboard</h1>
 
-	<section class="controls">
-		<label>
-			<span>Entity</span>
-			<select [(ngModel)]="selectedEntity">
+    <section class="controls">
+        <label>
+            <span>Entity</span>
+            <select [ngModel]="selectedEntity()" (ngModelChange)="selectedEntity.set($event)">
                 @for (entitie of entities; track entitie.value) {
                     <option [value]="entitie.value">{{ entitie.label }}</option>
                 }
-			</select>
-		</label>
+            </select>
+        </label>
 
-		<label>
-			<span>Team</span>
-			<select [(ngModel)]="selectedTeamId">
-				<option [ngValue]="null">-- choose --</option>
-				@for (t of teams; track t.id) {
-					<option [ngValue]="t.id">{{ t.name }}{{ t.city ? ' — ' + t.city : '' }}</option>
-				}
-			</select>
-		</label>
+        <label>
+            <span>Team</span>
+            <select [ngModel]="selectedTeamId()" (ngModelChange)="onTeamChange($event)">
+                <option [ngValue]="null">-- choose --</option>
+                <!-- teams() avec des parenthèses si tu l'as transformé en signal -->
+                @for (t of teams(); track t.id) {
+                    <option [ngValue]="t.id">{{ t.name }}{{ t.city ? ' — ' + t.city : '' }}</option>
+                }
+            </select>
+        </label>
 
-		<label>
-			<span>Season</span>
-			<select [(ngModel)]="selectedSeasonId">
-				<option [ngValue]="null">-- choose --</option>
-                @for(season of seasons; track season.id) {
+        <label>
+            <span>Season</span>
+            <select [ngModel]="selectedSeasonId()" (ngModelChange)="onSeasonChange($event)">
+                <option [ngValue]="null">-- choose --</option>
+                <!-- seasons() avec des parenthèses si tu l'as transformé en signal -->
+                @for(season of seasons(); track season.id) {
                     <option [ngValue]="season.id">{{ season.id }}</option>
                 }
-			</select>
-		</label>
+            </select>
+        </label>
 
-		<button class="button" (click)="onFetchPlayers()">Fetch</button>
-	</section>
+        <label>
+            <span>Player</span>
+            <select [ngModel]="selectedPlayerId()" (ngModelChange)="onPlayerChange($event)">
+                <option [ngValue]="null">-- choose --</option>
+                @for(player of availablePlayers(); track player.id) {
+                    <option [ngValue]="player.id">#{{ player.id }} - {{ player.name }}</option>
+                }
+            </select>
+        </label>
 
-	<section class="results">
-        @if (selectedEntity === 'players') {
+        <label>
+            <span>Search player by name</span>
+            <input
+                type="text"
+                [ngModel]="playerSearchName()"
+                (ngModelChange)="playerSearchName.set($event)"
+                placeholder="ex: cavani"
+            />
+        </label>
+
+        <button class="button" (click)="onSearchPlayers()">Search player</button>
+
+        <label>
+            <span>Player ID (manual)</span>
+            <input
+                type="number"
+                min="1"
+                [ngModel]="selectedPlayerId()"
+                (ngModelChange)="onPlayerChange($event)"
+                placeholder="ex: 278"
+            />
+        </label>
+
+        <button class="button" (click)="onFetchPlayerStats()">Fetch</button>
+    </section>
+
+    <section class="results">
+        <!-- Appel du signal selectedEntity() -->
+        @if (selectedEntity() === 'players') {
             <h2>Player Stats</h2>
             <ul>
-                @for (entry of playerStats; track entry.player.id) {
+                <!-- Appel du signal playerStats() -->
+                @for (entry of playerStats(); track entry.player.id) {
                     <li>
+                        @if(entry.player.photo) {
+                            <img [src]="entry.player.photo" alt="{{ entry.player.name }} photo" class="player-photo" />
+                        } @else {
+                            <div class="player-photo-placeholder"></div>
+                        }
                         <strong>{{ entry.player.name }}</strong>
                         <span> — {{ entry.player.position }}</span>
                         <span> — {{ entry.player.age }} yrs</span>
@@ -49,10 +91,11 @@
                     </li>
                 }
             </ul>
-        } @else if (selectedEntity === 'teams') {
+        } @else if (selectedEntity() === 'teams') {
             <h2>Teams</h2>
             <ul>
-                @for (t of teams; track t.id) {
+                <!-- Appel du signal teams() -->
+                @for (t of teams(); track t.id) {
                     <li class="team-item">
                         @if (t.logo) {
                             <img [src]="t.logo" alt="{{ t.name }} logo" class="team-logo" />
@@ -69,5 +112,5 @@
                 }
             </ul>
         }
-	</section>
+    </section>
 </main>
