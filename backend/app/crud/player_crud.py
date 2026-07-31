@@ -1,3 +1,4 @@
+from sqlalchemy import func
 from sqlalchemy.orm import Session
 
 from app import models, schemas
@@ -14,6 +15,22 @@ def get_player(db: Session, id: int):
 
 def get_players(db: Session, skip: int = 0, limit: int = 100):
     return player_crud.get_multi(db, skip=skip, limit=limit)
+
+
+def get_players_by_name(db: Session, name: str, limit: int = 20):
+    search_term = name.strip()
+    if not search_term:
+        return []
+
+    normalized_search = f"%{search_term.lower()}%"
+
+    return (
+        db.query(models.Player)
+        .filter(func.lower(models.Player.name).like(normalized_search))
+        .order_by(models.Player.name.asc())
+        .limit(limit)
+        .all()
+    )
 
 
 def get_players_by_team_and_season(db: Session, team_id: int, season_id: int):
