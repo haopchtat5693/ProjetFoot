@@ -1,8 +1,9 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 
 from app import crud, schemas
 from app.database import get_db
+from app.services.player_service import search_players_by_name
 
 router = APIRouter(prefix="/players", tags=["Players"])
 
@@ -10,6 +11,17 @@ router = APIRouter(prefix="/players", tags=["Players"])
 @router.post("/", response_model=schemas.Player)
 def create_player(player: schemas.PlayerCreate, db: Session = Depends(get_db)):
     return crud.player_crud.create_player(db, player)
+
+
+@router.get("/search", response_model=list[schemas.Player])
+async def search_players(
+    name: str = Query(..., min_length=1),
+    db: Session = Depends(get_db),
+):
+    return await search_players_by_name(
+        db,
+        name=name,
+    )
 
 
 @router.get("/{player_id}", response_model=schemas.Player)
