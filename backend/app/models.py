@@ -54,9 +54,9 @@ class Player(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, index=True)
-    position = Column(String)
-    age = Column(Integer, index=True)
-    salary = Column(Integer)
+    position = Column(String, index=True)
+    age = Column(Integer,nullable=True, index=True)
+    photo = Column(String, nullable=True, index=True)
 
     match_stats = relationship("PlayerMatchStats", back_populates="player")
     season_stats = relationship("PlayerSeasonStats", back_populates="player")
