@@ -8,8 +8,8 @@ from typing import Optional
 class PlayerBase(BaseModel):
     name: str
     position: str
-    age: int
-    salary: Optional[int] = None
+    age: Optional[int] = None
+    photo: Optional[str] = None
 
 
 class PlayerCreate(PlayerBase):
@@ -20,7 +20,7 @@ class PlayerUpdate(PlayerBase):
     name: Optional[str] = None
     position: Optional[str] = None
     age: Optional[int] = None
-    salary: Optional[int] = None
+    photo: Optional[str] = None
 
     model_config = ConfigDict(from_attributes=True)
 
