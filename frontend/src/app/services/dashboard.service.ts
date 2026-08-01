@@ -14,6 +14,12 @@ export class DashboardService {
     return this.http.get<Team[]>(`${this.apiUrl}/teams`);
   }
 
+  searchTeamsByName(name: string): Observable<Team[]> {
+    const params = new URLSearchParams({ name });
+
+    return this.http.get<Team[]>(`${this.apiUrl}/teams/search?${params.toString()}`);
+  }
+
   getSeasons(): Observable<Season[]> {
     return this.http.get<Season[]>(`${this.apiUrl}/seasons`);
   }
