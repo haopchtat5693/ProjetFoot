@@ -22,6 +22,18 @@
         </label>
 
         <label>
+            <span>Search team by name</span>
+            <input
+                type="text"
+                [ngModel]="teamSearchName()"
+                (ngModelChange)="teamSearchName.set($event)"
+                placeholder="ex: manchester united"
+            />
+        </label>
+
+        <button class="button" (click)="onSearchTeams()">Search team</button>
+
+        <label>
             <span>Season</span>
             <select [ngModel]="selectedSeasonId()" (ngModelChange)="onSeasonChange($event)">
                 <option [ngValue]="null">-- choose --</option>
@@ -90,8 +102,7 @@
         } @else if (selectedEntity() === 'teams') {
             <h2>Teams</h2>
             <ul>
-                <!-- Appel du signal teams() -->
-                @for (t of teams(); track t.id) {
+                @for (t of (displayedTeams().length ? displayedTeams() : teams()); track t.id) {
                     <li class="team-item">
                         @if (t.logo) {
                             <img [src]="t.logo" alt="{{ t.name }} logo" class="team-logo" />
