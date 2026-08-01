@@ -31,11 +31,13 @@ export class Dashboard {
   protected teams = toSignal(this.svc.getTeams(), { initialValue: [] as Team[] });
   protected seasons = toSignal(this.svc.getSeasons(), { initialValue: [] as Season[] });
 
+  protected displayedTeams = signal<Team[]>([]);
   protected selectedTeamId = signal<number | null>(null);
   protected selectedSeasonId = signal<number | null>(null);
   protected selectedPlayerId = signal<number | null>(null);
   protected availablePlayers = signal<Player[]>([]);
   protected playerSearchName = signal('');
+  protected teamSearchName = signal('');
 
   protected playerStats = signal<PlayerWithSeasonStats[]>([]);
 
@@ -51,6 +53,33 @@ export class Dashboard {
 
   protected onPlayerChange(playerId: number | string | null): void {
     this.selectedPlayerId.set(this.toNumberOrNull(playerId));
+  }
+
+  protected onSearchTeams(): void {
+    const searchTerm = this.teamSearchName().trim();
+    if (!searchTerm) {
+      this.displayedTeams.set([]);
+      return;
+    }
+
+    this.selectedEntity.set('teams');
+
+    this.svc
+      .searchTeamsByName(searchTerm)
+      .pipe(
+        catchError(() => {
+          console.warn(`Impossible de rechercher l'equipe "${searchTerm}".`);
+          return of([] as Team[]);
+        }),
+      )
+      .subscribe((teams) => {
+        this.displayedTeams.set(teams);
+        this.selectedTeamId.set(teams.length ? teams[0].id : null);
+
+        if (teams.length) {
+          this.loadAvailablePlayers();
+        }
+      });
   }
 
   protected onSearchPlayers(): void {
