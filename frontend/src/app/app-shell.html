@@ -1,0 +1,17 @@
+<div class="app-shell">
+  <header class="topbar">
+    <a class="brand" routerLink="/">ProjetFoot</a>
+
+    <nav class="nav-links" aria-label="Main navigation">
+      <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Accueil</a>
+      <a routerLink="/teams" routerLinkActive="active">Teams</a>
+      <a routerLink="/players" routerLinkActive="active">Players</a>
+      <a routerLink="/stadiums" routerLinkActive="active">Stadiums</a>
+      <a routerLink="/stats" routerLinkActive="active">Stats</a>
+    </nav>
+  </header>
+
+  <main class="page-content">
+    <router-outlet></router-outlet>
+  </main>
+</div>
