@@ -1,18 +1,13 @@
 from app import schemas
 from app.crud import player_season_stats_crud, team_season_stats_crud
 from app.services.football_api_client import fetch_from_api
-from app.services.league_service import (
-    ensure_league_exists,
-    map_league_api_data_to_payload,
-)
+from app.services.league_service import ensure_league_exists, map_league_api_data_to_payload
 from app.services.player_service import (
     ensure_player_exists,
     map_player_api_data_to_payload,
 )
 from app.services.season_service import ensure_season_exists
-from app.services.team_service import ensure_team_exists
-
-from app.services.team_sync_service import map_team_api_data_to_schema
+from app.services.team_service import ensure_team_exists, map_team_api_data_to_payload
 from sqlalchemy.orm import Session
 
 
@@ -87,8 +82,8 @@ async def sync_and_save_team_stats(
     ensure_league_exists(db, league_id, league_payload)
     ensure_season_exists(db, season_id)
 
-    team_create_schema = map_team_api_data_to_schema(
-        team_raw=team_raw, venue_raw=None, team_id=team_id
+    team_create_schema = schemas.TeamCreate(
+        **map_team_api_data_to_payload(team_raw, None, team_id)
     )
     ensure_team_exists(db, team_create_schema)
 
