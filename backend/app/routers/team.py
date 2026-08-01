@@ -1,6 +1,7 @@
 from app.services.team_players_sync_service import sync_and_get_team_players_for_season
+from app.services.team_service import search_teams_by_name
 from app.services.team_sync_service import sync_and_save_team
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.orm import Session
 
 from app import crud, schemas
@@ -12,6 +13,14 @@ router = APIRouter(prefix="/teams", tags=["Teams"])
 @router.post("/", response_model=schemas.Team)
 def create_team(team: schemas.TeamCreate, db: Session = Depends(get_db)):
     return crud.team_crud.create_team(db, team)
+
+
+@router.get("/search", response_model=list[schemas.Team])
+async def search_teams(
+    name: str = Query(..., min_length=1),
+    db: Session = Depends(get_db),
+):
+    return await search_teams_by_name(db, name=name)
 
 
 @router.get("/{team_id}", response_model=schemas.Team)
