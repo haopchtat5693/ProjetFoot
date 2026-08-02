@@ -21,17 +21,10 @@ import { toSignal } from '@angular/core/rxjs-interop';
 export class Dashboard {
   private readonly svc = inject(DashboardService);
 
-  protected entities = [
-    { label: 'Teams', value: 'teams' },
-    { label: 'Players', value: 'players' },
-  ];
-
-  protected selectedEntity = signal('teams');
-
   protected teams = toSignal(this.svc.getTeams(), { initialValue: [] as Team[] });
   protected seasons = toSignal(this.svc.getSeasons(), { initialValue: [] as Season[] });
 
-  protected displayedTeams = signal<Team[]>([]);
+  protected teamResults = signal<Team[]>([]);
   protected selectedTeamId = signal<number | null>(null);
   protected selectedSeasonId = signal<number | null>(null);
   protected selectedPlayerId = signal<number | null>(null);
@@ -40,6 +33,61 @@ export class Dashboard {
   protected teamSearchName = signal('');
 
   protected playerStats = signal<PlayerWithSeasonStats[]>([]);
+
+  protected onSearchTeams(): void {
+    const searchTerm = this.teamSearchName().trim();
+    if (!searchTerm) {
+      this.teamResults.set([]);
+      return;
+    }
+
+    this.svc
+      .searchTeamsByName(searchTerm)
+      .pipe(
+        catchError(() => {
+          console.warn(`Impossible de rechercher l'equipe "${searchTerm}".`);
+          return of([] as Team[]);
+        }),
+      )
+      .subscribe((teams) => {
+        this.teamResults.set(teams);
+        this.selectedTeamId.set(teams.length ? teams[0].id : null);
+
+        if (teams.length) {
+          this.loadAvailablePlayers();
+        }
+      });
+  }
+
+  protected onLoadTeamById(): void {
+    const teamId = this.selectedTeamId();
+
+    if (!teamId) {
+      this.teamResults.set([]);
+      this.availablePlayers.set([]);
+      return;
+    }
+
+    this.svc
+      .getTeamById(teamId)
+      .pipe(
+        catchError(() => {
+          console.warn(`Impossible de charger l'equipe ${teamId}.`);
+          return of(null as Team | null);
+        }),
+      )
+      .subscribe((team) => {
+        if (!team) {
+          this.teamResults.set([]);
+          this.availablePlayers.set([]);
+          return;
+        }
+
+        this.teamResults.set([team]);
+        this.selectedTeamId.set(team.id);
+        this.loadAvailablePlayers();
+      });
+  }
 
   protected onTeamChange(teamId: number | string | null): void {
     this.selectedTeamId.set(this.toNumberOrNull(teamId));
@@ -55,33 +103,6 @@ export class Dashboard {
     this.selectedPlayerId.set(this.toNumberOrNull(playerId));
   }
 
-  protected onSearchTeams(): void {
-    const searchTerm = this.teamSearchName().trim();
-    if (!searchTerm) {
-      this.displayedTeams.set([]);
-      return;
-    }
-
-    this.selectedEntity.set('teams');
-
-    this.svc
-      .searchTeamsByName(searchTerm)
-      .pipe(
-        catchError(() => {
-          console.warn(`Impossible de rechercher l'equipe "${searchTerm}".`);
-          return of([] as Team[]);
-        }),
-      )
-      .subscribe((teams) => {
-        this.displayedTeams.set(teams);
-        this.selectedTeamId.set(teams.length ? teams[0].id : null);
-
-        if (teams.length) {
-          this.loadAvailablePlayers();
-        }
-      });
-  }
-
   protected onSearchPlayers(): void {
     const searchTerm = this.playerSearchName().trim();
     if (!searchTerm) {
@@ -89,7 +110,6 @@ export class Dashboard {
       return;
     }
 
-    this.selectedEntity.set('players');
     this.playerStats.set([]);
 
     this.svc
@@ -164,8 +184,6 @@ export class Dashboard {
     const playerId = this.selectedPlayerId();
 
     if (!seasonId || !playerId) return;
-
-    this.selectedEntity.set('players');
 
     forkJoin({
       player: this.svc.getPlayerById(playerId),

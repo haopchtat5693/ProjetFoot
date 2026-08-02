@@ -1,6 +1,7 @@
 export interface Team {
   id: number;
   name: string;
+  country?: string | null;
   city?: string | null;
   logo?: string | null;
   coach_id?: number | null;
@@ -14,6 +15,7 @@ export interface Season {
 export interface Player {
   id: number;
   name: string;
+  country?: string | null;
   position?: string | null;
   age?: number | null;
   photo?: string | null;
