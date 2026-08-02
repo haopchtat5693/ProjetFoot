@@ -10,6 +10,7 @@ def map_stadium_api_data_to_payload(stadium_raw: dict) -> dict:
         "city": stadium_raw.get("city") or "Unknown",
         "address": stadium_raw.get("address") or "Unknown",
         "capacity": stadium_raw.get("capacity") or 0,
+        "image": stadium_raw.get("image", "Unknown"),
     }
 
 
@@ -23,6 +24,7 @@ def ensure_stadium_exists(db: Session, stadium_id: int, stadium_data: dict):
     stadium.city = stadium_data["city"]
     stadium.address = stadium_data["address"]
     stadium.capacity = stadium_data["capacity"]
+    stadium.image = stadium_data["image"]
     db.commit()
     db.refresh(stadium)
 
