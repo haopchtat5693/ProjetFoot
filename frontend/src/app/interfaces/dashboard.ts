@@ -8,6 +8,30 @@ export interface Team {
   stadium_id?: number | null;
 }
 
+export interface Stadium {
+  id: number;
+  name: string;
+  city: string;
+  address: string;
+  capacity: number;
+  image?: string | null;
+}
+
+export interface League {
+  id: number;
+  name: string;
+  country: string;
+  league_type?: string | null;
+  seasons?: Season[];
+}
+
+export interface LeagueLookupQuery {
+  id?: number;
+  search?: string;
+  season?: number;
+  type?: string;
+}
+
 export interface Season {
   id: number;
 }
@@ -34,4 +58,17 @@ export interface PlayerSeasonStats {
 export interface PlayerWithSeasonStats {
   player: Player;
   stats: PlayerSeasonStats;
+}
+
+export interface TeamSeasonStats {
+  id: number;
+  team_id: number;
+  league_id: number;
+  season_id: number;
+  fixtures?: Record<string, unknown> | null;
+  goals?: Record<string, unknown> | null;
+  clean_sheet?: Record<string, unknown> | null;
+  failed_to_score?: Record<string, unknown> | null;
+  penalty?: Record<string, unknown> | null;
+  cards?: Record<string, unknown> | null;
 }
