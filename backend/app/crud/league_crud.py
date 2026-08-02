@@ -12,6 +12,10 @@ def get_league(db: Session, league_id: int):
     return league_crud.get(db, league_id)
 
 
+def get_league_by_name(db: Session, name: str):
+    return db.query(models.League).filter(models.League.name == name).first()
+
+
 def get_leagues(db: Session, skip: int = 0, limit: int = 100):
     return league_crud.get_multi(db, skip=skip, limit=limit)
 
