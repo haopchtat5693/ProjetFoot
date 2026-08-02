@@ -78,7 +78,6 @@ async def sync_and_save_team_stats(
     team_raw = response.get("team", {})
 
     league_payload = map_league_api_data_to_payload(league_raw)
-    league_payload["id"] = league_id
     ensure_league_exists(db, league_id, league_payload)
     ensure_season_exists(db, season_id)
 
