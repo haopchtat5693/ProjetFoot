@@ -1,11 +1,48 @@
-import { Component } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { DashboardService } from '../../services/dashboard.service';
+import type { Team } from '../../interfaces/dashboard';
 
 @Component({
   selector: 'app-teams',
-  imports: [],
+  imports: [CommonModule, FormsModule],
   templateUrl: './teams.html',
   styleUrl: './teams.scss',
 })
 export class Teams {
+  private readonly svc = inject(DashboardService);
+
+  protected teams = toSignal(this.svc.getTeams(), { initialValue: [] as Team[] });
+  protected searchQuery = signal('');
+  protected countryFilter = signal('all');
+
+  protected countryOptions = computed(() => {
+    const countries = this.teams()
+      .map((team) => team.country?.trim())
+      .filter((country): country is string => !!country);
+
+    return ['all', ...Array.from(new Set(countries)).sort((a, b) => a.localeCompare(b))];
+  });
+
+  protected filteredTeams = computed(() => {
+    const searchTerm = this.searchQuery().trim().toLowerCase();
+    const country = this.countryFilter();
+
+    return this.teams()
+      .filter((team) => {
+        const matchesSearch =
+          !searchTerm ||
+          [team.name, team.city, team.country, String(team.id)].some(
+            (value) => value?.toLowerCase().includes(searchTerm),
+          );
+
+        const matchesCountry = country === 'all' || team.country === country;
+
+        return matchesSearch && matchesCountry;
+      })
+      .sort((left, right) => left.name.localeCompare(right.name));
+  });
 
 }
