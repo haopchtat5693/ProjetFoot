@@ -1,9 +1,78 @@
-<section class="feature-card">
-  <p class="eyebrow">Players</p>
-  <h1>Explore and manage player data.</h1>
-  <p>
-    This section is ready for player-focused workflows. For now, you can use the dashboard to fetch
-    and inspect player season stats.
-  </p>
-  <a href="/dashboard" class="cta">Open dashboard</a>
+<section class="catalog-shell">
+  <header class="catalog-hero">
+    <div>
+      <p class="eyebrow">Players catalogue</p>
+      <h1>Browse players by name, position, country, and ID.</h1>
+      <p>
+        Use the catalogue when you want to filter the whole roster instead of searching one player at a time.
+      </p>
+    </div>
+    <div class="catalog-badge">
+      <strong>{{ filteredPlayers().length }}</strong>
+      <span>visible players</span>
+    </div>
+  </header>
+
+  <section class="filters">
+    <label>
+      <span>Search</span>
+      <input
+        type="text"
+        [ngModel]="searchQuery()"
+        (ngModelChange)="searchQuery.set($event)"
+        placeholder="Name, country, position, or ID"
+      />
+    </label>
+
+    <label>
+      <span>Position</span>
+      <select [ngModel]="positionFilter()" (ngModelChange)="positionFilter.set($event)">
+        @for (position of positionOptions(); track position) {
+          <option [value]="position">{{ position === 'all' ? 'All positions' : position }}</option>
+        }
+      </select>
+    </label>
+
+    <label>
+      <span>Country</span>
+      <select [ngModel]="countryFilter()" (ngModelChange)="countryFilter.set($event)">
+        @for (country of countryOptions(); track country) {
+          <option [value]="country">{{ country === 'all' ? 'All countries' : country }}</option>
+        }
+      </select>
+    </label>
+  </section>
+
+  <section class="catalog-grid">
+    @for (player of filteredPlayers(); track player.id) {
+      <article class="catalog-card">
+        <div class="card-media">
+          @if (player.photo) {
+            <img [src]="player.photo" [alt]="player.name + ' photo'" />
+          } @else {
+            <div class="avatar-placeholder">{{ player.name.charAt(0) }}</div>
+          }
+        </div>
+
+        <div class="card-content">
+          <div class="card-meta">
+            <span>#{{ player.id }}</span>
+            @if (player.country) {
+              <span>{{ player.country }}</span>
+            }
+            @if (player.position) {
+              <span>{{ player.position }}</span>
+            }
+          </div>
+          <h2>{{ player.name }}</h2>
+          <p>@if (player.age) { {{ player.age }} years old }</p>
+        </div>
+      </article>
+    } @empty {
+      <div class="empty-state">
+        <h2>No player found</h2>
+        <p>Try another position, country, or search term.</p>
+      </div>
+    }
+  </section>
 </section>
