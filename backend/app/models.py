@@ -31,6 +31,7 @@ class Team(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, index=True)
+    country = Column(String, nullable=True, index=True)
     city = Column(String)
     logo = Column(String, nullable=True)
 
@@ -54,6 +55,7 @@ class Player(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, index=True)
+    nationality = Column(String, nullable=True, index=True)
     position = Column(String, index=True)
     age = Column(Integer,nullable=True, index=True)
     photo = Column(String, nullable=True, index=True)
