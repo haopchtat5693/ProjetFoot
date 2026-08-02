@@ -1,159 +1,153 @@
 <main class="dashboard-shell">
-    <header class="dashboard-header">
+  <header class="dashboard-header">
+    <div>
+      <p class="eyebrow">Dashboard</p>
+      <h1>Team stats, league context, and season rosters</h1>
+      <p class="lead">
+        Search a team, then pick a league and season to inspect its stats and see the full squad for that season.
+      </p>
+    </div>
+  </header>
+
+  <section class="controls">
+    <app-team-league-lookup-card
+      [teamSearchName]="teamSearchName()"
+      [teamResults]="teamResults()"
+      [selectedTeamId]="selectedTeamId()"
+      [leagueSearchName]="leagueSearchName()"
+      [leagueResults]="leagueResults()"
+      [selectedLeagueId]="selectedLeagueId()"
+      [availableSeasons]="availableSeasons()"
+      [selectedSeasonId]="selectedSeasonId()"
+      [selectedTeamName]="selectedTeam()?.name || null"
+      [selectedLeagueName]="selectedLeague()?.name || null"
+      [selectedCountry]="selectedLeague()?.country || null"
+      [selectedLeagueType]="selectedLeague()?.league_type || null"
+      (teamSearchNameChange)="teamSearchName.set($event)"
+      (searchTeams)="onSearchTeams()"
+      (teamSelected)="onTeamChange($event)"
+      (leagueSearchNameChange)="leagueSearchName.set($event)"
+      (searchLeagues)="onSearchLeagues()"
+      (leagueSelected)="onLeagueChange($event)"
+      (seasonSelected)="onSeasonChange($event)"
+    />
+
+    <app-player-lookup-card
+      [playerSearchName]="playerSearchName()"
+      [playerResults]="playerResults()"
+      [selectedPlayerId]="selectedPlayerId()"
+      [playerSeasons]="seasons()"
+      [selectedPlayerSeasonId]="selectedPlayerSeasonId()"
+      (playerSearchNameChange)="playerSearchName.set($event)"
+      (searchPlayers)="onSearchPlayers()"
+      (playerSelected)="onPlayerChange($event)"
+      (playerSeasonSelected)="onPlayerSeasonChange($event)"
+      (fetchPlayerStats)="onFetchPlayerStats()"
+    />
+  </section>
+
+  @if (teamStats()) {
+    <section class="results results-wide">
+      <div class="results-header">
         <div>
-            <p class="eyebrow">Dashboard</p>
-            <h1>Quick lookup by name or ID</h1>
-            <p class="lead">
-                Use the dashboard for direct lookups. Teams and players have their own catalogue pages for filtering.
-            </p>
+          <p class="eyebrow">Team stats</p>
+          <h2>{{ selectedTeam()?.name || 'Selected team' }}</h2>
         </div>
-    </header>
+        <span class="context-chip">
+          {{ selectedLeague()?.name || 'No league' }} · {{ selectedSeason()?.id || 'No season' }}
+        </span>
+      </div>
 
-    <section class="controls">
-        <div class="control-card">
-            <h2>Team lookup</h2>
-
-            <label>
-                <span>Team name</span>
-                <input
-                    type="text"
-                    [ngModel]="teamSearchName()"
-                    (ngModelChange)="teamSearchName.set($event)"
-                    placeholder="ex: manchester united"
-                />
-            </label>
-
-            <button class="button" (click)="onSearchTeams()">Search by name</button>
-
-            <label>
-                <span>Team ID</span>
-                <input
-                    type="number"
-                    min="1"
-                    [ngModel]="selectedTeamId()"
-                    (ngModelChange)="onTeamChange($event)"
-                    placeholder="ex: 33"
-                />
-            </label>
-
-            <button class="button secondary" (click)="onLoadTeamById()">Load by ID</button>
-        </div>
-
-        <div class="control-card">
-            <h2>Player lookup</h2>
-
-            <label>
-                <span>Player name</span>
-                <input
-                    type="text"
-                    [ngModel]="playerSearchName()"
-                    (ngModelChange)="playerSearchName.set($event)"
-                    placeholder="ex: kvara"
-                />
-            </label>
-
-            <button class="button" (click)="onSearchPlayers()">Search by name</button>
-
-            <label>
-                <span>Player ID</span>
-                <input
-                    type="number"
-                    min="1"
-                    [ngModel]="selectedPlayerId()"
-                    (ngModelChange)="onPlayerChange($event)"
-                    placeholder="ex: 278"
-                />
-            </label>
-
-            <label>
-                <span>Season</span>
-                <select [ngModel]="selectedSeasonId()" (ngModelChange)="onSeasonChange($event)">
-                    <option [ngValue]="null">-- choose --</option>
-                    @for(season of seasons(); track season.id) {
-                        <option [ngValue]="season.id">{{ season.id }}</option>
-                    }
-                </select>
-            </label>
-
-            <button class="button secondary" (click)="onFetchPlayerStats()">Load stats</button>
-        </div>
+      <div class="stat-grid">
+        @for (block of [
+          { label: 'Fixtures', value: teamStats()?.fixtures },
+          { label: 'Goals', value: teamStats()?.goals },
+          { label: 'Clean sheets', value: teamStats()?.clean_sheet },
+          { label: 'Failed to score', value: teamStats()?.failed_to_score },
+          { label: 'Penalties', value: teamStats()?.penalty },
+          { label: 'Cards', value: teamStats()?.cards },
+        ]; track block.label) {
+          <article class="stat-card">
+            <h3>{{ block.label }}</h3>
+            @if (statEntries(block.value).length) {
+              <dl>
+                @for (entry of statEntries(block.value); track entry.key) {
+                  <div>
+                    <dt>{{ entry.key }}</dt>
+                    <dd>{{ entry.value }}</dd>
+                  </div>
+                }
+              </dl>
+            } @else {
+              <p class="empty-state">No data available.</p>
+            }
+          </article>
+        }
+      </div>
     </section>
-
-    <section class="results-grid">
-        @if (teamResults().length) {
-            <section class="results">
-                <h2>Teams</h2>
-                <ul>
-                    @for (t of teamResults(); track t.id) {
-                        <li class="team-item">
-                            @if (t.logo) {
-                                <img [src]="t.logo" alt="{{ t.name }} logo" class="team-logo" />
-                            } @else {
-                                <div class="team-logo-placeholder"></div>
-                            }
-                            <div class="team-meta">
-                                <strong>{{ t.name }}</strong>
-                                <span>#{{ t.id }}</span>
-                                @if (t.country) {
-                                    <span> — {{ t.country }}</span>
-                                }
-                                @if(t.city) {
-                                    <span> — {{ t.city }}</span>
-                                }
-                            </div>
-                        </li>
-                    }
-                </ul>
-            </section>
-        }
-
-        @if (availablePlayers().length) {
-            <section class="results">
-                <h2>Players</h2>
-                <ul>
-                    @for (player of availablePlayers(); track player.id) {
-                        <li>
-                            @if(player.photo) {
-                                <img [src]="player.photo" alt="{{ player.name }} photo" class="player-photo" />
-                            } @else {
-                                <div class="player-photo-placeholder"></div>
-                            }
-                            <strong>{{ player.name }}</strong>
-                            <span> — #{{ player.id }}</span>
-                            @if (player.country) {
-                                <span> — {{ player.country }}</span>
-                            }
-                            <span> — {{ player.position }}</span>
-                            @if (player.age) {
-                                <span> — {{ player.age }} yrs</span>
-                            }
-                        </li>
-                    }
-                </ul>
-            </section>
-        }
-
-        @if (playerStats().length) {
-            <section class="results">
-                <h2>Player Stats</h2>
-                <ul>
-                    @for (entry of playerStats(); track entry.player.id) {
-                        <li>
-                            @if(entry.player.photo) {
-                                <img [src]="entry.player.photo" alt="{{ entry.player.name }} photo" class="player-photo" />
-                            } @else {
-                                <div class="player-photo-placeholder"></div>
-                            }
-                            <strong>{{ entry.player.name }}</strong>
-                            <span> — {{ entry.player.position }}</span>
-                            <span> — {{ entry.player.age }} yrs</span>
-                            <span> — Goals: {{ entry.stats.total_goals }}</span>
-                            <span> — Assists: {{ entry.stats.total_assists }}</span>
-                            <span> — Minutes: {{ entry.stats.total_minutes }}</span>
-                        </li>
-                    }
-                </ul>
-            </section>
-        }
+  } @else if (selectedTeam() && selectedLeague() && selectedSeason()) {
+    <section class="results results-wide">
+      <p class="empty-state">No team statistics were returned for this combination.</p>
     </section>
+  }
+
+  @if (teamPlayers().length) {
+    <section class="results results-wide">
+      <div class="results-header compact">
+        <div>
+          <p class="eyebrow">Roster</p>
+          <h2>Players for the selected team and season</h2>
+        </div>
+        <span class="context-chip">{{ teamPlayers().length }} players</span>
+      </div>
+
+      <ul>
+        @for (player of teamPlayers(); track player.id) {
+          <li>
+            @if (player.photo) {
+              <img [src]="player.photo" [alt]="player.name + ' photo'" class="player-photo" />
+            } @else {
+              <div class="player-photo-placeholder"></div>
+            }
+
+            <strong>{{ player.name }}</strong>
+            <span> — #{{ player.id }}</span>
+            @if (player.country) {
+              <span> — {{ player.country }}</span>
+            }
+            @if (player.position) {
+              <span> — {{ player.position }}</span>
+            }
+            @if (player.age) {
+              <span> — {{ player.age }} yrs</span>
+            }
+          </li>
+        }
+      </ul>
+    </section>
+  }
+
+  @if (playerStats().length) {
+    <section class="results">
+      <h2>Player stats</h2>
+      <ul>
+        @for (entry of playerStats(); track entry.player.id) {
+          <li>
+            @if (entry.player.photo) {
+              <img [src]="entry.player.photo" [alt]="entry.player.name + ' photo'" class="player-photo" />
+            } @else {
+              <div class="player-photo-placeholder"></div>
+            }
+
+            <strong>{{ entry.player.name }}</strong>
+            <span> — {{ entry.player.position || 'Unknown position' }}</span>
+            <span> — {{ entry.player.age || '—' }} yrs</span>
+            <span> — Goals: {{ entry.stats.total_goals ?? '—' }}</span>
+            <span> — Assists: {{ entry.stats.total_assists ?? '—' }}</span>
+            <span> — Minutes: {{ entry.stats.total_minutes ?? '—' }}</span>
+          </li>
+        }
+      </ul>
+    </section>
+  }
 </main>
