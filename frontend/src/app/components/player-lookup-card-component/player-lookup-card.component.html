@@ -1,0 +1,48 @@
+<section class="control-card lookup-card">
+  <h2>Player lookup</h2>
+
+  <label>
+    <span>Player name</span>
+    <input
+      type="text"
+      [ngModel]="playerSearchName"
+      (ngModelChange)="playerSearchNameChange.emit($event)"
+      placeholder="ex: kvara"
+    />
+  </label>
+
+  <button class="button" type="button" (click)="searchPlayers.emit()">Search by name</button>
+
+  @if (playerResults.length) {
+    <label>
+      <span>Player</span>
+      <select [ngModel]="selectedPlayerId" (ngModelChange)="playerSelected.emit($event)">
+        <option [ngValue]="null">-- choose --</option>
+        @for (player of playerResults; track player.id) {
+          <option [ngValue]="player.id">{{ player.name }} (#{{ player.id }})</option>
+        }
+      </select>
+    </label>
+  }
+
+  <label>
+    <span>Player season</span>
+    <select [ngModel]="selectedPlayerSeasonId" (ngModelChange)="playerSeasonSelected.emit($event)">
+      <option [ngValue]="null">-- choose --</option>
+      @for (season of playerSeasons; track season.id) {
+        <option [ngValue]="season.id">{{ season.id }}</option>
+      }
+    </select>
+  </label>
+
+  <p class="helper-text">The player season is independent from the team season.</p>
+
+  <button
+    class="button secondary"
+    type="button"
+    [disabled]="selectedPlayerId === null || selectedPlayerSeasonId === null"
+    (click)="fetchPlayerStats.emit()"
+  >
+    Load player stats
+  </button>
+</section>
