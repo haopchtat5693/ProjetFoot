@@ -57,7 +57,7 @@ class Player(Base):
     name = Column(String, index=True)
     nationality = Column(String, nullable=True, index=True)
     position = Column(String, index=True)
-    age = Column(Integer,nullable=True, index=True)
+    age = Column(Integer, nullable=True, index=True)
     photo = Column(String, nullable=True, index=True)
 
     match_stats = relationship("PlayerMatchStats", back_populates="player")
@@ -84,6 +84,7 @@ class Stadium(Base):
     city = Column(String)
     address = Column(String)
     capacity = Column(Integer)
+    image = Column(String, nullable=True)
 
     teams = relationship("Team", back_populates="stadium")
 
@@ -103,10 +104,21 @@ class League(Base):
     __tablename__ = "leagues"
 
     id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, unique=True, index=True)
+    name = Column(String, index=True)
     country = Column(String)
+    league_type = Column(String)
 
     season_stats = relationship("TeamSeasonStats", back_populates="league")
+
+    @property
+    def seasons(self):
+        seasons = [
+            team_season_stat.season
+            for team_season_stat in self.season_stats
+            if team_season_stat.season
+        ]
+        unique_seasons = {season.id: season for season in seasons}
+        return [unique_seasons[season_id] for season_id in sorted(unique_seasons)]
 
 
 class User(Base):
