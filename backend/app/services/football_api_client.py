@@ -28,10 +28,7 @@ async def fetch_from_api(endpoint: str, params: dict = None):
     except httpx.HTTPStatusError as exc:
         raise HTTPException(
             status_code=status.HTTP_502_BAD_GATEWAY,
-            detail=(
-                "Erreur du service externe "
-                f"(status {exc.response.status_code})."
-            ),
+            detail=(f"Erreur du service externe (status {exc.response.status_code})."),
         )
     except httpx.RequestError:
         raise HTTPException(
