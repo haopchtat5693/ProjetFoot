@@ -1,10 +1,28 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 
 from app import crud, schemas
 from app.database import get_db
+from app.services.league_service import lookup_leagues as lookup_leagues_service
 
 router = APIRouter(prefix="/leagues", tags=["Leagues"])
+
+
+@router.get("/lookup")
+async def lookup_leagues_route(
+    db: Session = Depends(get_db),
+    league_id: int | None = Query(None, alias="id"),
+    search: str | None = None,
+    season: int | None = None,
+    league_type: str | None = Query(None, alias="type"),
+) -> list[schemas.League]:
+    return await lookup_leagues_service(
+        db=db,
+        league_id=league_id,
+        search=search,
+        season=season,
+        league_type=league_type,
+    )
 
 
 @router.post("/", response_model=schemas.League)
