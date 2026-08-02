@@ -7,6 +7,7 @@ class StadiumBase(BaseModel):
     city: str
     address: str
     capacity: int
+    image: Optional[str] = None
 
 
 class StadiumCreate(StadiumBase):
@@ -18,6 +19,7 @@ class StadiumUpdate(BaseModel):
     city: Optional[str] = None
     address: Optional[str] = None
     capacity: Optional[int] = None
+    image: Optional[str] = None
 
     model_config = ConfigDict(from_attributes=True)
 
