@@ -5,9 +5,11 @@ from app.services.football_api_client import fetch_from_api
 
 
 def map_player_api_data_to_payload(player_raw: dict, stats_block: dict | None = None):
+
     return {
         "id": player_raw.get("id"),
         "name": player_raw.get("name", "Unknown"),
+        "nationality": player_raw.get("nationality", "Unknown"),
         "position": (stats_block or {}).get("games", {}).get("position", "Attacker"),
         "age": player_raw.get("age") or 0,
         "photo": player_raw.get("photo", None),
@@ -20,6 +22,14 @@ def ensure_player_exists(db: Session, player_id: int, player_data: dict):
     if not player:
         print(f"Création automatique du joueur : {player_data.get('name')}")
         player = crud.player_crud.create_player(db, player_data)
+    else:
+        player.name = player_data.get("name", player.name)
+        player.nationality = player_data.get("nationality", player.nationality)
+        player.position = player_data.get("position", player.position)
+        player.age = player_data.get("age", player.age)
+        player.photo = player_data.get("photo", player.photo)
+        db.commit()
+        db.refresh(player)
 
     return player
 
@@ -27,7 +37,7 @@ def ensure_player_exists(db: Session, player_id: int, player_data: dict):
 async def search_players_by_name(
     db: Session,
     name: str,
-    limit: int = 20,
+    limit: int = 50,
 ):
     search_term = name.strip()
     if not search_term:
@@ -60,6 +70,7 @@ async def search_players_by_name(
 
         if player:
             player.name = payload["name"]
+            player.nationality = payload["nationality"]
             player.position = payload["position"]
             player.age = payload["age"]
             player.photo = payload["photo"]

@@ -6,6 +6,7 @@ from app.schemas.match import Match
 
 class TeamBase(BaseModel):
     name: str
+    country: Optional[str] = None
     city: str
     coach_id: Optional[int] = None
     stadium_id: Optional[int] = None
@@ -18,6 +19,7 @@ class TeamCreate(TeamBase):
 
 class TeamUpdate(BaseModel):
     name: Optional[str] = None
+    country: Optional[str] = None
     city: Optional[str] = None
     logo: Optional[str] = None
     coach_id: Optional[int] = None

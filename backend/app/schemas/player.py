@@ -7,6 +7,7 @@ from typing import Optional
 
 class PlayerBase(BaseModel):
     name: str
+    nationality: Optional[str] = None
     position: str
     age: Optional[int] = None
     photo: Optional[str] = None
@@ -18,6 +19,7 @@ class PlayerCreate(PlayerBase):
 
 class PlayerUpdate(PlayerBase):
     name: Optional[str] = None
+    nationality: Optional[str] = None
     position: Optional[str] = None
     age: Optional[int] = None
     photo: Optional[str] = None

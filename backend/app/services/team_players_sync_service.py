@@ -13,6 +13,7 @@ def map_player_api_data_to_payload(player_raw: dict, stats_block: dict) -> dict:
     return {
         "id": player_raw.get("id"),
         "name": player_raw.get("name", "Unknown"),
+        "nationality": player_raw.get("nationality", "Unknown"),
         "position": stats_block.get("games", {}).get("position", "Attacker"),
         "age": player_raw.get("age"),
         "photo": player_raw.get("photo", None),
