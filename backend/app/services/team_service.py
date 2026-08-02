@@ -17,11 +17,13 @@ def map_team_api_data_to_payload(
 ):
     stadium_id = venue_raw.get("id") if venue_raw else None
     city = (venue_raw.get("city") if venue_raw else None) or "Unknown"
+    country = (team_raw.get("country") if team_raw else None) 
     name = team_raw.get("name") or f"Team {team_id}"
 
     return {
         "id": team_id if team_id is not None else team_raw.get("id"),
         "name": name,
+        "country": country,
         "city": city,
         "logo": team_raw.get("logo", None),
         "coach_id": coach_id,
@@ -38,6 +40,7 @@ def ensure_team_exists(db: Session, team_data: schemas.TeamCreate):
             {
                 "id": team_data.id,
                 "name": team_data.name,
+                "country": team_data.country,
                 "city": team_data.city,
                 "logo": team_data.logo,
                 "coach_id": team_data.coach_id,
@@ -46,6 +49,7 @@ def ensure_team_exists(db: Session, team_data: schemas.TeamCreate):
         )
 
     team.name = team_data.name
+    team.country = team_data.country
     team.logo = team_data.logo
 
     if team_data.city and team_data.city != "Unknown":
