@@ -17,7 +17,7 @@ def map_team_api_data_to_payload(
 ):
     stadium_id = venue_raw.get("id") if venue_raw else None
     city = (venue_raw.get("city") if venue_raw else None) or "Unknown"
-    country = (team_raw.get("country") if team_raw else None) 
+    country = team_raw.get("country") if team_raw else None
     name = team_raw.get("name") or f"Team {team_id}"
 
     return {
