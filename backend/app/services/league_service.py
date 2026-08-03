@@ -36,6 +36,7 @@ async def lookup_leagues(
     league_id: int | None = None,
     search: str | None = None,
     season: int | None = None,
+    team_id: int | None = None,
     league_type: str | None = None,
 ) -> list[schemas.League]:
     params: dict[str, str | int | bool] = {}
@@ -46,6 +47,8 @@ async def lookup_leagues(
         params["search"] = search
     if season is not None:
         params["season"] = season
+    if team_id is not None:
+        params["team"] = team_id
     if league_type:
         params["type"] = league_type
 

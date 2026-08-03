@@ -14,6 +14,7 @@ async def lookup_leagues_route(
     league_id: int | None = Query(None, alias="id"),
     search: str | None = None,
     season: int | None = None,
+    team_id: int | None = Query(None, alias="team"),
     league_type: str | None = Query(None, alias="type"),
 ) -> list[schemas.League]:
     return await lookup_leagues_service(
@@ -21,6 +22,7 @@ async def lookup_leagues_route(
         league_id=league_id,
         search=search,
         season=season,
+        team_id=team_id,
         league_type=league_type,
     )
 

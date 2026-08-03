@@ -29,6 +29,7 @@ export interface LeagueLookupQuery {
   id?: number;
   search?: string;
   season?: number;
+  team?: number;
   type?: string;
 }
 

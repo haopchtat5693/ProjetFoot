@@ -89,13 +89,6 @@ export class Dashboard {
       )
       .subscribe((teams) => {
         this.teamResults.set(teams);
-        this.selectedTeamId.set(teams.length ? teams[0].id : null);
-
-        if (teams.length) {
-          this.loadLeaguesForSelection();
-        } else {
-          this.clearTeamSelections();
-        }
       });
   }
 
@@ -108,7 +101,7 @@ export class Dashboard {
       return;
     }
 
-    this.loadLeaguesForSelection();
+    this.loadLeaguesForSelection(parsedTeamId);
   }
 
   protected onLeagueChange(leagueId: number | string | null): void {
@@ -253,12 +246,17 @@ export class Dashboard {
   }
 
   protected onSearchLeagues(): void {
+    if (this.selectedTeamId() === null) {
+      return;
+    }
+
     const searchTerm = this.leagueSearchName().trim();
-    this.loadLeaguesForSelection(searchTerm || undefined);
+    this.loadLeaguesForSelection(this.selectedTeamId() ?? undefined, searchTerm || undefined);
   }
 
-  private loadLeaguesForSelection(search?: string): void {
+  private loadLeaguesForSelection(teamId?: number, search?: string): void {
     const query = {
+      team: teamId ?? this.selectedTeamId() ?? undefined,
       search: search ?? (this.leagueSearchName().trim() || undefined),
     };
 
