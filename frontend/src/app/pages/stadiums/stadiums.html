@@ -4,7 +4,7 @@
       <p class="eyebrow">Stadiums catalogue</p>
       <h1>Browse stadiums by name, city, and capacity.</h1>
       <p>
-        Use this page to explore all venues, filter them locally, and inspect the main details at a glance.
+        Use the catalogue when you want to filter the whole venue list instead of searching one stadium at a time.
       </p>
     </div>
     <div class="catalog-badge">
@@ -20,7 +20,7 @@
         type="text"
         [ngModel]="searchQuery()"
         (ngModelChange)="searchQuery.set($event)"
-        placeholder="Name, city, address, or capacity"
+        placeholder="Name, city, address, or ID"
       />
     </label>
 
@@ -36,7 +36,29 @@
 
   <section class="catalog-grid">
     @for (stadium of filteredStadiums(); track stadium.id) {
-      <app-stadium-card [stadium]="stadium" />
+      <a class="catalog-link" [routerLink]="['/stadiums', stadium.id]">
+        <article class="catalog-card">
+          <div class="card-media">
+            @if (stadium.image) {
+              <img [src]="stadium.image" [alt]="stadium.name + ' image'" />
+            } @else {
+              <div class="avatar-placeholder">{{ stadium.name.charAt(0) }}</div>
+            }
+          </div>
+
+          <div class="card-content">
+            <div class="card-meta">
+              <span>#{{ stadium.id }}</span>
+              <span>{{ stadium.capacity }} seats</span>
+              @if (stadium.city) {
+                <span>{{ stadium.city }}</span>
+              }
+            </div>
+            <h2>{{ stadium.name }}</h2>
+            <p>{{ stadium.address }}</p>
+          </div>
+        </article>
+      </a>
     } @empty {
       <div class="empty-state">
         <h2>No stadium found</h2>

@@ -1,23 +1,33 @@
-import { CommonModule } from '@angular/common';
 import { Component, computed, inject, signal } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { DashboardService } from '../../services/dashboard.service';
 import type { Stadium } from '../../interfaces/dashboard';
-import { StadiumCardComponent } from '../../components/stadium-card-component/stadium-card.component';
 
 @Component({
   selector: 'app-stadiums',
-  imports: [CommonModule, FormsModule, StadiumCardComponent],
+  imports: [CommonModule, FormsModule, RouterLink],
   templateUrl: './stadiums.html',
   styleUrl: './stadiums.scss',
 })
 export class Stadiums {
   private readonly svc = inject(DashboardService);
+  private readonly route = inject(ActivatedRoute);
 
   protected stadiums = toSignal(this.svc.getStadiums(), { initialValue: [] as Stadium[] });
   protected searchQuery = signal('');
   protected cityFilter = signal('all');
+  protected readonly queryParamMap = toSignal(this.route.queryParamMap, {
+    initialValue: this.route.snapshot.queryParamMap,
+  });
+
+  constructor() {
+    this.searchQuery.set(this.queryParamMap().get('search') ?? '');
+    this.cityFilter.set(this.queryParamMap().get('city') ?? 'all');
+  }
 
   protected cityOptions = computed(() => {
     const cities = this.stadiums()
