@@ -1,0 +1,80 @@
+<section class="catalog-shell">
+  <header class="catalog-hero">
+    <div>
+      <p class="eyebrow">Leagues catalogue</p>
+      <h1>Browse competitions by name, country, and type.</h1>
+      <p>
+        This page is the league destination from the global search. It gives a clean entry point
+        for picking the competition that matters.
+      </p>
+    </div>
+    <div class="catalog-badge">
+      <strong>{{ filteredLeagues().length }}</strong>
+      <span>visible leagues</span>
+    </div>
+  </header>
+
+  <section class="filters">
+    <label>
+      <span>Search</span>
+      <input
+        type="text"
+        [ngModel]="searchQuery()"
+        (ngModelChange)="searchQuery.set($event)"
+        placeholder="Name, country, type, or ID"
+      />
+    </label>
+
+    <label>
+      <span>Country</span>
+      <select [ngModel]="countryFilter()" (ngModelChange)="countryFilter.set($event)">
+        @for (country of countryOptions(); track country) {
+          <option [value]="country">{{ country === 'all' ? 'All countries' : country }}</option>
+        }
+      </select>
+    </label>
+
+    <label>
+      <span>Type</span>
+      <select [ngModel]="typeFilter()" (ngModelChange)="typeFilter.set($event)">
+        @for (type of typeOptions(); track type) {
+          <option [value]="type">{{ type === 'all' ? 'All types' : type }}</option>
+        }
+      </select>
+    </label>
+  </section>
+
+  <section class="catalog-grid">
+    @for (league of filteredLeagues(); track league.id) {
+      <a class="catalog-link" [routerLink]="['/leagues', league.id]">
+        <article class="catalog-card">
+          <div class="card-content">
+            <div class="card-meta">
+              <span>#{{ league.id }}</span>
+              <span>{{ league.country }}</span>
+              @if (league.logo) {
+                <img [src]="league.logo" [alt]="league.name + ' logo'" />
+              }
+              @if (league.league_type) {
+                <span>{{ league.league_type }}</span>
+              }
+            </div>
+            <h2>{{ league.name }}</h2>
+            <p>
+              @if (league.seasons?.length) {
+                {{ seasonCount(league) }} season(s) available
+              } @else {
+                Seasons not loaded
+              }
+            </p>
+          </div>
+        </article>
+      </a>
+    } @empty {
+      <div class="empty-state">
+        <h2>No league found</h2>
+        <p>Try another country, type, or search term.</p>
+      </div>
+    }
+  </section>
+</section>

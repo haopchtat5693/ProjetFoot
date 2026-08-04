@@ -1,0 +1,132 @@
+.catalog-shell {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.catalog-hero {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.5rem;
+  border-radius: 1.5rem;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.eyebrow {
+  margin: 0 0 0.35rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 0.78rem;
+  color: #94d2ff;
+}
+
+.catalog-hero h1 {
+  margin: 0;
+  font-size: clamp(2rem, 4vw, 3.3rem);
+}
+
+.catalog-hero p {
+  margin: 0.75rem 0 0;
+  max-width: 60ch;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.catalog-badge {
+  align-self: center;
+  min-width: 9rem;
+  padding: 1rem 1.2rem;
+  border-radius: 1.25rem;
+  background: rgba(12, 18, 33, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  text-align: center;
+}
+
+.catalog-badge strong {
+  display: block;
+  font-size: 2rem;
+}
+
+.catalog-badge span {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.filters {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+}
+
+.filters label {
+  display: grid;
+  gap: 0.35rem;
+  padding: 1rem;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(35, 54, 112, 0.14);
+}
+
+.filters span {
+  color: #4f6296;
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 700;
+}
+
+.filters input,
+.filters select {
+  min-height: 2.7rem;
+  padding: 0 0.75rem;
+  border-radius: 12px;
+  border: 1px solid rgba(56, 80, 144, 0.22);
+  background: #ffffff;
+  color: #1f3165;
+  font: inherit;
+}
+
+.filters select option {
+  color: #1f3165;
+  background: #ffffff;
+}
+
+.catalog-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1rem;
+}
+
+.catalog-card,
+.empty-state {
+  padding: 1.25rem;
+  border-radius: 1.25rem;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  color: rgba(255, 255, 255, 0.65);
+  font-size: 0.82rem;
+}
+
+.catalog-card h2,
+.empty-state h2 {
+  margin: 0.8rem 0 0.35rem;
+}
+
+.catalog-card p,
+.empty-state p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+@media (max-width: 860px) {
+  .catalog-hero,
+  .filters {
+    grid-template-columns: 1fr;
+    flex-direction: column;
+  }
+}
