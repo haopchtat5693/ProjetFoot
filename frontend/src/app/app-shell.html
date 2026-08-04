@@ -2,12 +2,43 @@
   <header class="topbar">
     <a class="brand" routerLink="/">FootballStats</a>
 
+    <div class="global-search">
+      <form class="search-shell" (submit)="onSearchSubmit($event)">
+        <div class="search-toolbar">
+          <label class="search-scope">
+            <select
+              #searchScopeSelect
+              [value]="searchScope()"
+              (change)="onScopeChange(searchScopeSelect.value)"
+            >
+              <option value="all">All</option>
+              <option value="team">Team</option>
+              <option value="player">Player</option>
+              <option value="stadium">Stadium</option>
+              <option value="league">League</option>
+            </select>
+          </label>
+
+        <input
+          #searchInput
+          type="search"
+          aria-label="Search"
+          [value]="query()"
+          (input)="onSearchInput(searchInput.value)"
+          [placeholder]="searchScope() === 'all' ? 'Search any football entity' : 'Search ' + searchScope()"
+        />
+        <button type="submit" class="search-submit" aria-label="Submit search">
+          <img class="search-submit-icon" src="/images/magnifying-glass-icon.png" alt="" />
+        </button>
+        </div>
+      </form>
+    </div>
+
     <nav class="nav-links" aria-label="Main navigation">
-      <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Login</a>
       <a routerLink="/teams" routerLinkActive="active">Teams</a>
       <a routerLink="/players" routerLinkActive="active">Players</a>
+      <a routerLink="/leagues" routerLinkActive="active">Leagues</a>
       <a routerLink="/stadiums" routerLinkActive="active">Stadiums</a>
-      <a routerLink="/stats" routerLinkActive="active">Stats</a>
     </nav>
   </header>
 

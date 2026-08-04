@@ -3,11 +3,15 @@ import { Routes } from '@angular/router';
 import { Home } from './pages/home/home';
 import { Login } from './pages/login/login';
 import { NotFound } from './pages/not-found/not-found';
-import { Dashboard } from './pages/dashboard/dashboard';
 import { Teams } from './pages/teams/teams';
 import { Players } from './pages/players/players';
+import { Leagues } from './pages/leagues/leagues';
+import { LeagueDetail } from './pages/league-detail/league-detail';
 import { Stadiums } from './pages/stadiums/stadiums';
-import { Stats } from './pages/stats/stats';
+import { TeamDetail } from './pages/team-detail/team-detail';
+import { PlayerDetail } from './pages/player-detail/player-detail';
+import { StadiumDetail } from './pages/stadium-detail/stadium-detail';
+import { SearchResults } from './pages/search-results/search-results';
 
 export const routes: Routes = [
 	{
@@ -20,24 +24,40 @@ export const routes: Routes = [
 		component: Login,
 	},
 	{
-		path: 'dashboard',
-		component: Dashboard,
+		path: 'search',
+		component: SearchResults,
 	},
 	{
 		path: 'teams',
 		component: Teams,
 	},
 	{
+		path: 'teams/:teamId',
+		component: TeamDetail,
+	},
+	{
 		path: 'players',
 		component: Players,
+	},
+	{
+		path: 'players/:playerId',
+		component: PlayerDetail,
+	},
+	{
+		path: 'leagues',
+		component: Leagues,
+	},
+	{
+		path: 'leagues/:leagueId',
+		component: LeagueDetail,
 	},
 	{
 		path: 'stadiums',
 		component: Stadiums,
 	},
 	{
-		path: 'stats',
-		component: Stats,
+		path: 'stadiums/:stadiumId',
+		component: StadiumDetail,
 	},
 	{
 		path: '**',
