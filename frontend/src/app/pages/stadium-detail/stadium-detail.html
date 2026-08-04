@@ -1,0 +1,39 @@
+<section class="detail-shell">
+  @if (stadium(); as stadiumData) {
+    <header class="detail-hero">
+      <div class="hero-media">
+        @if (stadiumData.image) {
+          <img [src]="stadiumData.image" [alt]="stadiumData.name + ' image'" />
+        } @else {
+          <div class="hero-placeholder">{{ stadiumData.name.charAt(0) }}</div>
+        }
+      </div>
+
+      <div>
+        <p class="eyebrow">Stadium fiche</p>
+        <h1>{{ stadiumData.name }}</h1>
+        <p>Venue page ready for capacity trends, attendance, and match hosting history.</p>
+      </div>
+      <a routerLink="/stadiums" class="back-link">Back to stadiums</a>
+    </header>
+
+    <section class="summary-grid">
+      @for (item of highlights(); track item.label) {
+        <article class="summary-card">
+          <span>{{ item.label }}</span>
+          <strong>{{ item.value }}</strong>
+        </article>
+      }
+    </section>
+
+    <section class="panel">
+      <h2>What to show here next</h2>
+      <p>Attendance curve, renovation timeline, and competition usage over time.</p>
+    </section>
+  } @else {
+    <section class="panel">
+      <h1>Stadium not found</h1>
+      <p>The requested stadium ID does not exist.</p>
+    </section>
+  }
+</section>
