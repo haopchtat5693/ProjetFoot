@@ -41,8 +41,16 @@ export class DashboardService {
     return this.http.get<Stadium[]>(`${this.apiUrl}/stadiums`);
   }
 
+  getStadiumById(stadiumId: number): Observable<Stadium> {
+    return this.http.get<Stadium>(`${this.apiUrl}/stadiums/${stadiumId}`);
+  }
+
   getLeagues(): Observable<League[]> {
     return this.http.get<League[]>(`${this.apiUrl}/leagues`);
+  }
+
+  getLeagueById(leagueId: number): Observable<League> {
+    return this.http.get<League>(`${this.apiUrl}/leagues/${leagueId}`);
   }
 
   lookupLeagues(query: LeagueLookupQuery): Observable<League[]> {
