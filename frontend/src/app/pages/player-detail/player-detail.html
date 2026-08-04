@@ -1,0 +1,70 @@
+<section class="detail-shell">
+  @if (player(); as playerData) {
+    <header class="detail-hero">
+      <div class="hero-media">
+        @if (playerData.photo) {
+          <img [src]="playerData.photo" [alt]="playerData.name + ' photo'" />
+        } @else {
+          <div class="hero-placeholder">{{ playerData.name.charAt(0) }}</div>
+        }
+      </div>
+
+      <div>
+        <p class="eyebrow">Player fiche</p>
+        <h1>{{ playerData.name }}</h1>
+        <p>Individual player page ready for form trends, season comparisons, and value history.</p>
+      </div>
+      <a routerLink="/players" class="back-link">Back to players</a>
+    </header>
+
+    <section class="panel season-panel">
+      <div class="panel-heading">
+        <div>
+          <p class="eyebrow">Season stats</p>
+          <h2>Choose a season to load the player stats.</h2>
+        </div>
+
+        <label class="season-picker">
+          <span class="visually-hidden">Season</span>
+          <select [value]="selectedSeasonId() ?? ''" (change)="onSeasonChange($any($event.target).value)">
+            @for (season of seasonOptions(); track season.id) {
+              <option [value]="season.id">Season #{{ season.id }}</option>
+            }
+          </select>
+        </label>
+      </div>
+
+      @if (playerSeasonStats(); as seasonStats) {
+        <section class="summary-grid stats-grid">
+          @for (item of statHighlights(); track item.label) {
+            <article class="summary-card">
+              <span>{{ item.label }}</span>
+              <strong>{{ item.value }}</strong>
+            </article>
+          }
+        </section>
+      } @else {
+        <p class="panel-note">No season stats available yet for the selected season.</p>
+      }
+    </section>
+
+    <section class="summary-grid">
+      @for (item of highlights(); track item.label) {
+        <article class="summary-card">
+          <span>{{ item.label }}</span>
+          <strong>{{ item.value }}</strong>
+        </article>
+      }
+    </section>
+
+    <section class="panel">
+      <h2>What to show here next</h2>
+      <p>Season-by-season stats, performance graph, and club history for this player.</p>
+    </section>
+  } @else {
+    <section class="panel">
+      <h1>Player not found</h1>
+      <p>The requested player ID does not exist.</p>
+    </section>
+  }
+</section>
