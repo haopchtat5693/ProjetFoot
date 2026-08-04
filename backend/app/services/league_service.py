@@ -13,6 +13,7 @@ def map_league_api_data_to_payload(
         name=league_raw.get("name", "Unknown"),
         country=(country_raw or {}).get("name", league_raw.get("country", "Unknown")),
         league_type=league_raw.get("type"),
+        logo=league_raw.get("logo", None),
     )
 
 
@@ -25,6 +26,7 @@ def ensure_league_exists(db: Session, league_id: int, league_data: schemas.Leagu
     league.name = league_data.name
     league.country = league_data.country
     league.league_type = league_data.league_type
+    league.logo = league_data.logo
     db.commit()
     db.refresh(league)
     return league
@@ -71,6 +73,7 @@ async def lookup_leagues(
                 name=league_payload.name,
                 country=league_payload.country,
                 league_type=league_payload.league_type,
+                logo=league_payload.logo,
                 teams=[],
                 seasons=[
                     schemas.Season(id=season.get("year"))

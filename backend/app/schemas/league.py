@@ -9,6 +9,7 @@ class LeagueBase(BaseModel):
     name: str
     country: str
     league_type: Optional[str] = None
+    logo: Optional[str] = None
 
 
 class LeagueCreate(LeagueBase):
@@ -19,6 +20,7 @@ class LeagueUpdate(BaseModel):
     name: Optional[str] = None
     country: Optional[str] = None
     league_type: Optional[str] = None
+    logo: Optional[str] = None
 
     model_config = ConfigDict(from_attributes=True)
 
