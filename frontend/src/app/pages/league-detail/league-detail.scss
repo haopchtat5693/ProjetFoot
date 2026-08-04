@@ -1,0 +1,80 @@
+.detail-shell {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.detail-hero {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: flex-start;
+  padding: 1.5rem;
+  border-radius: 1.5rem;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.eyebrow {
+  margin: 0 0 0.35rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 0.78rem;
+  color: #94d2ff;
+}
+
+.detail-hero h1 {
+  margin: 0;
+  font-size: clamp(2rem, 4vw, 3.2rem);
+}
+
+.detail-hero p,
+.panel p {
+  color: rgba(255, 255, 255, 0.72);
+  max-width: 64ch;
+}
+
+.back-link {
+  color: #fff;
+  text-decoration: none;
+  padding: 0.8rem 1rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+}
+
+.summary-card,
+.panel,
+.season-card {
+  padding: 1.25rem;
+  border-radius: 1.25rem;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.summary-card span {
+  display: block;
+  color: rgba(255, 255, 255, 0.65);
+  margin-bottom: 0.35rem;
+}
+
+.summary-card strong {
+  font-size: 1.05rem;
+}
+
+.season-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 0.8rem;
+}
+
+@media (max-width: 720px) {
+  .detail-hero {
+    flex-direction: column;
+  }
+}

@@ -1,0 +1,39 @@
+<section class="detail-shell">
+  @if (league(); as leagueData) {
+    <header class="detail-hero">
+      <div>
+        <p class="eyebrow">League fiche</p>
+        <h1>{{ leagueData.name }}</h1>
+        <p>Open the league page, review its seasons, and use it as the entry point for the search results.</p>
+      </div>
+      <a routerLink="/leagues" class="back-link">Back to leagues</a>
+    </header>
+
+    <section class="summary-grid">
+      @for (item of highlights(); track item.label) {
+        <article class="summary-card">
+          <span>{{ item.label }}</span>
+          <strong>{{ item.value }}</strong>
+        </article>
+      }
+    </section>
+
+    <section class="panel">
+      <h2>Seasons</h2>
+      @if (sortedSeasons().length) {
+        <div class="season-grid">
+          @for (season of sortedSeasons(); track season.id) {
+            <article class="season-card">Season #{{ season.id }}</article>
+          }
+        </div>
+      } @else {
+        <p>No seasons available for this league.</p>
+      }
+    </section>
+  } @else {
+    <section class="panel">
+      <h1>League not found</h1>
+      <p>The requested league ID does not exist.</p>
+    </section>
+  }
+</section>
