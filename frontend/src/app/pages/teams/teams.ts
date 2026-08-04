@@ -1,22 +1,33 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { DashboardService } from '../../services/dashboard.service';
 import type { Team } from '../../interfaces/dashboard';
 
 @Component({
   selector: 'app-teams',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterLink],
   templateUrl: './teams.html',
   styleUrl: './teams.scss',
 })
 export class Teams {
   private readonly svc = inject(DashboardService);
+  private readonly route = inject(ActivatedRoute);
 
   protected teams = toSignal(this.svc.getTeams(), { initialValue: [] as Team[] });
   protected searchQuery = signal('');
   protected countryFilter = signal('all');
+  protected readonly queryParamMap = toSignal(this.route.queryParamMap, {
+    initialValue: this.route.snapshot.queryParamMap,
+  });
+
+  constructor() {
+    this.searchQuery.set(this.queryParamMap().get('search') ?? '');
+    this.countryFilter.set(this.queryParamMap().get('country') ?? 'all');
+  }
 
   protected countryOptions = computed(() => {
     const countries = this.teams()
@@ -44,5 +55,4 @@ export class Teams {
       })
       .sort((left, right) => left.name.localeCompare(right.name));
   });
-
 }

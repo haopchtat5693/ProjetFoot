@@ -2,9 +2,9 @@
 	<header class="catalog-hero">
 		<div>
 			<p class="eyebrow">Teams catalogue</p>
-			<h1>Browse teams by name, ID, and country.</h1>
+			<h1>Browse teams stored in the database by name, ID, and country.</h1>
 			<p>
-				Use the catalogue when you want to explore every team and filter the list directly.
+				This page shows the full local team list from the database, then lets you filter it instantly.
 			</p>
 		</div>
 		<div class="catalog-badge">
@@ -36,30 +36,32 @@
 
 	<section class="catalog-grid">
 		@for (team of filteredTeams(); track team.id) {
-			<article class="catalog-card">
-				<div class="card-media">
-					@if (team.logo) {
-						<img [src]="team.logo" [alt]="team.name + ' logo'" />
-					} @else {
-						<div class="avatar-placeholder">{{ team.name.charAt(0) }}</div>
-					}
-				</div>
-
-				<div class="card-content">
-					<div class="card-meta">
-						<span>#{{ team.id }}</span>
-						@if (team.country) {
-							<span>{{ team.country }}</span>
+			<a class="catalog-link" [routerLink]="['/teams', team.id]">
+				<article class="catalog-card">
+					<div class="card-media">
+						@if (team.logo) {
+							<img [src]="team.logo" [alt]="team.name + ' logo'" />
+						} @else {
+							<div class="avatar-placeholder">{{ team.name.charAt(0) }}</div>
 						}
 					</div>
-					<h2>{{ team.name }}</h2>
-					<p>{{ team.city }}</p>
-				</div>
-			</article>
+
+					<div class="card-content">
+						<div class="card-meta">
+							<span>#{{ team.id }}</span>
+							@if (team.country) {
+								<span>{{ team.country }}</span>
+							}
+						</div>
+						<h2>{{ team.name }}</h2>
+						<p>{{ team.city }}</p>
+					</div>
+				</article>
+			</a>
 		} @empty {
 			<div class="empty-state">
 				<h2>No team found</h2>
-				<p>Try another country or search term.</p>
+				<p>Try another country or search term, or check whether the database already contains teams.</p>
 			</div>
 		}
 	</section>
