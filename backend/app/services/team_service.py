@@ -64,7 +64,7 @@ def ensure_team_exists(db: Session, team_data: schemas.TeamCreate):
     return team
 
 
-async def search_teams_by_name(db: Session, name: str, limit: int = 20):
+async def search_teams_by_name(db: Session, name: str, limit: int = 50):
     search_term = name.strip()
     if not search_term:
         return []
