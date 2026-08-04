@@ -2,9 +2,9 @@
   <header class="catalog-hero">
     <div>
       <p class="eyebrow">Players catalogue</p>
-      <h1>Browse players by name, position, country, and ID.</h1>
+      <h1>Browse players stored in the database by name, position, country, and ID.</h1>
       <p>
-        Use the catalogue when you want to filter the whole roster instead of searching one player at a time.
+        This page shows the full local roster from the database, then lets you filter it instantly.
       </p>
     </div>
     <div class="catalog-badge">
@@ -45,33 +45,35 @@
 
   <section class="catalog-grid">
     @for (player of filteredPlayers(); track player.id) {
-      <article class="catalog-card">
-        <div class="card-media">
-          @if (player.photo) {
-            <img [src]="player.photo" [alt]="player.name + ' photo'" />
-          } @else {
-            <div class="avatar-placeholder">{{ player.name.charAt(0) }}</div>
-          }
-        </div>
-
-        <div class="card-content">
-          <div class="card-meta">
-            <span>#{{ player.id }}</span>
-            @if (player.country) {
-              <span>{{ player.country }}</span>
-            }
-            @if (player.position) {
-              <span>{{ player.position }}</span>
+      <a class="catalog-link" [routerLink]="['/players', player.id]">
+        <article class="catalog-card">
+          <div class="card-media">
+            @if (player.photo) {
+              <img [src]="player.photo" [alt]="player.name + ' photo'" />
+            } @else {
+              <div class="avatar-placeholder">{{ player.name.charAt(0) }}</div>
             }
           </div>
-          <h2>{{ player.name }}</h2>
-          <p>@if (player.age) { {{ player.age }} years old }</p>
-        </div>
-      </article>
+
+          <div class="card-content">
+            <div class="card-meta">
+              <span>#{{ player.id }}</span>
+              @if (player.nationality) {
+                <span>{{ player.nationality }}</span>
+              }
+              @if (player.position) {
+                <span>{{ player.position }}</span>
+              }
+            </div>
+            <h2>{{ player.name }}</h2>
+            <p>@if (player.age) { {{ player.age }} years old }</p>
+          </div>
+        </article>
+      </a>
     } @empty {
       <div class="empty-state">
         <h2>No player found</h2>
-        <p>Try another position, country, or search term.</p>
+        <p>Try another position, country, or search term, or check whether the database already contains players.</p>
       </div>
     }
   </section>

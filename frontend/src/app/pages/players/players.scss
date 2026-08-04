@@ -111,6 +111,12 @@ select {
 .card-media {
   aspect-ratio: 16 / 10;
   background: linear-gradient(135deg, #dce5ff, #f2f6ff);
+
+.catalog-link {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+}
   display: grid;
   place-items: center;
 }

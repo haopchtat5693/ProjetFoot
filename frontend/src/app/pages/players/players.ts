@@ -1,23 +1,35 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { DashboardService } from '../../services/dashboard.service';
 import type { Player } from '../../interfaces/dashboard';
 
 @Component({
   selector: 'app-players',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterLink],
   templateUrl: './players.html',
   styleUrl: './players.scss',
 })
 export class Players {
   private readonly svc = inject(DashboardService);
+  private readonly route = inject(ActivatedRoute);
 
   protected players = toSignal(this.svc.getPlayers(), { initialValue: [] as Player[] });
   protected searchQuery = signal('');
   protected positionFilter = signal('all');
   protected countryFilter = signal('all');
+  protected readonly queryParamMap = toSignal(this.route.queryParamMap, {
+    initialValue: this.route.snapshot.queryParamMap,
+  });
+
+  constructor() {
+    this.searchQuery.set(this.queryParamMap().get('search') ?? '');
+    this.positionFilter.set(this.queryParamMap().get('position') ?? 'all');
+    this.countryFilter.set(this.queryParamMap().get('country') ?? 'all');
+  }
 
   protected positionOptions = computed(() => {
     const positions = this.players()
@@ -29,7 +41,7 @@ export class Players {
 
   protected countryOptions = computed(() => {
     const countries = this.players()
-      .map((player) => player.country?.trim())
+      .map((player) => player.nationality?.trim())
       .filter((country): country is string => !!country);
 
     return ['all', ...Array.from(new Set(countries)).sort((a, b) => a.localeCompare(b))];
@@ -44,12 +56,12 @@ export class Players {
       .filter((player) => {
         const matchesSearch =
           !searchTerm ||
-          [player.name, player.position, player.country, String(player.id)].some((value) =>
+          [player.name, player.position, player.nationality, String(player.id)].some((value) =>
             value?.toLowerCase().includes(searchTerm),
           );
 
         const matchesPosition = position === 'all' || player.position === position;
-        const matchesCountry = country === 'all' || player.country === country;
+        const matchesCountry = country === 'all' || player.nationality === country;
 
         return matchesSearch && matchesPosition && matchesCountry;
       })
