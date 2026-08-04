@@ -34,7 +34,7 @@ export class Login {
 
   protected get introText(): string {
     return this.isRegisterMode
-      ? 'Create a new account, then use it to access the dashboard.'
+      ? 'Create a new account, then use it to access search and entity fiches.'
       : 'Enter your username and password to continue.';
   }
 
@@ -53,7 +53,7 @@ export class Login {
 
     request$.subscribe({
       next: () => {
-        void this.router.navigateByUrl('dashboard');
+        void this.router.navigateByUrl('search');
       },
       error: (err) => {
         console.error('Erreur lors de l’authentification', err);
