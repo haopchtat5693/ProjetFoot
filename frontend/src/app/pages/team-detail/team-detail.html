@@ -1,1 +1,105 @@
-<p>team-detail works!</p>
+<section class="detail-shell">
+	@if (team(); as teamData) {
+		<header class="detail-hero">
+			<div class="hero-media">
+				@if (teamData.logo) {
+					<img [src]="teamData.logo" [alt]="teamData.name + ' logo'" />
+				} @else {
+					<div class="hero-placeholder">{{ teamData.name.charAt(0) }}</div>
+				}
+			</div>
+
+			<div>
+				<p class="eyebrow">Team fiche</p>
+				<h1>{{ teamData.name }}</h1>
+				<p>Direct access to the team page, with room for future charts and season-specific insights.</p>
+			</div>
+			<a routerLink="/teams" class="back-link">Back to teams</a>
+		</header>
+
+		<section class="panel selection-panel">
+			<div class="panel-heading">
+				<div>
+					<p class="eyebrow">Season stats</p>
+					<h2>Pick a league and season for this team.</h2>
+				</div>
+				<div class="selection-grid">
+					<label>
+						<span>League</span>
+						<select [value]="selectedLeagueId() ?? ''" (change)="onLeagueChange($any($event.target).value)">
+							@for (league of leagues(); track league.id) {
+								<option [value]="league.id">{{ league.name }}</option>
+							}
+						</select>
+					</label>
+
+					<label>
+						<span>Season</span>
+						<select [value]="selectedSeasonId() ?? ''" (change)="onSeasonChange($any($event.target).value)">
+							@for (season of availableSeasons(); track season.id) {
+								<option [value]="season.id">Season #{{ season.id }}</option>
+							}
+						</select>
+					</label>
+				</div>
+			</div>
+
+			@if (teamSeasonStats(); as seasonStats) {
+				<section class="summary-grid stats-grid">
+					@for (item of statHighlights(); track item.label) {
+						<article class="summary-card">
+							<span>{{ item.label }}</span>
+							<strong>{{ item.value }}</strong>
+						</article>
+					}
+				</section>
+			} @else {
+				<p class="panel-note">Select a league and season to load team stats.</p>
+			}
+		</section>
+
+		<section class="summary-grid">
+			@for (item of highlights(); track item.label) {
+				<article class="summary-card">
+					<span>{{ item.label }}</span>
+					<strong>{{ item.value }}</strong>
+				</article>
+			}
+		</section>
+
+		<section class="panel squad-panel">
+			<h2>Squad for the selected season</h2>
+			@if (teamPlayers().length) {
+				<div class="squad-grid">
+					@for (player of teamPlayers(); track player.id) {
+						<article class="squad-card">
+							<div class="squad-avatar">
+								@if (player.photo) {
+									<img [src]="player.photo" [alt]="player.name + ' photo'" />
+								} @else {
+									<span>{{ player.name.charAt(0) }}</span>
+								}
+							</div>
+							<div>
+								<strong>{{ player.name }}</strong>
+								<p>{{ squadLabel(player) }}</p>
+							</div>
+						</article>
+					}
+				</div>
+			} @else {
+				<p class="panel-note">No players loaded for the selected season yet.</p>
+			}
+		</section>
+
+		<section class="panel">
+			<h2>What to show here next</h2>
+			<p>Season trend charts, squad evolution, league history, and match stats for this team.</p>
+		</section>
+	} @else {
+		<section class="panel">
+			<h1>Team not found</h1>
+			<p>The requested team ID does not exist.</p>
+		</section>
+	}
+</section>
