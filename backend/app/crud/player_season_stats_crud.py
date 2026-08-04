@@ -12,7 +12,7 @@ def get_player_season_stats(db: Session, player_season_stats_id: int):
     return player_season_stats_crud.get(db, player_season_stats_id)
 
 
-def get_player_season_stats_list(db: Session, skip: int = 0, limit: int = 100):
+def get_player_season_stats_list(db: Session, skip: int = 0, limit: int = 40):
     return player_season_stats_crud.get_multi(db, skip=skip, limit=limit)
 
 

@@ -12,7 +12,7 @@ def get_player_match_stats(db: Session, player_stats_id: int):
     return player_match_stats_crud.get(db, player_stats_id)
 
 
-def get_player_match_stats_list(db: Session, skip: int = 0, limit: int = 100):
+def get_player_match_stats_list(db: Session, skip: int = 0, limit: int = 1500):
     return player_match_stats_crud.get_multi(db, skip=skip, limit=limit)
 
 

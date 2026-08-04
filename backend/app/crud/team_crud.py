@@ -13,11 +13,11 @@ def get_team(db: Session, team_id: int):
     return team_crud.get(db, team_id)
 
 
-def get_teams(db: Session, skip: int = 0, limit: int = 100):
+def get_teams(db: Session, skip: int = 0, limit: int = 1000):
     return team_crud.get_multi(db, skip=skip, limit=limit)
 
 
-def get_teams_by_name(db: Session, name: str, limit: int = 20):
+def get_teams_by_name(db: Session, name: str, limit: int = 100):
     search_term = name.strip()
     if not search_term:
         return []

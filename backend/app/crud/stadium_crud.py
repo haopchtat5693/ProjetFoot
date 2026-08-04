@@ -12,7 +12,7 @@ def get_stadium(db: Session, stadium_id: int):
     return stadium_crud.get(db, stadium_id)
 
 
-def get_stadiums(db: Session, skip: int = 0, limit: int = 100):
+def get_stadiums(db: Session, skip: int = 0, limit: int = 1500):
     return stadium_crud.get_multi(db, skip=skip, limit=limit)
 
 

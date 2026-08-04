@@ -16,7 +16,7 @@ def get_league_by_name(db: Session, name: str):
     return db.query(models.League).filter(models.League.name == name).first()
 
 
-def get_leagues(db: Session, skip: int = 0, limit: int = 100):
+def get_leagues(db: Session, skip: int = 0, limit: int = 500):
     return league_crud.get_multi(db, skip=skip, limit=limit)
 
 
