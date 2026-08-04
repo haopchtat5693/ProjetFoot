@@ -1,0 +1,102 @@
+<section class="search-shell">
+  <header class="search-hero">
+    <div>
+      <p class="eyebrow">Search results</p>
+      <h1>Matches for “{{ query() }}”</h1>
+      <p>Results are grouped by category. Click any card to open the corresponding fiche.</p>
+    </div>
+
+    <div class="search-badge">
+      <strong>{{ totalResults() }}</strong>
+      <span>matches</span>
+    </div>
+  </header>
+
+  @if (!hasQuery) {
+    <section class="empty-state">
+      <h2>Type at least two characters</h2>
+      <p>The search page shows grouped matches once the query is long enough.</p>
+    </section>
+  } @else if (!totalResults()) {
+    <section class="empty-state">
+      <h2>No matches</h2>
+      <p>Try a different name, city, country, or identifier.</p>
+    </section>
+  } @else {
+    @if (teamResults().length) {
+      <section class="result-group">
+        <div class="group-heading">
+          <h2>Teams</h2>
+          <span>{{ teamResults().length }}</span>
+        </div>
+
+        <div class="result-grid">
+          @for (result of teamResults(); track result.kind + '-' + result.id) {
+            <a class="result-card" [routerLink]="result.route">
+              <span class="kind-tag">{{ result.kind }}</span>
+              <strong>{{ result.title }}</strong>
+              <small>{{ result.subtitle }}</small>
+            </a>
+          }
+        </div>
+      </section>
+    }
+
+    @if (playerResults().length) {
+      <section class="result-group">
+        <div class="group-heading">
+          <h2>Players</h2>
+          <span>{{ playerResults().length }}</span>
+        </div>
+
+        <div class="result-grid">
+          @for (result of playerResults(); track result.kind + '-' + result.id) {
+            <a class="result-card" [routerLink]="result.route">
+              <span class="kind-tag">{{ result.kind }}</span>
+              <strong>{{ result.title }}</strong>
+              <small>{{ result.subtitle }}</small>
+            </a>
+          }
+        </div>
+      </section>
+    }
+
+    @if (stadiumResults().length) {
+      <section class="result-group">
+        <div class="group-heading">
+          <h2>Stadiums</h2>
+          <span>{{ stadiumResults().length }}</span>
+        </div>
+
+        <div class="result-grid">
+          @for (result of stadiumResults(); track result.kind + '-' + result.id) {
+            <a class="result-card" [routerLink]="result.route">
+              <span class="kind-tag">{{ result.kind }}</span>
+              <strong>{{ result.title }}</strong>
+              <small>{{ result.subtitle }}</small>
+            </a>
+          }
+        </div>
+      </section>
+    }
+
+    @if (leagueResults().length) {
+      <section class="result-group">
+        <div class="group-heading">
+          <h2>Leagues</h2>
+          <span>{{ leagueResults().length }}</span>
+        </div>
+
+        <div class="result-grid">
+          @for (result of leagueResults(); track result.kind + '-' + result.id) {
+            <a class="result-card" [routerLink]="result.route">
+              <span class="kind-tag">{{ result.kind }}</span>
+              <strong>{{ result.title }}</strong>
+              <small>{{ result.subtitle }}</small>
+            </a>
+          }
+        </div>
+      </section>
+    }
+  }
+</section>
