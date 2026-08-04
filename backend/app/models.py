@@ -107,6 +107,7 @@ class League(Base):
     name = Column(String, index=True)
     country = Column(String)
     league_type = Column(String)
+    logo = Column(String, nullable=True)
 
     season_stats = relationship("TeamSeasonStats", back_populates="league")
 
