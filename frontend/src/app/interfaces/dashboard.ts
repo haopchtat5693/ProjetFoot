@@ -21,6 +21,7 @@ export interface League {
   id: number;
   name: string;
   country: string;
+  logo?: string | null;
   league_type?: string | null;
   seasons?: Season[];
 }
@@ -40,7 +41,7 @@ export interface Season {
 export interface Player {
   id: number;
   name: string;
-  country?: string | null;
+  nationality?: string | null;
   position?: string | null;
   age?: number | null;
   photo?: string | null;
