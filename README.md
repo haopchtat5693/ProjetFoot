@@ -1,13 +1,13 @@
 # ProjetFoot #
 
-**État du projet :** En développement actif (Backend en cours, Frontend prévu).
+**État du projet :** En développement actif.
 
-Ce projet vise à créer une plateforme de gestion de ligues sportives complète. Actuellement, l'accent est mis sur la solidité de l'API REST et la modélisation des données.
+Ce projet vise à créer une plateforme pour explorer les ligues, joueurs et matchs, avec discussions contextuelles et gestion des rôles.
 
 ## Technologies utilisées ##
 **Backend(En cours)** : Python, FastAPI, SQLAlchemy (ORM), PostgreSQL
 
-**Frontend(Dans le futur)** : Angular, TypeScript
+**Frontend(En cours)** : Angular, TypeScript
 
 **Authentification** : JWT (JSON Web Tokens)
 
@@ -77,4 +77,5 @@ Le backend suit une architecture propre pour séparer les responsabilités :
 
     uvicorn app.main:app --reload
 
-    Une fois le serveur lancé, accédez à la documentation interactive sur [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
+6. Aller dans frontend/src/app:
+    npm start
