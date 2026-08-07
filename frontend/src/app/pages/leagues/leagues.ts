@@ -3,7 +3,7 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { DashboardService } from '../../services/dashboard.service';
+import { ApiService } from '../../services/api.service';
 import type { League } from '../../interfaces/dashboard';
 
 @Component({
@@ -13,7 +13,7 @@ import type { League } from '../../interfaces/dashboard';
   styleUrl: './leagues.scss',
 })
 export class Leagues {
-  private readonly svc = inject(DashboardService);
+  private readonly svc = inject(ApiService);
   private readonly route = inject(ActivatedRoute);
 
   protected leagues = toSignal(this.svc.getLeagues(), { initialValue: [] as League[] });
