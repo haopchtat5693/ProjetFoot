@@ -9,16 +9,6 @@ from app.services.player_service import (
 )
 
 
-def map_player_api_data_to_payload(player_raw: dict, stats_block: dict) -> dict:
-    return {
-        "id": player_raw.get("id"),
-        "name": player_raw.get("name", "Unknown"),
-        "nationality": player_raw.get("nationality", "Unknown"),
-        "position": stats_block.get("games", {}).get("position", "Attacker"),
-        "age": player_raw.get("age"),
-        "photo": player_raw.get("photo", None),
-    }
-
 
 async def sync_and_get_team_players_for_season(
     db: Session, team_id: int, season_id: int
