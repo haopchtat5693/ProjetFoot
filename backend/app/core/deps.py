@@ -1,9 +1,8 @@
-# app/core/deps.py
 from app import crud
 from datetime import datetime, timezone
 from fastapi import Depends, HTTPException, status
 from app.models import User
-from app.core.constants import ADMIN, MANAGER
+from app.core.constants import ADMIN, MANAGER, ALGORITHM
 from dotenv import load_dotenv
 import os
 from fastapi.security import OAuth2PasswordBearer
@@ -12,7 +11,6 @@ from jose import JWTError, jwt
 
 load_dotenv()
 SECRET_KEY = os.getenv("SECRET_KEY")
-ALGORITHM = os.getenv("ALGORITHM")
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 
