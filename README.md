@@ -19,8 +19,6 @@ Ce projet vise à créer une plateforme pour explorer les ligues, joueurs et mat
 
 Le backend suit une architecture propre pour séparer les responsabilités :
 
-**app/constants/** : Constants cote backend.
-
 **app/core/** : Logique de sécurité et d'authentification (JWT, hashing, contrôle d'accès par rôle).
 
 **app/routers/** : Endpoints de l'API.
