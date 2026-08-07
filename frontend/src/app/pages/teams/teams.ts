@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { RouterLink } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { DashboardService } from '../../services/dashboard.service';
+import { ApiService } from '../../services/api.service';
 import type { Team } from '../../interfaces/dashboard';
 
 @Component({
@@ -14,7 +14,7 @@ import type { Team } from '../../interfaces/dashboard';
   styleUrl: './teams.scss',
 })
 export class Teams {
-  private readonly svc = inject(DashboardService);
+  private readonly svc = inject(ApiService);
   private readonly route = inject(ActivatedRoute);
 
   protected teams = toSignal(this.svc.getTeams(), { initialValue: [] as Team[] });
