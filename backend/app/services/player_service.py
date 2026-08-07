@@ -10,7 +10,7 @@ def map_player_api_data_to_payload(player_raw: dict, stats_block: dict | None = 
         "id": player_raw.get("id"),
         "name": player_raw.get("name", "Unknown"),
         "nationality": player_raw.get("nationality", "Unknown"),
-        "position": (stats_block or {}).get("games", {}).get("position", "Attacker"),
+        "position": (stats_block or {}).get("games", {}).get("position", "Unknown"),
         "age": player_raw.get("age") or 0,
         "photo": player_raw.get("photo", None),
     }
@@ -37,7 +37,7 @@ def ensure_player_exists(db: Session, player_id: int, player_data: dict):
 async def search_players_by_name(
     db: Session,
     name: str,
-    limit: int = 50,
+    limit: int = 100,
 ):
     search_term = name.strip()
     if not search_term:
