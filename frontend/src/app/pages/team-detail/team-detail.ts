@@ -1,11 +1,12 @@
 import { CommonModule } from '@angular/common';
 import { Component, computed, effect, inject, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { catchError, map, of, startWith, switchMap } from 'rxjs';
-import { DashboardService } from '../../services/dashboard.service';
-import type { League, Player, Season, Team, TeamSeasonStats } from '../../interfaces/dashboard';
+import { ApiService } from '../../services/api.service';
+import type { League, Player, Season, TeamSeasonStats } from '../../interfaces/dashboard';
+import type { DetailHighlight } from '../../interfaces/detail';
+import { catchError, of } from 'rxjs';
 import { toNumberOrNull } from '../../utils';
+import { createDetailHighlight, createRouteEntitySignal, formatDetailValue, sortByIdDesc } from '../../utils';
 
 @Component({
   selector: 'app-team-detail',
@@ -15,7 +16,7 @@ import { toNumberOrNull } from '../../utils';
   styleUrl: './team-detail.scss',
 })
 export class TeamDetail {
-  private readonly svc = inject(DashboardService);
+  private readonly svc = inject(ApiService);
   private readonly route = inject(ActivatedRoute);
 
   protected readonly leagues = signal<League[]>([]);
@@ -24,17 +25,8 @@ export class TeamDetail {
   protected readonly teamSeasonStats = signal<TeamSeasonStats | null>(null);
   protected readonly teamPlayers = signal<Player[]>([]);
 
-  protected readonly team = toSignal<Team | null>(
-    this.route.paramMap.pipe(
-      map((params) => params.get('teamId')),
-      switchMap((rawTeamId) => {
-        const teamId = Number(rawTeamId);
-        return rawTeamId && Number.isFinite(teamId) ? this.svc.getTeamById(teamId) : of(null as Team | null);
-      }),
-      startWith(null as Team | null),
-      catchError(() => of(null as Team | null)),
-    ),
-    { requireSync: true },
+  protected readonly team = createRouteEntitySignal(this.route, 'teamId', (teamId) =>
+    this.svc.getTeamById(teamId),
   );
 
   protected readonly selectedLeague = computed(() => {
@@ -47,7 +39,7 @@ export class TeamDetail {
 
   protected readonly availableSeasons = computed(() => {
     const seasons = this.selectedLeague()?.seasons ?? [];
-    return [...seasons].sort((left, right) => right.id - left.id);
+    return sortByIdDesc(seasons);
   });
 
   protected readonly selectedSeason = computed(() => {
@@ -58,34 +50,34 @@ export class TeamDetail {
     return this.availableSeasons().find((season) => season.id === seasonId) ?? null;
   });
 
-  protected readonly highlights = computed(() => {
+  protected readonly highlights = computed<DetailHighlight[]>(() => {
     const team = this.team();
-    if (!team) return [] as { label: string; value: string }[];
+    if (!team) return [];
 
     return [
-      { label: 'ID', value: String(team.id) },
-      { label: 'Country', value: team.country || 'Unknown' },
-      { label: 'City', value: team.city || 'Unknown' },
-      { label: 'Coach', value: team.coach_id ? `#${team.coach_id}` : 'Not linked' },
+      createDetailHighlight('ID', team.id),
+      createDetailHighlight('Country', team.country),
+      createDetailHighlight('City', team.city),
+      createDetailHighlight('Coach', team.coach_id ? `#${team.coach_id}` : 'Not linked'),
     ];
   });
 
-  protected readonly statHighlights = computed(() => {
+  protected readonly statHighlights = computed<DetailHighlight[]>(() => {
     const stats = this.teamSeasonStats();
 
     if (!stats) {
-      return [] as { label: string; value: string }[];
+      return [];
     }
 
     return [
-      { label: 'League', value: this.selectedLeague()?.name ?? `#${stats.league_id}` },
-      { label: 'Season', value: `#${stats.season_id}` },
-      { label: 'Fixtures', value: this.formatValue(stats.fixtures) },
-      { label: 'Goals', value: this.formatValue(stats.goals) },
-      { label: 'Clean sheet', value: this.formatValue(stats.clean_sheet) },
-      { label: 'Failed to score', value: this.formatValue(stats.failed_to_score) },
-      { label: 'Penalty', value: this.formatValue(stats.penalty) },
-      { label: 'Cards', value: this.formatValue(stats.cards) },
+      createDetailHighlight('League', this.selectedLeague()?.name ?? `#${stats.league_id}`),
+      createDetailHighlight('Season', `#${stats.season_id}`),
+      createDetailHighlight('Fixtures', formatDetailValue(stats.fixtures)),
+      createDetailHighlight('Goals', formatDetailValue(stats.goals)),
+      createDetailHighlight('Clean sheet', formatDetailValue(stats.clean_sheet)),
+      createDetailHighlight('Failed to score', formatDetailValue(stats.failed_to_score)),
+      createDetailHighlight('Penalty', formatDetailValue(stats.penalty)),
+      createDetailHighlight('Cards', formatDetailValue(stats.cards)),
     ];
   });
 
