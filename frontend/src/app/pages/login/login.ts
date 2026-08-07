@@ -3,6 +3,16 @@ import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { switchMap } from 'rxjs';
 
+import {
+  AUTH_ERROR_MESSAGE,
+  CREATE_ACCOUNT_INTRO_TEXT,
+  CREATE_ACCOUNT_LABEL,
+  CREATE_ACCOUNT_TITLE,
+  LOGIN_INTRO_TEXT,
+  LOGIN_LABEL,
+  LOGIN_TITLE,
+  SEARCH_ROUTE,
+} from '../../constants/login';
 import { ROLE_OPTIONS } from '../../constants/roles';
 import { AuthService } from '../../services/auth.service';
 
@@ -25,17 +35,15 @@ export class Login {
   };
 
   protected get submitLabel(): string {
-    return this.isRegisterMode ? 'Create account' : 'Login';
+    return this.isRegisterMode ? CREATE_ACCOUNT_LABEL : LOGIN_LABEL;
   }
 
   protected get pageTitle(): string {
-    return this.isRegisterMode ? 'Create your account' : 'Log in to continue';
+    return this.isRegisterMode ? CREATE_ACCOUNT_TITLE : LOGIN_TITLE;
   }
 
   protected get introText(): string {
-    return this.isRegisterMode
-      ? 'Create a new account, then use it to access search and entity fiches.'
-      : 'Enter your username and password to continue.';
+    return this.isRegisterMode ? CREATE_ACCOUNT_INTRO_TEXT : LOGIN_INTRO_TEXT;
   }
 
   protected toggleMode(): void {
@@ -53,10 +61,10 @@ export class Login {
 
     request$.subscribe({
       next: () => {
-        void this.router.navigateByUrl('search');
+        void this.router.navigateByUrl(SEARCH_ROUTE);
       },
       error: (err) => {
-        console.error('Erreur lors de l’authentification', err);
+        console.error(AUTH_ERROR_MESSAGE, err);
       },
     });
   }
