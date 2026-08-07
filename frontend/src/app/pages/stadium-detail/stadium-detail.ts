@@ -1,10 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { Component, computed, inject } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { catchError, map, of, startWith, switchMap } from 'rxjs';
-import { DashboardService } from '../../services/dashboard.service';
-import type { Stadium } from '../../interfaces/dashboard';
+import { ApiService } from '../../services/api.service';
+import type { DetailHighlight } from '../../interfaces/detail';
+import { createDetailHighlight, createRouteEntitySignal } from '../../utils';
 
 @Component({
   selector: 'app-stadium-detail',
@@ -14,33 +13,22 @@ import type { Stadium } from '../../interfaces/dashboard';
   styleUrl: './stadium-detail.scss',
 })
 export class StadiumDetail {
-  private readonly svc = inject(DashboardService);
+  private readonly svc = inject(ApiService);
   private readonly route = inject(ActivatedRoute);
 
-  protected readonly stadium = toSignal<Stadium | null>(
-    this.route.paramMap.pipe(
-      map((params) => params.get('stadiumId')),
-      switchMap((rawStadiumId) => {
-        const stadiumId = Number(rawStadiumId);
-        return rawStadiumId && Number.isFinite(stadiumId)
-          ? this.svc.getStadiumById(stadiumId)
-          : of(null as Stadium | null);
-      }),
-      startWith(null as Stadium | null),
-      catchError(() => of(null as Stadium | null)),
-    ),
-    { requireSync: true },
+  protected readonly stadium = createRouteEntitySignal(this.route, 'stadiumId', (stadiumId) =>
+    this.svc.getStadiumById(stadiumId),
   );
 
-  protected readonly highlights = computed(() => {
+  protected readonly highlights = computed<DetailHighlight[]>(() => {
     const stadium = this.stadium();
-    if (!stadium) return [] as { label: string; value: string }[];
+    if (!stadium) return [];
 
     return [
-      { label: 'ID', value: String(stadium.id) },
-      { label: 'City', value: stadium.city || 'Unknown' },
-      { label: 'Capacity', value: String(stadium.capacity) },
-      { label: 'Address', value: stadium.address || 'Unknown' },
+      createDetailHighlight('ID', stadium.id),
+      createDetailHighlight('City', stadium.city),
+      createDetailHighlight('Capacity', stadium.capacity),
+      createDetailHighlight('Address', stadium.address),
     ];
   });
 }
