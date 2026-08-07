@@ -95,9 +95,10 @@ Le frontend suit :
 
     API_FOOTBALL_DATA_KEY est donne dans https://www.api-football.com/.
     
-6.  Lancer le serveur :
+5.  Lancer le serveur :
 
     uvicorn app.main:app --reload
 
-7. Aller dans frontend/src/app:
+6. Aller dans frontend/src/app:
+   
     npm start
