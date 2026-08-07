@@ -77,4 +77,5 @@ Le backend suit une architecture propre pour séparer les responsabilités :
 
     uvicorn app.main:app --reload
 
-6. Aller dans frontend/src/app et faire npm start
+6. Aller dans frontend/src/app:
+    npm start
