@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { RouterLink } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { DashboardService } from '../../services/dashboard.service';
+import { ApiService } from '../../services/api.service';
 import type { Player } from '../../interfaces/dashboard';
 
 @Component({
@@ -14,7 +14,7 @@ import type { Player } from '../../interfaces/dashboard';
   styleUrl: './players.scss',
 })
 export class Players {
-  private readonly svc = inject(DashboardService);
+  private readonly svc = inject(ApiService);
   private readonly route = inject(ActivatedRoute);
 
   protected players = toSignal(this.svc.getPlayers(), { initialValue: [] as Player[] });
