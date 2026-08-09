@@ -19,13 +19,29 @@ Ce projet vise à créer une plateforme pour explorer les ligues, joueurs et mat
 
 Le backend suit une architecture propre pour séparer les responsabilités :
 
+**app/core/** : Logique de sécurité et d'authentification (JWT, hashing, contrôle d'accès par rôle).
+
 **app/routers/** : Endpoints de l'API.
 
 **app/crud/** : Logique de manipulation des données.
 
-**app/models/** : Schémas SQLAlchemy (base de données).
+**app/models/** : Tables SQLAlchemy (base de données).
 
 **app/schemas/** : Schémas Pydantic (validation des données).
+
+**app/services/** : Services cote backend.
+
+Le frontend suit :
+
+**app/constants/** : Constants cote frontend.
+
+**app/interfaces/** : Interfaces cote frontend.
+
+**app/pages/** : Differentes pages.
+
+**app/services/** : Services frontend.
+
+**app/utils/** : Fonctions utilitaires.
 
 ## Fonctionnalités principales
 
@@ -72,10 +88,15 @@ Le backend suit une architecture propre pour séparer les responsabilités :
     DATABASE_URL=postgresql://votre_utilisateur:votre_mot_de_passe@localhost:5432/nom_de_votre_base
     
     SECRET_KEY=votre_cle_secrete
+
+    API_FOOTBALL_DATA_KEY=...
+
+    API_FOOTBALL_DATA_KEY est donne dans https://www.api-football.com/.
     
 5.  Lancer le serveur :
 
     uvicorn app.main:app --reload
 
 6. Aller dans frontend/src/app:
+   
     npm start
