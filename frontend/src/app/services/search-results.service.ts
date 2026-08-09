@@ -1,11 +1,14 @@
 import { Injectable } from '@angular/core';
 
 import {
+  COACH_DEFAULT_SUBTITLE,
+  COACH_ROUTE_PREFIX,
   LEAGUE_DEFAULT_SUBTITLE,
   LEAGUE_ROUTE_PREFIX,
   PLAYER_DEFAULT_SUBTITLE,
   PLAYER_ROUTE_PREFIX,
   RESULTS_SEPARATOR,
+  SEARCH_RESULT_KIND_COACH,
   SEARCH_RESULT_KIND_LEAGUE,
   SEARCH_RESULT_KIND_PLAYER,
   SEARCH_RESULT_KIND_STADIUM,
@@ -16,7 +19,7 @@ import {
   TEAM_DEFAULT_SUBTITLE,
   TEAM_ROUTE_PREFIX,
 } from '../constants/search-results';
-import type { League, Player, Stadium, Team } from '../interfaces/dashboard';
+import type { League, Player, Stadium, Team, Coach } from '../interfaces/dashboard';
 import type { SearchResult, SearchResultKind, SearchScope } from '../interfaces/search-results';
 
 @Injectable({ providedIn: 'root' })
@@ -28,6 +31,7 @@ export class SearchResultsService {
     scope: SearchScope,
     teams: Team[],
     players: Player[],
+    coaches: Coach[],
     stadiums: Stadium[],
     leagues: League[],
   ): SearchResult[] {
@@ -40,6 +44,10 @@ export class SearchResultsService {
 
     if (this.allows(scope, SEARCH_RESULT_KIND_PLAYER)) {
       results.push(...this.buildPlayerResults(normalizedTerm, players));
+    }
+
+    if (this.allows(scope, SEARCH_RESULT_KIND_COACH)) {
+      results.push(...this.buildCoachResults(normalizedTerm, coaches));
     }
 
     if (this.allows(scope, SEARCH_RESULT_KIND_STADIUM)) {
@@ -84,6 +92,19 @@ export class SearchResultsService {
         title: player.name,
         subtitle: [player.position, player.nationality].filter(Boolean).join(RESULTS_SEPARATOR) || PLAYER_DEFAULT_SUBTITLE,
         route: `${PLAYER_ROUTE_PREFIX}${player.id}`,
+      }));
+  }
+
+  private buildCoachResults(term: string, coaches: Coach[]): SearchResult[] {
+    return coaches
+      .filter((coach) => this.matches(term, coach.name, coach.nationality, coach.id))
+      .slice(0, this.maxResults)
+      .map((coach) => ({
+        kind: 'coach',
+        id: coach.id,
+        title: coach.name,
+        subtitle: coach.nationality || COACH_DEFAULT_SUBTITLE,
+        route: `${COACH_ROUTE_PREFIX}${coach.id}`,
       }));
   }
 
