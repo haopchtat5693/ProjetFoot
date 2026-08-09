@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, UniqueConstraint, TIMESTAMP
+from sqlalchemy import Column, Integer, String, ForeignKey, UniqueConstraint, TIMESTAMP, Date
 from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.postgresql import JSONB
 from app.database import Base
@@ -35,11 +35,10 @@ class Team(Base):
     city = Column(String)
     logo = Column(String, nullable=True)
 
-    coach_id = Column(Integer, ForeignKey("coaches.id"), nullable=True, index=True)
     stadium_id = Column(Integer, ForeignKey("stadiums.id"), nullable=True, index=True)
 
     stadium = relationship("Stadium", back_populates="teams")
-    coach = relationship("Coach", back_populates="team")
+
     home_matches = relationship(
         "Match", foreign_keys=[Match.home_team_id], back_populates="home_team"
     )
@@ -71,11 +70,37 @@ class Coach(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, index=True)
     age = Column(Integer, index=True)
-    salary = Column(Integer)
+    nationality = Column(String, nullable=True, index=True)
+    photo = Column(String, nullable=True, index=True)
 
-    team = relationship("Team", back_populates="coach")
+    career = relationship(
+        "CoachCareer",
+        back_populates="coach",
+        cascade="all, delete-orphan",
+        order_by="CoachCareer.start.desc()",
+    )
+
+    @property
+    def current_team(self):
+        for entry in self.career:
+            if entry.end is None:
+                return entry.team
+        return None
 
 
+class CoachCareer(Base):
+    __tablename__ = "coach_careers"
+
+    id = Column(Integer, primary_key=True, index=True)
+    coach_id = Column(Integer, ForeignKey("coaches.id"), nullable=False, index=True)
+    team_id = Column(Integer, ForeignKey("teams.id"), nullable=False, index=True)
+    start = Column(Date, nullable=False)
+    end = Column(Date, nullable=True)
+
+    coach = relationship("Coach", back_populates="career")
+    team = relationship("Team")
+
+    
 class Stadium(Base):
     __tablename__ = "stadiums"
 
