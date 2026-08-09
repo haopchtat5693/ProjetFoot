@@ -10,6 +10,7 @@ import type {
   Player,
   PlayerSeasonStats,
   TeamSeasonStats,
+  Coach,
 } from '../interfaces/dashboard';
 
 @Injectable({
@@ -106,5 +107,19 @@ export class ApiService {
 
   getPlayerSeasonStats(playerId: number, seasonId: number): Observable<PlayerSeasonStats> {
     return this.http.get<PlayerSeasonStats>(`${this.apiUrl}/stats/player/${playerId}/season/${seasonId}`);
+  }
+
+  getCoaches(): Observable<Coach[]> {
+    return this.http.get<Coach[]>(`${this.apiUrl}/coaches`);
+  }
+
+  getCoachById(coachId: number): Observable<Coach> {
+    return this.http.get<Coach>(`${this.apiUrl}/coaches/${coachId}`);
+  }
+
+  searchCoachesByName(name: string): Observable<Coach[]> {
+    const params = new URLSearchParams({ name });
+
+    return this.http.get<Coach[]>(`${this.apiUrl}/coaches/search?${params.toString()}`);
   }
 }
