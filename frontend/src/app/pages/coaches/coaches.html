@@ -1,0 +1,68 @@
+<section class="catalog-shell">
+	<header class="catalog-hero">
+		<div>
+			<p class="eyebrow">Coaches catalogue</p>
+			<h1>Browse coaches stored in the database by name, ID, and nationality.</h1>
+			<p>
+				This page shows the full local coach list from the database, then lets you filter it instantly.
+			</p>
+		</div>
+		<div class="catalog-badge">
+			<strong>{{ filteredCoaches().length }}</strong>
+			<span>visible coaches</span>
+		</div>
+	</header>
+
+	<section class="filters">
+		<label>
+			<span>Search</span>
+			<input
+				type="text"
+				[ngModel]="searchQuery()"
+				(ngModelChange)="searchQuery.set($event)"
+				placeholder="Name, nationality, or ID"
+			/>
+		</label>
+
+		<label>
+			<span>Nationality</span>
+			<select [ngModel]="countryFilter()" (ngModelChange)="countryFilter.set($event)">
+				@for (country of countryOptions(); track country) {
+					<option [value]="country">{{ country === 'all' ? 'All nationalities' : country }}</option>
+				}
+			</select>
+		</label>
+	</section>
+
+	<section class="catalog-grid">
+		@for (coach of filteredCoaches(); track coach.id) {
+			<a class="catalog-link" [routerLink]="['/coaches', coach.id]">
+				<article class="catalog-card">
+					<div class="card-media">
+						@if (coach.photo) {
+							<img [src]="coach.photo" [alt]="coach.name + ' photo'" />
+						} @else {
+							<div class="avatar-placeholder">{{ coach.name.charAt(0) }}</div>
+						}
+					</div>
+
+					<div class="card-content">
+						<div class="card-meta">
+							<span>#{{ coach.id }}</span>
+							@if (coach.nationality) {
+								<span>{{ coach.nationality }}</span>
+							}
+						</div>
+						<h2>{{ coach.name }}</h2>
+						<p>@if (coach.age) { {{ coach.age }} years old }</p>
+					</div>
+				</article>
+			</a>
+		} @empty {
+			<div class="empty-state">
+				<h2>No coach found</h2>
+				<p>Try another nationality or search term, or check whether the database already contains coaches.</p>
+			</div>
+		}
+	</section>
+</section>
