@@ -43,6 +43,10 @@ async def sync_and_get_team_players_for_season(
 
             stats_block = (player.get("statistics") or [{}])[0]
             player_payload = map_player_api_data_to_payload(player_raw, stats_block)
+            
+            if player_payload["position"] == "Unknown":
+                continue
+                
             ensure_player_exists(db, player_payload["id"], player_payload)
             ensure_contract_exists(db, player_id, team_id, season_id)
 

@@ -33,6 +33,9 @@ async def sync_and_save_season_stats(db: Session, player_id: int, season_id: int
     stats_block = data["response"][0].get("statistics", [])[0]
     player_payload = map_player_api_data_to_payload(player_raw, stats_block)
 
+    if player_payload["position"] == "Unknown":
+        return None
+
     ensure_player_exists(db, player_id, player_payload)
     ensure_season_exists(db, season_id)
 
