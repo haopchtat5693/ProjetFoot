@@ -1,0 +1,71 @@
+<section class="detail-shell">
+  @if (coach(); as coachData) {
+    <header class="detail-hero">
+      <div class="hero-media">
+        @if (coachData.photo) {
+          <img [src]="coachData.photo" [alt]="coachData.name + ' photo'" />
+        } @else {
+          <div class="hero-placeholder">{{ coachData.name.charAt(0) }}</div>
+        }
+      </div>
+
+      <div>
+        <p class="eyebrow">Coach fiche</p>
+        <h1>{{ coachData.name }}</h1>
+        <p>Individual coach page with career history and key information.</p>
+      </div>
+      <a routerLink="/coaches" class="back-link">Back to coaches</a>
+    </header>
+
+    <section class="summary-grid">
+      @for (item of highlights(); track item.label) {
+        <article class="summary-card">
+          <span>{{ item.label }}</span>
+          <strong>{{ item.value }}</strong>
+        </article>
+      }
+    </section>
+
+    <section class="panel career-panel">
+      <h2>Career History</h2>
+      @if (careerHistory().length) {
+        <div class="career-grid">
+          @for (career of careerHistory(); track career.team.id) {
+            <article class="career-card">
+              <div class="career-team-logo">
+                @if (career.team.logo) {
+                  <img [src]="career.team.logo" [alt]="career.team.name + ' logo'" />
+                } @else {
+                  <div class="logo-placeholder">{{ career.team.name.charAt(0) }}</div>
+                }
+              </div>
+              <div>
+                <strong>{{ career.team.name }}</strong>
+                <p class="career-dates">
+                  {{ career.start }}
+                  @if (career.end) {
+                    - {{ career.end }}
+                  } @else {
+                    - Present
+                  }
+                </p>
+              </div>
+            </article>
+          }
+        </div>
+      } @else {
+        <p class="panel-note">No career history available for this coach.</p>
+      }
+    </section>
+
+    <section class="panel">
+      <h2>What to show here next</h2>
+      <p>Win/loss statistics, team performance during tenure, and tactical information for this coach.</p>
+    </section>
+  } @else {
+    <section class="panel">
+      <h1>Coach not found</h1>
+      <p>The requested coach ID does not exist.</p>
+    </section>
+  }
+</section>
