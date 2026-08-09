@@ -48,13 +48,18 @@
     @for (league of filteredLeagues(); track league.id) {
       <a class="catalog-link" [routerLink]="['/leagues', league.id]">
         <article class="catalog-card">
+          <div class="card-media">
+            @if (league.logo) {
+              <img [src]="league.logo" [alt]="league.name + ' logo'" />
+            } @else {
+              <div class="avatar-placeholder">{{ league.name.charAt(0) }}</div>
+            }
+          </div>
+
           <div class="card-content">
             <div class="card-meta">
               <span>#{{ league.id }}</span>
               <span>{{ league.country }}</span>
-              @if (league.logo) {
-                <img [src]="league.logo" [alt]="league.name + ' logo'" />
-              }
               @if (league.league_type) {
                 <span>{{ league.league_type }}</span>
               }
