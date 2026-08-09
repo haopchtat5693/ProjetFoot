@@ -6,7 +6,7 @@ import { catchError, map, of, switchMap } from 'rxjs';
 import { ApiService } from '../../services/api.service';
 import { SearchResultsService } from '../../services/search-results.service';
 import type { SearchResult, SearchScope } from '../../interfaces/search-results';
-import type { League, Player, Stadium, Team } from '../../interfaces/dashboard';
+import type { League, Player, Stadium, Team, Coach } from '../../interfaces/dashboard';
 
 @Component({
   selector: 'app-search-results',
@@ -28,7 +28,7 @@ export class SearchResults {
   protected readonly scope = computed<SearchScope>(() => {
     const value = this.queryParamMap().get('scope');
 
-    return value === 'team' || value === 'player' || value === 'stadium' || value === 'league' ? value : 'all';
+    return value === 'team' || value === 'player' || value === 'coach' || value === 'stadium' || value === 'league' ? value : 'all';
   });
 
   protected readonly teams = toSignal(
@@ -50,6 +50,17 @@ export class SearchResults {
     ),
     { initialValue: [] as Player[] },
   );
+
+  protected readonly coaches = toSignal(
+    this.route.queryParamMap.pipe(
+      map((params) => params.get('q')?.trim() ?? ''),
+      switchMap((query) =>
+        query.length >= 2 ? this.svc.searchCoachesByName(query).pipe(catchError(() => of([] as Coach[]))) : of([] as Coach[]),
+      ),
+    ),
+    { initialValue: [] as Coach[] },
+  );
+
   protected readonly stadiums = toSignal(this.svc.getStadiums(), { initialValue: [] as Stadium[] });
   protected readonly leagues = toSignal(this.svc.getLeagues(), { initialValue: [] as League[] });
 
@@ -63,6 +74,7 @@ export class SearchResults {
       this.scope(),
       this.teams(),
       this.players(),
+      this.coaches(),
       this.stadiums(),
       this.leagues(),
     );
@@ -70,6 +82,7 @@ export class SearchResults {
 
   protected readonly teamResults = computed(() => this.results().filter((result) => result.kind === 'team'));
   protected readonly playerResults = computed(() => this.results().filter((result) => result.kind === 'player'));
+  protected readonly coachResults = computed(() => this.results().filter((result) => result.kind === 'coach'));
   protected readonly stadiumResults = computed(() => this.results().filter((result) => result.kind === 'stadium'));
   protected readonly leagueResults = computed(() => this.results().filter((result) => result.kind === 'league'));
   protected readonly totalResults = computed(() => this.results().length);

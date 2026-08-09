@@ -61,6 +61,25 @@
       </section>
     }
 
+    @if (coachResults().length) {
+      <section class="result-group">
+        <div class="group-heading">
+          <h2>Coaches</h2>
+          <span>{{ coachResults().length }}</span>
+        </div>
+
+        <div class="result-grid">
+          @for (result of coachResults(); track result.kind + '-' + result.id) {
+            <a class="result-card" [routerLink]="result.route">
+              <span class="kind-tag">{{ result.kind }}</span>
+              <strong>{{ result.title }}</strong>
+              <small>{{ result.subtitle }}</small>
+            </a>
+          }
+        </div>
+      </section>
+    }
+
     @if (stadiumResults().length) {
       <section class="result-group">
         <div class="group-heading">
