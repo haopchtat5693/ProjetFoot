@@ -10,7 +10,7 @@ def map_player_api_data_to_payload(player_raw: dict, stats_block: dict | None = 
         "id": player_raw.get("id"),
         "name": player_raw.get("name", "Unknown"),
         "nationality": player_raw.get("nationality", "Unknown"),
-        "position": (stats_block or {}).get("games", {}).get("position", "Unknown"),
+        "position": player_raw.get("position") or (stats_block or {}).get("games", {}).get("position", "Unknown"),
         "age": player_raw.get("age") or 0,
         "photo": player_raw.get("photo", None),
     }
@@ -20,7 +20,6 @@ def ensure_player_exists(db: Session, player_id: int, player_data: dict):
     player = crud.player_crud.get_player(db, player_id)
 
     if not player:
-        print(f"Création automatique du joueur : {player_data.get('name')}")
         player = crud.player_crud.create_player(db, player_data)
     else:
         player.name = player_data.get("name", player.name)
@@ -43,29 +42,26 @@ async def search_players_by_name(
     if not search_term:
         return []
 
-    print(f"Recherche joueur par nom: '{search_term}'")
-
-    players = crud.player_crud.get_players_by_name(db, search_term, limit=limit)
-    if players:
-        print(f"Résultats trouvés en base: {len(players)}")
-        return players
-
-    print("Aucun résultat en base, appel de l'API externe")
+    local_players = crud.player_crud.get_players_by_name(db, search_term, limit=limit)
+    
     data = await fetch_from_api("/players/profiles", {"search": search_term})
     response = data.get("response") if data else []
-    if not response:
-        print("Aucun résultat côté API externe")
-        return []
+    
+    saved_ids = {p.id for p in local_players}
+    matched_players = list(local_players)
 
-    matched_players = []
     for item in response[:limit]:
         player_raw = item.get("player", {})
         stats_block = (item.get("statistics") or [{}])[0]
         player_id = player_raw.get("id")
-        if not player_id:
+        if not player_id or player_id in saved_ids:
             continue
 
         payload = map_player_api_data_to_payload(player_raw, stats_block)
+        
+        if payload["position"] == "Unknown":
+            continue
+        
         player = ensure_player_exists(db, player_id, payload)
 
         if player:
@@ -76,8 +72,7 @@ async def search_players_by_name(
             player.photo = payload["photo"]
             db.commit()
             db.refresh(player)
-
-        if player:
             matched_players.append(player)
+            saved_ids.add(player_id)
 
     return matched_players

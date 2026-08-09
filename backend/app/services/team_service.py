@@ -64,26 +64,19 @@ async def search_teams_by_name(db: Session, name: str, limit: int = 50):
     if not search_term:
         return []
 
-    print(f"Recherche equipe par nom: '{search_term}'")
-
-    teams = crud.team_crud.get_teams_by_name(db, search_term, limit=limit)
-    if teams:
-        print(f"Résultats trouvés en base: {len(teams)}")
-        return teams
-
-    print("Aucun résultat en base, appel de l'API externe")
+    local_teams = crud.team_crud.get_teams_by_name(db, search_term, limit=limit)
+    
     data = await fetch_from_api("/teams", {"name": search_term})
     response = data.get("response") if data else []
-    if not response:
-        print("Aucun résultat côté API externe")
-        return []
+    
+    saved_ids = {t.id for t in local_teams}
+    matched_teams = list(local_teams)
 
-    matched_teams = []
     for item in response[:limit]:
         team_raw = item.get("team", {})
         venue_raw = item.get("venue") or {}
         team_id = team_raw.get("id")
-        if not team_id:
+        if not team_id or team_id in saved_ids:
             continue
 
         team_payload = map_team_api_data_to_payload(team_raw, venue_raw, team_id)
@@ -95,7 +88,7 @@ async def search_teams_by_name(db: Session, name: str, limit: int = 50):
 
         team = ensure_team_exists(db, schemas.TeamCreate(**team_payload))
         if team:
-            print(f"Équipe trouvée et sauvegardée: {team.name} (ID: {team.id})")
             matched_teams.append(team)
+            saved_ids.add(team_id)
 
     return matched_teams

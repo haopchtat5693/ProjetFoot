@@ -129,19 +129,18 @@ async def search_coaches_by_name(db: Session, name: str, limit: int = 50):
 	if not search_term:
 		return []
 
-	coaches = crud.coach_crud.get_coaches_by_name(db, search_term, limit=limit)
-	if coaches:
-		return coaches
-
+	local_coaches = crud.coach_crud.get_coaches_by_name(db, search_term, limit=limit)
+	
 	data = await fetch_from_api("/coachs", {"search": search_term})
 	response = data.get("response") if data else []
-	if not response:
-		return []
+	
+	saved_ids = {c.id for c in local_coaches}
+	matched = list(local_coaches)
 
-	matched = []
 	for item in response[:limit]:
 		coach = _save_coach_from_response_item(db, item)
-		if coach:
+		if coach and coach.id not in saved_ids:
 			matched.append(coach)
+			saved_ids.add(coach.id)
 
 	return matched
