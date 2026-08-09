@@ -5,11 +5,13 @@ import { Login } from './pages/login/login';
 import { NotFound } from './pages/not-found/not-found';
 import { Teams } from './pages/teams/teams';
 import { Players } from './pages/players/players';
+import { Coaches } from './pages/coaches/coaches';
 import { Leagues } from './pages/leagues/leagues';
 import { LeagueDetail } from './pages/league-detail/league-detail';
 import { Stadiums } from './pages/stadiums/stadiums';
 import { TeamDetail } from './pages/team-detail/team-detail';
 import { PlayerDetail } from './pages/player-detail/player-detail';
+import { CoachDetail } from './pages/coach-detail/coach-detail';
 import { StadiumDetail } from './pages/stadium-detail/stadium-detail';
 import { SearchResults } from './pages/search-results/search-results';
 
@@ -42,6 +44,14 @@ export const routes: Routes = [
 	{
 		path: 'players/:playerId',
 		component: PlayerDetail,
+	},
+	{
+		path: 'coaches',
+		component: Coaches,
+	},
+	{
+		path: 'coaches/:coachId',
+		component: CoachDetail,
 	},
 	{
 		path: 'leagues',

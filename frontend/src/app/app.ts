@@ -1,7 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 
-type SearchScope = 'all' | 'team' | 'player' | 'stadium' | 'league';
+type SearchScope = 'all' | 'team' | 'player' | 'coach' | 'stadium' | 'league';
 
 @Component({
   selector: 'app-root',
@@ -22,7 +22,7 @@ export class App {
   }
 
   protected onScopeChange(value: string): void {
-    const nextScope: SearchScope = value === 'team' || value === 'player' || value === 'stadium' || value === 'league' ? value : 'all';
+    const nextScope: SearchScope = value === 'team' || value === 'player' || value === 'coach' || value === 'stadium' || value === 'league' ? value : 'all';
 
     this.searchScope.set(nextScope);
   }
