@@ -57,6 +57,27 @@ export interface PlayerSeasonStats {
   avg_rating?: string | null;
 }
 
+export interface CoachCareerTeam {
+  id: number;
+  name: string;
+  logo?: string | null;
+}
+
+export interface CoachCareer {
+  team: CoachCareerTeam;
+  start: string;
+  end?: string | null;
+}
+
+export interface Coach {
+  id: number;
+  name: string;
+  age?: number | null;
+  nationality?: string | null;
+  photo?: string | null;
+  career?: CoachCareer[];
+}
+
 export interface PlayerWithSeasonStats {
   player: Player;
   stats: PlayerSeasonStats;

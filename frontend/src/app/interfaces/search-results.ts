@@ -1,4 +1,4 @@
-export type SearchResultKind = 'team' | 'player' | 'stadium' | 'league';
+export type SearchResultKind = 'team' | 'player' | 'coach' | 'stadium' | 'league';
 export type SearchScope = 'all' | SearchResultKind;
 
 export interface SearchResult {
