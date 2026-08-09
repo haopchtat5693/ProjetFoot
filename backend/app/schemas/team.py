@@ -8,7 +8,6 @@ class TeamBase(BaseModel):
     name: str
     country: Optional[str] = None
     city: str
-    coach_id: Optional[int] = None
     stadium_id: Optional[int] = None
     logo: Optional[str] = None
 
@@ -22,7 +21,6 @@ class TeamUpdate(BaseModel):
     country: Optional[str] = None
     city: Optional[str] = None
     logo: Optional[str] = None
-    coach_id: Optional[int] = None
     stadium_id: Optional[int] = None
 
     model_config = ConfigDict(from_attributes=True)
