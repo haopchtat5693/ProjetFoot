@@ -4,7 +4,6 @@ export interface Team {
   country?: string | null;
   city?: string | null;
   logo?: string | null;
-  coach_id?: number | null;
   stadium_id?: number | null;
 }
 
