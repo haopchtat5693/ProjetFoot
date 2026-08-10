@@ -58,7 +58,6 @@ export class TeamDetail {
       createDetailHighlight('ID', team.id),
       createDetailHighlight('Country', team.country),
       createDetailHighlight('City', team.city),
-      createDetailHighlight('Coach', team.coach_id ? `#${team.coach_id}` : 'Not linked'),
     ];
   });
 
