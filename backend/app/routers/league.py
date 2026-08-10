@@ -12,8 +12,8 @@ router = APIRouter(prefix="/leagues", tags=["Leagues"])
 async def lookup_leagues_route(
     db: Session = Depends(get_db),
     league_id: int | None = Query(None, alias="id"),
-    search: str | None = None,
-    season: int | None = None,
+    search: str | None = Query(None),
+    season: int | None = Query(None),
     team_id: int | None = Query(None, alias="team"),
     league_type: str | None = Query(None, alias="type"),
 ) -> list[schemas.League]:
