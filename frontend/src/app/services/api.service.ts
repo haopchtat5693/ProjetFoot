@@ -54,6 +54,10 @@ export class ApiService {
     return this.http.get<League>(`${this.apiUrl}/leagues/${leagueId}`);
   }
 
+  searchLeaguesByName(name: string): Observable<League[]> {
+    return this.lookupLeagues({ search: name });
+  }
+
   lookupLeagues(query: LeagueLookupQuery): Observable<League[]> {
     const params = new URLSearchParams();
 
@@ -64,14 +68,6 @@ export class ApiService {
 
       params.set(key, String(value));
     });
-
-    if (params.has('id')) {
-      params.set('id', params.get('id') ?? '');
-    }
-
-    if (params.has('type')) {
-      params.set('type', params.get('type') ?? '');
-    }
 
     const queryString = params.toString();
     const suffix = queryString ? `?${queryString}` : '';
