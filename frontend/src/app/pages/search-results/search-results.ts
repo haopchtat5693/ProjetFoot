@@ -35,7 +35,7 @@ export class SearchResults {
     this.route.queryParamMap.pipe(
       map((params) => params.get('q')?.trim() ?? ''),
       switchMap((query) =>
-        query.length >= 2 ? this.svc.searchTeamsByName(query).pipe(catchError(() => of([] as Team[]))) : of([] as Team[]),
+        this.hasQuery ? this.svc.searchTeamsByName(query).pipe(catchError(() => of([] as Team[]))) : of([] as Team[]),
       ),
     ),
     { initialValue: [] as Team[] },
@@ -45,7 +45,7 @@ export class SearchResults {
     this.route.queryParamMap.pipe(
       map((params) => params.get('q')?.trim() ?? ''),
       switchMap((query) =>
-        query.length >= 2 ? this.svc.searchPlayersByName(query).pipe(catchError(() => of([] as Player[]))) : of([] as Player[]),
+        this.hasQuery ? this.svc.searchPlayersByName(query).pipe(catchError(() => of([] as Player[]))) : of([] as Player[]),
       ),
     ),
     { initialValue: [] as Player[] },
@@ -55,14 +55,23 @@ export class SearchResults {
     this.route.queryParamMap.pipe(
       map((params) => params.get('q')?.trim() ?? ''),
       switchMap((query) =>
-        query.length >= 2 ? this.svc.searchCoachesByName(query).pipe(catchError(() => of([] as Coach[]))) : of([] as Coach[]),
+        this.hasQuery ? this.svc.searchCoachesByName(query).pipe(catchError(() => of([] as Coach[]))) : of([] as Coach[]),
       ),
     ),
     { initialValue: [] as Coach[] },
   );
 
   protected readonly stadiums = toSignal(this.svc.getStadiums(), { initialValue: [] as Stadium[] });
-  protected readonly leagues = toSignal(this.svc.getLeagues(), { initialValue: [] as League[] });
+
+  protected readonly leagues = toSignal(
+    this.route.queryParamMap.pipe(
+      map((params) => params.get('q')?.trim() ?? ''),
+      switchMap((query) =>
+        this.hasQuery ? this.svc.searchLeaguesByName(query).pipe(catchError(() => of([] as League[]))) : of([] as League[]),
+      ),
+    ),
+    { initialValue: [] as League[] },
+  );
 
   protected readonly results = computed<SearchResult[]>(() => {
     if (!this.hasQuery) {
