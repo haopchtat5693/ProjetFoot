@@ -146,6 +146,16 @@
 	border-radius: 1rem;
 	background: rgba(255, 255, 255, 0.05);
 	border: 1px solid rgba(255, 255, 255, 0.08);
+	text-decoration: none;
+	color: inherit;
+	cursor: pointer;
+	transition: all 0.2s ease;
+}
+
+.squad-card:hover {
+	background: rgba(255, 255, 255, 0.1);
+	border-color: rgba(255, 255, 255, 0.16);
+	transform: translateY(-2px);
 }
 
 .squad-avatar {
@@ -184,6 +194,84 @@
 
 .panel-note {
 	line-height: 1.5;
+}
+
+.stats-table {
+	display: grid;
+	gap: 0.5rem;
+	margin-bottom: 1.5rem;
+}
+
+.stat-row {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 0.8rem 1rem;
+	border-radius: 0.75rem;
+	background: rgba(255, 255, 255, 0.04);
+	border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.stat-label {
+	color: rgba(255, 255, 255, 0.64);
+	font-size: 0.9rem;
+}
+
+.stat-value {
+	color: #fff;
+	font-size: 1rem;
+	font-weight: 600;
+}
+
+.breakdown-stats {
+	display: grid;
+	gap: 0.5rem;
+}
+
+.breakdown-header {
+	display: grid;
+	grid-template-columns: 1.5fr 1fr 1fr 1fr;
+	gap: 0.75rem;
+	padding: 0.8rem 1rem;
+	padding-bottom: 1rem;
+	border-bottom: 2px solid rgba(255, 255, 255, 0.12);
+	margin-bottom: 0.5rem;
+}
+
+.breakdown-header .breakdown-column {
+	color: rgba(255, 255, 255, 0.54);
+	font-size: 0.82rem;
+	text-transform: uppercase;
+	letter-spacing: 0.06em;
+	font-weight: 700;
+	text-align: center;
+}
+
+.breakdown-header .breakdown-label {
+	text-align: left;
+}
+
+.breakdown-row {
+	display: grid;
+	grid-template-columns: 1.5fr 1fr 1fr 1fr;
+	gap: 0.75rem;
+	padding: 0.8rem 1rem;
+	border-radius: 0.75rem;
+	background: rgba(255, 255, 255, 0.04);
+	border: 1px solid rgba(255, 255, 255, 0.06);
+	align-items: center;
+}
+
+.breakdown-label {
+	color: rgba(255, 255, 255, 0.64);
+	font-size: 0.9rem;
+}
+
+.breakdown-column {
+	color: #fff;
+	font-weight: 600;
+	text-align: center;
+	font-size: 0.95rem;
 }
 
 .summary-card,

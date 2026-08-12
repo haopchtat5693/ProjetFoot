@@ -2,11 +2,12 @@ import { CommonModule } from '@angular/common';
 import { Component, computed, effect, inject, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { ApiService } from '../../services/api.service';
+import { TeamDetailService, type StatBreakdown } from '../../services/team-detail.service';
 import type { League, Player, Season, TeamSeasonStats } from '../../interfaces/dashboard';
 import type { DetailHighlight } from '../../interfaces/detail';
 import { catchError, of } from 'rxjs';
 import { toNumberOrNull } from '../../utils';
-import { createDetailHighlight, createRouteEntitySignal, formatDetailValue, sortByIdDesc } from '../../utils';
+import { createDetailHighlight, createRouteEntitySignal, sortByIdDesc } from '../../utils';
 
 @Component({
   selector: 'app-team-detail',
@@ -16,7 +17,8 @@ import { createDetailHighlight, createRouteEntitySignal, formatDetailValue, sort
   styleUrl: './team-detail.scss',
 })
 export class TeamDetail {
-  private readonly svc = inject(ApiService);
+  private readonly api = inject(ApiService);
+  private readonly detailSvc = inject(TeamDetailService);
   private readonly route = inject(ActivatedRoute);
 
   protected readonly leagues = signal<League[]>([]);
@@ -26,14 +28,12 @@ export class TeamDetail {
   protected readonly teamPlayers = signal<Player[]>([]);
 
   protected readonly team = createRouteEntitySignal(this.route, 'teamId', (teamId) =>
-    this.svc.getTeamById(teamId),
+    this.api.getTeamById(teamId),
   );
 
   protected readonly selectedLeague = computed(() => {
     const leagueId = this.selectedLeagueId();
-
     if (leagueId === null) return null;
-
     return this.leagues().find((league) => league.id === leagueId) ?? null;
   });
 
@@ -42,18 +42,9 @@ export class TeamDetail {
     return sortByIdDesc(seasons);
   });
 
-  protected readonly selectedSeason = computed(() => {
-    const seasonId = this.selectedSeasonId();
-
-    if (seasonId === null) return null;
-
-    return this.availableSeasons().find((season) => season.id === seasonId) ?? null;
-  });
-
   protected readonly highlights = computed<DetailHighlight[]>(() => {
     const team = this.team();
     if (!team) return [];
-
     return [
       createDetailHighlight('ID', team.id),
       createDetailHighlight('Country', team.country),
@@ -63,51 +54,47 @@ export class TeamDetail {
 
   protected readonly statHighlights = computed<DetailHighlight[]>(() => {
     const stats = this.teamSeasonStats();
-
-    if (!stats) {
-      return [];
-    }
-
+    if (!stats) return [];
     return [
       createDetailHighlight('League', this.selectedLeague()?.name ?? `#${stats.league_id}`),
       createDetailHighlight('Season', `#${stats.season_id}`),
-      createDetailHighlight('Fixtures', formatDetailValue(stats.fixtures)),
-      createDetailHighlight('Goals', formatDetailValue(stats.goals)),
-      createDetailHighlight('Clean sheet', formatDetailValue(stats.clean_sheet)),
-      createDetailHighlight('Failed to score', formatDetailValue(stats.failed_to_score)),
-      createDetailHighlight('Penalty', formatDetailValue(stats.penalty)),
-      createDetailHighlight('Cards', formatDetailValue(stats.cards)),
+    ];
+  });
+
+  protected readonly statBreakdowns = computed<StatBreakdown[]>(() => {
+    const stats = this.teamSeasonStats();
+    if (!stats) return [];
+    return [
+      this.detailSvc.createBreakdown('Fixtures', stats.fixtures),
+      this.detailSvc.createBreakdown('Goals (For)', stats.goals?.['for']),
+      this.detailSvc.createBreakdown('Goals (Against)', stats.goals?.['against']),
+      this.detailSvc.createBreakdown('Clean Sheet', stats.clean_sheet),
+      this.detailSvc.createBreakdown('Failed to Score', stats.failed_to_score),
+      this.detailSvc.createSimplePenaltyBreakdown('Penalties (Total)', stats.penalty),
+      this.detailSvc.createCardBreakdown('Yellow Cards', stats.cards, 'yellow'),
+      this.detailSvc.createCardBreakdown('Red Cards', stats.cards, 'red'),
     ];
   });
 
   constructor() {
     effect((onCleanup) => {
       const team = this.team();
-
       this.leagues.set([]);
       this.selectedLeagueId.set(null);
       this.selectedSeasonId.set(null);
       this.teamSeasonStats.set(null);
       this.teamPlayers.set([]);
 
-      if (!team) {
-        return;
-      }
+      if (!team) return;
 
-      const subscription = this.svc
+      const subscription = this.api
         .lookupLeagues({ team: team.id })
-        .pipe(
-          catchError(() => {
-            console.warn(`Impossible de charger les ligues pour l'equipe ${team.id}.`);
-            return of([] as League[]);
-          }),
-        )
+        .pipe(catchError(() => of([] as League[])))
         .subscribe((leagues) => {
           this.leagues.set(leagues);
-
           const preferredLeague = leagues[0] ?? null;
           this.selectedLeagueId.set(preferredLeague?.id ?? null);
-          this.selectedSeasonId.set(this.pickSeasonId(preferredLeague?.seasons));
+          this.selectedSeasonId.set(this.getFirstSeasonId(preferredLeague?.seasons));
         });
 
       onCleanup(() => subscription.unsubscribe());
@@ -121,84 +108,48 @@ export class TeamDetail {
       this.teamSeasonStats.set(null);
       this.teamPlayers.set([]);
 
-      if (!team || leagueId === null || seasonId === null) {
-        return;
-      }
+      if (!team || leagueId === null || seasonId === null) return;
 
-      const subscription = this.svc
+      const statsSubscription = this.api
         .getTeamSeasonStats(team.id, leagueId, seasonId)
-        .pipe(
-          catchError(() => {
-            console.warn(`Impossible de charger les stats equipe pour team=${team.id}, league=${leagueId}, season=${seasonId}.`);
-            return of(null as TeamSeasonStats | null);
-          }),
-        )
-        .subscribe((stats) => {
-          this.teamSeasonStats.set(stats);
-        });
+        .pipe(catchError(() => of(null as TeamSeasonStats | null)))
+        .subscribe((stats) => this.teamSeasonStats.set(stats));
 
-      const playersSubscription = this.svc
+      const playersSubscription = this.api
         .getTeamPlayersForSeason(team.id, seasonId)
-        .pipe(
-          catchError(() => {
-            console.warn(`Impossible de charger les joueurs pour team=${team.id}, season=${seasonId}.`);
-            return of([] as Player[]);
-          }),
-        )
-        .subscribe((players) => {
-          this.teamPlayers.set(players);
-        });
+        .pipe(catchError(() => of([] as Player[])))
+        .subscribe((players) => this.teamPlayers.set(players));
 
       onCleanup(() => {
-        subscription.unsubscribe();
+        statsSubscription.unsubscribe();
         playersSubscription.unsubscribe();
       });
     });
   }
 
   protected onLeagueChange(leagueId: number | string | null): void {
-    const parsedLeagueId = toNumberOrNull(leagueId);
-    this.selectedLeagueId.set(parsedLeagueId);
+    const parsed = toNumberOrNull(leagueId);
+    this.selectedLeagueId.set(parsed);
 
-    if (parsedLeagueId === null) {
+    if (parsed === null) {
       this.selectedSeasonId.set(null);
       return;
     }
 
-    const matchedLeague = this.leagues().find((league) => league.id === parsedLeagueId) ?? null;
-    this.selectedSeasonId.set(this.pickSeasonId(matchedLeague?.seasons));
+    const league = this.leagues().find((l) => l.id === parsed) ?? null;
+    this.selectedSeasonId.set(this.getFirstSeasonId(league?.seasons));
   }
 
   protected onSeasonChange(seasonId: number | string | null): void {
     this.selectedSeasonId.set(toNumberOrNull(seasonId));
   }
 
-  protected formatValue(value: unknown): string {
-    if (value === null || value === undefined || value === '') {
-      return '—';
-    }
-
-    if (Array.isArray(value)) {
-      return value.length ? `${value.length}` : '—';
-    }
-
-    if (typeof value === 'object') {
-      return Object.entries(value as Record<string, unknown>)
-        .map(([key, nestedValue]) => `${key}: ${this.formatValue(nestedValue)}`)
-        .join(' · ');
-    }
-
-    return String(value);
-  }
-
   protected squadLabel(player: Player): string {
     return [player.position, player.age ? `${player.age}y` : null].filter(Boolean).join(' · ') || 'No extra info';
   }
 
-  private pickSeasonId(seasons: Season[] | undefined | null): number | null {
-    if (!seasons?.length) return null;
-
-    return seasons[0]?.id ?? null;
+  private getFirstSeasonId(seasons: Season[] | undefined | null): number | null {
+    return seasons?.length ? seasons[0]?.id ?? null : null;
   }
-
 }
+

@@ -43,19 +43,6 @@
 					</label>
 				</div>
 			</div>
-
-			@if (teamSeasonStats(); as seasonStats) {
-				<section class="summary-grid stats-grid">
-					@for (item of statHighlights(); track item.label) {
-						<article class="summary-card">
-							<span>{{ item.label }}</span>
-							<strong>{{ item.value }}</strong>
-						</article>
-					}
-				</section>
-			} @else {
-				<p class="panel-note">Select a league and season to load team stats.</p>
-			}
 		</section>
 
 		<section class="summary-grid">
@@ -67,12 +54,44 @@
 			}
 		</section>
 
+		@if (teamSeasonStats(); as seasonStats) {
+			<section class="panel">
+				<h2>Season Statistics</h2>
+				
+				<div class="stats-table">
+					@for (item of statHighlights(); track item.label) {
+						<div class="stat-row">
+							<span class="stat-label">{{ item.label }}</span>
+							<strong class="stat-value">{{ item.value }}</strong>
+						</div>
+					}
+				</div>
+
+				<div class="breakdown-stats">
+					<div class="breakdown-header">
+						<span class="breakdown-label"></span>
+						<span class="breakdown-column">Home</span>
+						<span class="breakdown-column">Away</span>
+						<span class="breakdown-column">Total</span>
+					</div>
+					@for (item of statBreakdowns(); track item.label) {
+						<div class="breakdown-row">
+							<span class="breakdown-label">{{ item.label }}</span>
+							<span class="breakdown-column">{{ item.home ?? '—' }}</span>
+							<span class="breakdown-column">{{ item.away ?? '—' }}</span>
+							<span class="breakdown-column">{{ item.total ?? '—' }}</span>
+						</div>
+					}
+				</div>
+			</section>
+		}
+
 		<section class="panel squad-panel">
 			<h2>Squad for the selected season</h2>
 			@if (teamPlayers().length) {
 				<div class="squad-grid">
 					@for (player of teamPlayers(); track player.id) {
-						<article class="squad-card">
+						<a [routerLink]="['/players', player.id]" class="squad-card">
 							<div class="squad-avatar">
 								@if (player.photo) {
 									<img [src]="player.photo" [alt]="player.name + ' photo'" />
@@ -84,7 +103,7 @@
 								<strong>{{ player.name }}</strong>
 								<p>{{ squadLabel(player) }}</p>
 							</div>
-						</article>
+						</a>
 					}
 				</div>
 			} @else {
