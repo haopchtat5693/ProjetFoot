@@ -1,4 +1,3 @@
-from typing import Optional
 
 from app import schemas
 from app.services.football_api_client import fetch_from_api
