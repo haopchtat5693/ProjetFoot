@@ -20,12 +20,22 @@ def ensure_stadium_exists(db: Session, stadium_id: int, stadium_data: dict):
     if not stadium:
         return crud.stadium_crud.create_stadium(db, stadium_data)
 
-    stadium.name = stadium_data["name"]
-    stadium.city = stadium_data["city"]
-    stadium.address = stadium_data["address"]
-    stadium.capacity = stadium_data["capacity"]
-    stadium.image = stadium_data["image"]
-    db.commit()
-    db.refresh(stadium)
+    if (stadium.name != stadium_data["name"] or 
+        stadium.city != stadium_data["city"] or
+        stadium.address != stadium_data["address"] or
+        stadium.capacity != stadium_data["capacity"] or
+        stadium.image != stadium_data["image"]):
+        
+        try:
+            stadium.name = stadium_data["name"]
+            stadium.city = stadium_data["city"]
+            stadium.address = stadium_data["address"]
+            stadium.capacity = stadium_data["capacity"]
+            stadium.image = stadium_data["image"]
+            db.commit()
+            db.refresh(stadium)
+        except Exception as e:
+            db.rollback()
+            db.refresh(stadium)
 
     return stadium
