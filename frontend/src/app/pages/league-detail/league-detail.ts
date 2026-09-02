@@ -3,7 +3,7 @@ import { Component, computed, effect, inject, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { ApiService } from '../../services/api.service';
 import type { DetailHighlight } from '../../interfaces/detail';
-import type { Fixture } from '../../interfaces/dashboard';
+import type { Fixture } from '../../interfaces/tables';
 import { catchError, of } from 'rxjs';
 import { toNumberOrNull } from '../../utils';
 import { createDetailHighlight, createRouteEntitySignal, sortByIdDesc } from '../../utils';

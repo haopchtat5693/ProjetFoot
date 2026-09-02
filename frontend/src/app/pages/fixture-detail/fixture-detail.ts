@@ -5,7 +5,7 @@ import { ApiService } from '../../services/api.service';
 import type { DetailHighlight } from '../../interfaces/detail';
 import { catchError, of } from 'rxjs';
 import { createDetailHighlight, createRouteEntitySignal } from '../../utils';
-import type { Team } from '../../interfaces/dashboard';
+import type { Team } from '../../interfaces/tables';
 
 @Component({
   selector: 'app-fixture-detail',

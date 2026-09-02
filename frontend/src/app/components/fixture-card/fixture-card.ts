@@ -2,7 +2,7 @@ import { Component, Input, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { ApiService } from '../../services/api.service';
-import type { Fixture, Team } from '../../interfaces/dashboard';
+import type { Fixture, Team } from '../../interfaces/tables';
 import { catchError, of } from 'rxjs';
 
 @Component({

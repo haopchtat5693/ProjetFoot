@@ -5,7 +5,7 @@ import { ActivatedRoute } from '@angular/router';
 import { RouterLink } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ApiService } from '../../services/api.service';
-import type { Team } from '../../interfaces/dashboard';
+import type { Team } from '../../interfaces/tables';
 
 @Component({
   selector: 'app-teams',

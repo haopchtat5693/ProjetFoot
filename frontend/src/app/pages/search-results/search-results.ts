@@ -6,7 +6,7 @@ import { catchError, map, of, switchMap } from 'rxjs';
 import { ApiService } from '../../services/api.service';
 import { SearchResultsService } from '../../services/search-results.service';
 import type { SearchResult, SearchScope } from '../../interfaces/search-results';
-import type { League, Player, Stadium, Team, Coach } from '../../interfaces/dashboard';
+import type { League, Player, Stadium, Team, Coach } from '../../interfaces/tables';
 
 @Component({
   selector: 'app-search-results',

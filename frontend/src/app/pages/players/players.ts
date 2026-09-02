@@ -5,7 +5,7 @@ import { ActivatedRoute } from '@angular/router';
 import { RouterLink } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ApiService } from '../../services/api.service';
-import type { Player } from '../../interfaces/dashboard';
+import type { Player } from '../../interfaces/tables';
 
 @Component({
   selector: 'app-players',

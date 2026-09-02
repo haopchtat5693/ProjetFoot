@@ -3,7 +3,7 @@ import { Component, computed, effect, inject, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { ApiService } from '../../services/api.service';
 import { TeamDetailService, type StatBreakdown } from '../../services/team-detail.service';
-import type { Fixture, League, Player, Season, TeamSeasonStats } from '../../interfaces/dashboard';
+import type { Fixture, League, Player, Season, TeamSeasonStats } from '../../interfaces/tables';
 import type { DetailHighlight } from '../../interfaces/detail';
 import { FixtureCardComponent } from '../../components/fixture-card/fixture-card';
 import { catchError, of } from 'rxjs';

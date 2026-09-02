@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ApiService } from '../../services/api.service';
-import type { Fixture } from '../../interfaces/dashboard';
+import type { Fixture } from '../../interfaces/tables';
 
 @Component({
   selector: 'app-fixtures',

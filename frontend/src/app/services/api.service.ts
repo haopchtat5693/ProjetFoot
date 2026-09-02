@@ -13,7 +13,7 @@ import type {
   TeamSeasonStats,
   Coach,
   Fixture,
-} from '../interfaces/dashboard';
+} from '../interfaces/tables';
 
 @Injectable({
   providedIn: 'root',

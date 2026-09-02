@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ApiService } from '../../services/api.service';
-import type { League } from '../../interfaces/dashboard';
+import type { League } from '../../interfaces/tables';
 
 @Component({
   selector: 'app-leagues',

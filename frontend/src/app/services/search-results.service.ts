@@ -19,7 +19,7 @@ import {
   TEAM_DEFAULT_SUBTITLE,
   TEAM_ROUTE_PREFIX,
 } from '../constants/search-results';
-import type { League, Player, Stadium, Team, Coach } from '../interfaces/dashboard';
+import type { League, Player, Stadium, Team, Coach } from '../interfaces/tables';
 import type { SearchResult, SearchResultKind, SearchScope } from '../interfaces/search-results';
 
 @Injectable({ providedIn: 'root' })

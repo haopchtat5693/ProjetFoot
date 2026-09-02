@@ -4,7 +4,7 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { catchError, combineLatest, of, switchMap } from 'rxjs';
 import { ApiService } from '../../services/api.service';
-import type { PlayerSeasonStats, Season } from '../../interfaces/dashboard';
+import type { PlayerSeasonStats, Season } from '../../interfaces/tables';
 import type { DetailHighlight } from '../../interfaces/detail';
 import { createDetailHighlight, createRouteEntitySignal, sortByIdDesc } from '../../utils';
 import { toNumberOrNull } from '../../utils';

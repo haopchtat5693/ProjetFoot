@@ -5,7 +5,7 @@ import { ActivatedRoute } from '@angular/router';
 import { RouterLink } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ApiService } from '../../services/api.service';
-import type { Stadium } from '../../interfaces/dashboard';
+import type { Stadium } from '../../interfaces/tables';
 
 @Component({
   selector: 'app-stadiums',
