@@ -1,7 +1,7 @@
 from pydantic import BaseModel, ConfigDict
 from typing import Optional
 
-from app.schemas.match import Match
+from app.schemas.fixture import Fixture
 
 
 class TeamBase(BaseModel):
@@ -28,7 +28,7 @@ class TeamUpdate(BaseModel):
 
 class Team(TeamBase):
     id: int
-    home_matches: list[Match] = []
-    away_matches: list[Match] = []
+    home_fixtures: list[Fixture] = []
+    away_fixtures: list[Fixture] = []
 
     model_config = ConfigDict(from_attributes=True)

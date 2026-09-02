@@ -4,7 +4,7 @@ from typing import Optional
 
 class PlayerMatchStatsBase(BaseModel):
     player_id: int
-    match_id: int
+    fixture_id: int
     season_id: int
     goals: Optional[int] = 0
     assists: Optional[int] = 0
@@ -19,7 +19,7 @@ class PlayerMatchStatsCreate(PlayerMatchStatsBase):
 
 class PlayerMatchStatsUpdate(BaseModel):
     player_id: Optional[int] = None
-    match_id: Optional[int] = None
+    fixture_id: Optional[int] = None
     season_id: Optional[int] = None
     goals: Optional[int] = None
     assists: Optional[int] = None
