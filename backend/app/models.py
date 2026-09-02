@@ -5,25 +5,38 @@ from app.database import Base
 from app.core.constants import VIEWER
 
 
-class Match(Base):
-    __tablename__ = "matches"
+class Fixture(Base):
+    __tablename__ = "fixtures"
 
     id = Column(Integer, primary_key=True, index=True)
     home_team_id = Column(Integer, ForeignKey("teams.id"), index=True)
     away_team_id = Column(Integer, ForeignKey("teams.id"), index=True)
-    date = Column(String)
+    league_id = Column(Integer, ForeignKey("leagues.id"), nullable=True, index=True)
+    season_id = Column(Integer, ForeignKey("seasons.id"), nullable=True, index=True)
+    stadium_id = Column(Integer, ForeignKey("stadiums.id"), nullable=True, index=True)
+    
+    date = Column(String, index=True)
     location = Column(String)
-    result = Column(String)
-    referee_id = Column(Integer, ForeignKey("referees.id"), index=True)
+    result = Column(String, nullable=True)
+    status = Column(String, nullable=True, index=True)
+    timezone = Column(String, nullable=True)
+    home_goals = Column(Integer, nullable=True)
+    away_goals = Column(Integer, nullable=True)
+    
+    referee_id = Column(Integer, ForeignKey("referees.id"), nullable=True, index=True)
+    
+    statistics = Column(JSONB, nullable=True)
 
     home_team = relationship(
-        "Team", foreign_keys=[home_team_id], back_populates="home_matches"
+        "Team", foreign_keys=[home_team_id], back_populates="home_fixtures"
     )
     away_team = relationship(
-        "Team", foreign_keys=[away_team_id], back_populates="away_matches"
+        "Team", foreign_keys=[away_team_id], back_populates="away_fixtures"
     )
-    referee = relationship("Referee", back_populates="matches")
-    players_stats = relationship("PlayerMatchStats", back_populates="match")
+    referee = relationship("Referee", back_populates="fixtures")
+    league = relationship("League")
+    stadium = relationship("Stadium")
+    players_stats = relationship("PlayerMatchStats", back_populates="fixture")
 
 
 class Team(Base):
@@ -39,11 +52,11 @@ class Team(Base):
 
     stadium = relationship("Stadium", back_populates="teams")
 
-    home_matches = relationship(
-        "Match", foreign_keys=[Match.home_team_id], back_populates="home_team"
+    home_fixtures = relationship(
+        "Fixture", foreign_keys=[Fixture.home_team_id], back_populates="home_team"
     )
-    away_matches = relationship(
-        "Match", foreign_keys=[Match.away_team_id], back_populates="away_team"
+    away_fixtures = relationship(
+        "Fixture", foreign_keys=[Fixture.away_team_id], back_populates="away_team"
     )
     contracts = relationship("Contract", back_populates="team")
     season_stats = relationship("TeamSeasonStats", back_populates="team")
@@ -122,7 +135,7 @@ class Referee(Base):
     age = Column(Integer, index=True)
     salary = Column(Integer)
 
-    matches = relationship("Match", back_populates="referee")
+    fixtures = relationship("Fixture", back_populates="referee")
 
 
 class League(Base):
@@ -195,12 +208,12 @@ class PlayerMatchStats(Base):
     __tablename__ = "player_match_stats"
 
     __table_args__ = (
-        UniqueConstraint("player_id", "match_id", name="_player_match_uc"),
+        UniqueConstraint("player_id", "fixture_id", name="_player_fixture_uc"),
     )
 
     id = Column(Integer, primary_key=True, index=True)
     player_id = Column(Integer, ForeignKey("players.id"), index=True)
-    match_id = Column(Integer, ForeignKey("matches.id"), index=True)
+    fixture_id = Column(Integer, ForeignKey("fixtures.id"), index=True)
     season_id = Column(Integer, ForeignKey("seasons.id"), index=True)
 
     goals = Column(Integer, default=0)
@@ -210,7 +223,7 @@ class PlayerMatchStats(Base):
     minutes_played = Column(Integer, default=0)
 
     player = relationship("Player", back_populates="match_stats")
-    match = relationship("Match", back_populates="players_stats")
+    fixture = relationship("Fixture", back_populates="players_stats")
 
 
 class PlayerSeasonStats(Base):
