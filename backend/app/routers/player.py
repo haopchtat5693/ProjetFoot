@@ -3,13 +3,18 @@ from sqlalchemy.orm import Session
 
 from app import crud, schemas
 from app.database import get_db
+from app.core.deps import get_current_manager, get_current_admin
 from app.services.player_service import search_players_by_name
 
 router = APIRouter(prefix="/players", tags=["Players"])
 
 
 @router.post("/", response_model=schemas.Player)
-def create_player(player: schemas.PlayerCreate, db: Session = Depends(get_db)):
+def create_player(
+    player: schemas.PlayerCreate, 
+    db: Session = Depends(get_db),
+    current_user = Depends(get_current_manager),
+):
     return crud.player_crud.create_player(db, player)
 
 
@@ -39,7 +44,10 @@ def get_players(db: Session = Depends(get_db)):
 
 @router.put("/{player_id}", response_model=schemas.Player)
 def update_player(
-    player_id: int, player_in: schemas.PlayerUpdate, db: Session = Depends(get_db)
+    player_id: int, 
+    player_in: schemas.PlayerUpdate, 
+    db: Session = Depends(get_db),
+    current_user = Depends(get_current_manager),
 ):
     player = crud.player_crud.get_player(db, player_id)
     if not player:
@@ -48,7 +56,11 @@ def update_player(
 
 
 @router.delete("/{player_id}", response_model=schemas.Player)
-def delete_player(player_id: int, db: Session = Depends(get_db)):
+def delete_player(
+    player_id: int, 
+    db: Session = Depends(get_db),
+    current_user = Depends(get_current_admin),
+):
     player = crud.player_crud.get_player(db, player_id)
     if not player:
         raise HTTPException(status_code=404, detail="Player not found")

@@ -3,12 +3,17 @@ from sqlalchemy.orm import Session
 
 from app import crud, schemas
 from app.database import get_db
+from app.core.deps import get_current_manager, get_current_admin
 
 router = APIRouter(prefix="/seasons", tags=["Seasons"])
 
 
 @router.post("/", response_model=schemas.Season)
-def create_season(season: schemas.SeasonCreate, db: Session = Depends(get_db)):
+def create_season(
+    season: schemas.SeasonCreate, 
+    db: Session = Depends(get_db),
+    current_user = Depends(get_current_manager),
+):
     return crud.season_crud.create_season(db, season)
 
 
@@ -27,7 +32,10 @@ def get_seasons(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
 
 @router.put("/{season_id}", response_model=schemas.Season)
 def update_season(
-    season_id: int, season_in: schemas.SeasonUpdate, db: Session = Depends(get_db)
+    season_id: int, 
+    season_in: schemas.SeasonUpdate, 
+    db: Session = Depends(get_db),
+    current_user = Depends(get_current_manager),
 ):
     season = crud.season_crud.get_season(db, season_id)
     if not season:
@@ -36,7 +44,11 @@ def update_season(
 
 
 @router.delete("/{season_id}", response_model=schemas.Season)
-def delete_season(season_id: int, db: Session = Depends(get_db)):
+def delete_season(
+    season_id: int, 
+    db: Session = Depends(get_db),
+    current_user = Depends(get_current_admin),
+):
     season = crud.season_crud.get_season(db, season_id)
     if not season:
         raise HTTPException(status_code=404, detail="Season not found")

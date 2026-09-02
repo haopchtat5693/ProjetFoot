@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 
 from app import crud, schemas
 from app.database import get_db
+from app.core.deps import get_current_manager, get_current_admin
 from app.services.fixture_sync_service import (
     sync_and_save_fixture,
     sync_fixture_statistics,
@@ -14,7 +15,11 @@ router = APIRouter(prefix="/fixtures", tags=["Fixtures"])
 
 
 @router.post("/", response_model=schemas.Fixture)
-def create_fixture(fixture: schemas.FixtureCreate, db: Session = Depends(get_db)):
+def create_fixture(
+    fixture: schemas.FixtureCreate, 
+    db: Session = Depends(get_db),
+    current_user = Depends(get_current_manager),
+):
     return crud.fixture_crud.create_fixture(db, fixture)
 
 
@@ -117,7 +122,10 @@ async def get_fixtures(
 
 @router.put("/{fixture_id}", response_model=schemas.Fixture)
 def update_fixture(
-    fixture_id: int, fixture_in: schemas.FixtureUpdate, db: Session = Depends(get_db)
+    fixture_id: int, 
+    fixture_in: schemas.FixtureUpdate, 
+    db: Session = Depends(get_db),
+    current_user = Depends(get_current_manager),
 ):
     fixture = crud.fixture_crud.get_fixture(db, fixture_id)
     if not fixture:
@@ -126,7 +134,11 @@ def update_fixture(
 
 
 @router.delete("/{fixture_id}", response_model=schemas.Fixture)
-def delete_fixture(fixture_id: int, db: Session = Depends(get_db)):
+def delete_fixture(
+    fixture_id: int, 
+    db: Session = Depends(get_db),
+    current_user = Depends(get_current_admin),
+):
     fixture = crud.fixture_crud.get_fixture(db, fixture_id)
     if not fixture:
         raise HTTPException(status_code=404, detail="Fixture not found")

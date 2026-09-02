@@ -6,12 +6,17 @@ from sqlalchemy.orm import Session
 
 from app import crud, schemas
 from app.database import get_db
+from app.core.deps import get_current_manager, get_current_admin
 
 router = APIRouter(prefix="/teams", tags=["Teams"])
 
 
 @router.post("/", response_model=schemas.Team)
-def create_team(team: schemas.TeamCreate, db: Session = Depends(get_db)):
+def create_team(
+    team: schemas.TeamCreate, 
+    db: Session = Depends(get_db),
+    current_user = Depends(get_current_manager),
+):
     return crud.team_crud.create_team(db, team)
 
 
@@ -80,7 +85,10 @@ def get_teams(db: Session = Depends(get_db)):
 
 @router.put("/{team_id}", response_model=schemas.Team)
 def update_team(
-    team_id: int, team_in: schemas.TeamUpdate, db: Session = Depends(get_db)
+    team_id: int, 
+    team_in: schemas.TeamUpdate, 
+    db: Session = Depends(get_db),
+    current_user = Depends(get_current_manager),
 ):
     team = crud.team_crud.get_team(db, team_id)
     if not team:
@@ -89,7 +97,11 @@ def update_team(
 
 
 @router.delete("/{team_id}", response_model=schemas.Team)
-def delete_team(team_id: int, db: Session = Depends(get_db)):
+def delete_team(
+    team_id: int, 
+    db: Session = Depends(get_db),
+    current_user = Depends(get_current_admin),
+):
     team = crud.team_crud.get_team(db, team_id)
     if not team:
         raise HTTPException(status_code=404, detail="Team not found")

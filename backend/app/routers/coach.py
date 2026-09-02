@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 
 from app import crud, schemas
 from app.database import get_db
+from app.core.deps import get_current_manager, get_current_admin
 from app.services.coach_service import (
     search_coaches_by_name,
     sync_and_save_coach,
@@ -13,7 +14,11 @@ router = APIRouter(prefix="/coaches", tags=["Coaches"])
 
 
 @router.post("/", response_model=schemas.Coach)
-def create_coach(coach: schemas.CoachCreate, db: Session = Depends(get_db)):
+def create_coach(
+    coach: schemas.CoachCreate, 
+    db: Session = Depends(get_db),
+    current_user = Depends(get_current_manager),
+):
     return crud.coach_crud.create_coach(db, coach)
 
 
@@ -80,7 +85,10 @@ async def get_coaches(
 
 @router.put("/{coach_id}", response_model=schemas.Coach)
 def update_coach(
-    coach_id: int, coach_in: schemas.CoachUpdate, db: Session = Depends(get_db)
+    coach_id: int, 
+    coach_in: schemas.CoachUpdate, 
+    db: Session = Depends(get_db),
+    current_user = Depends(get_current_manager),
 ):
     coach = crud.coach_crud.get_coach(db, coach_id)
     if not coach:
@@ -89,7 +97,11 @@ def update_coach(
 
 
 @router.delete("/{coach_id}", response_model=schemas.Coach)
-def delete_coach(coach_id: int, db: Session = Depends(get_db)):
+def delete_coach(
+    coach_id: int, 
+    db: Session = Depends(get_db),
+    current_user = Depends(get_current_admin),
+):
     coach = crud.coach_crud.get_coach(db, coach_id)
     if not coach:
         raise HTTPException(status_code=404, detail="Coach not found")
