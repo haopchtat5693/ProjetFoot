@@ -31,11 +31,13 @@ export class SearchResults {
     return value === 'team' || value === 'player' || value === 'coach' || value === 'stadium' || value === 'league' ? value : 'all';
   });
 
+  protected readonly hasQuery = computed(() => this.query().length >= 2);
+
   protected readonly teams = toSignal(
     this.route.queryParamMap.pipe(
       map((params) => params.get('q')?.trim() ?? ''),
       switchMap((query) =>
-        this.hasQuery ? this.svc.searchTeamsByName(query).pipe(catchError(() => of([] as Team[]))) : of([] as Team[]),
+        query.length >= 2 ? this.svc.searchTeamsByName(query).pipe(catchError(() => of([] as Team[]))) : of([] as Team[]),
       ),
     ),
     { initialValue: [] as Team[] },
@@ -45,7 +47,7 @@ export class SearchResults {
     this.route.queryParamMap.pipe(
       map((params) => params.get('q')?.trim() ?? ''),
       switchMap((query) =>
-        this.hasQuery ? this.svc.searchPlayersByName(query).pipe(catchError(() => of([] as Player[]))) : of([] as Player[]),
+        query.length >= 2 ? this.svc.searchPlayersByName(query).pipe(catchError(() => of([] as Player[]))) : of([] as Player[]),
       ),
     ),
     { initialValue: [] as Player[] },
@@ -55,7 +57,7 @@ export class SearchResults {
     this.route.queryParamMap.pipe(
       map((params) => params.get('q')?.trim() ?? ''),
       switchMap((query) =>
-        this.hasQuery ? this.svc.searchCoachesByName(query).pipe(catchError(() => of([] as Coach[]))) : of([] as Coach[]),
+        query.length >= 2 ? this.svc.searchCoachesByName(query).pipe(catchError(() => of([] as Coach[]))) : of([] as Coach[]),
       ),
     ),
     { initialValue: [] as Coach[] },
@@ -67,14 +69,14 @@ export class SearchResults {
     this.route.queryParamMap.pipe(
       map((params) => params.get('q')?.trim() ?? ''),
       switchMap((query) =>
-        this.hasQuery ? this.svc.searchLeaguesByName(query).pipe(catchError(() => of([] as League[]))) : of([] as League[]),
+        query.length >= 2 ? this.svc.searchLeaguesByName(query).pipe(catchError(() => of([] as League[]))) : of([] as League[]),
       ),
     ),
     { initialValue: [] as League[] },
   );
 
   protected readonly results = computed<SearchResult[]>(() => {
-    if (!this.hasQuery) {
+    if (!this.hasQuery()) {
       return [];
     }
 
@@ -95,8 +97,4 @@ export class SearchResults {
   protected readonly stadiumResults = computed(() => this.results().filter((result) => result.kind === 'stadium'));
   protected readonly leagueResults = computed(() => this.results().filter((result) => result.kind === 'league'));
   protected readonly totalResults = computed(() => this.results().length);
-
-  protected get hasQuery(): boolean {
-    return this.query().length >= 2;
-  }
 }
