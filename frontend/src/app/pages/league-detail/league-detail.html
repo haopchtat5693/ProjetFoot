@@ -21,6 +21,17 @@
     <section class="panel">
       <h2>Seasons</h2>
       @if (sortedSeasons().length) {
+        <div class="season-selector">
+          <label>
+            <span>Select a season to view fixtures</span>
+            <select [value]="selectedSeasonId() ?? ''" (change)="onSeasonChange($any($event.target).value)">
+              @for (season of sortedSeasons(); track season.id) {
+                <option [value]="season.id">Season #{{ season.id }}</option>
+              }
+            </select>
+          </label>
+        </div>
+
         <div class="season-grid">
           @for (season of sortedSeasons(); track season.id) {
             <article class="season-card">Season #{{ season.id }}</article>
@@ -30,6 +41,29 @@
         <p>No seasons available for this league.</p>
       }
     </section>
+
+    @if (selectedSeasonId() !== null) {
+      <section class="panel fixtures-panel">
+        <h2>Fixtures for Season #{{ selectedSeasonId() }}</h2>
+        @if (leagueFixtures().length) {
+          <div class="fixtures-list">
+            @for (fixture of leagueFixtures(); track fixture.id) {
+              <a [routerLink]="['/fixtures', fixture.id]" class="fixture-card">
+                <div class="fixture-date">{{ fixture.date | date: 'dd MMM' }}</div>
+                <div class="fixture-match">
+                  <span class="team">{{ fixture.home_team_id }}</span>
+                  <span class="score">{{ fixture.home_goals ?? '—' }} - {{ fixture.away_goals ?? '—' }}</span>
+                  <span class="team">{{ fixture.away_team_id }}</span>
+                </div>
+                <div class="fixture-status">{{ fixture.status }}</div>
+              </a>
+            }
+          </div>
+        } @else {
+          <p class="panel-note">No fixtures loaded for the selected season yet.</p>
+        }
+      </section>
+    }
   } @else {
     <section class="panel">
       <h1>League not found</h1>
