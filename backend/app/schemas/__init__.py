@@ -13,15 +13,15 @@ from .contract import (
     ContractCreate as ContractCreate,
     ContractUpdate as ContractUpdate,
 )
+from .fixture import (
+    Fixture as Fixture,
+    FixtureCreate as FixtureCreate,
+    FixtureUpdate as FixtureUpdate,
+)
 from .league import (
     League as League,
     LeagueCreate as LeagueCreate,
     LeagueUpdate as LeagueUpdate,
-)
-from .match import (
-    Match as Match,
-    MatchCreate as MatchCreate,
-    MatchUpdate as MatchUpdate,
 )
 from .player import (
     Player as Player,
