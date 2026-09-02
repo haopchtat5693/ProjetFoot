@@ -1,0 +1,124 @@
+<section class="detail-shell">
+	@if (fixture(); as fixtureData) {
+		<header class="detail-hero">
+			<div class="hero-content">
+				<p class="eyebrow">Fixture Details</p>
+				<h1>Fixture #{{ fixtureData.id }}</h1>
+				<p>Complete fixture information with score, status, and statistics.</p>
+			</div>
+			<a routerLink="/fixtures" class="back-link">Back to fixtures</a>
+		</header>
+
+		<section class="summary-grid">
+			@for (item of highlights(); track item.label) {
+				<article class="summary-card">
+					<span>{{ item.label }}</span>
+					<strong>{{ item.value }}</strong>
+				</article>
+			}
+		</section>
+
+		<section class="panel">
+			<h2>Match Information</h2>
+
+			<div class="match-container">
+				<div class="team-box">
+					<span class="team-label">Home</span>
+					@if (homeTeam(); as team) {
+						@if (team['logo']) {
+							<img [src]="team['logo']" [alt]="team['name']" class="team-logo" />
+						} @else {
+							<div class="team-logo-placeholder">{{ getInitial(team['name']) }}</div>
+						}
+						<span class="team-name">{{ team['name'] }}</span>
+					} @else {
+						<span class="team-id">Team #{{ fixtureData.home_team_id }}</span>
+					}
+					@if (fixtureData.home_goals !== null) {
+						<span class="team-goals">{{ fixtureData.home_goals }} Goals</span>
+					}
+				</div>
+
+				<div class="match-center">
+					<div [ngClass]="getStatusClass(fixtureData.status)" class="fixture-status">
+						{{ fixtureData.status || 'N/A' }}
+					</div>
+					@if (fixtureData.home_goals !== null && fixtureData.away_goals !== null) {
+						<div class="score-display">
+							{{ fixtureData.home_goals }}-{{ fixtureData.away_goals }}
+						</div>
+					} @else {
+						<div class="score-display">—</div>
+					}
+					<div class="fixture-time">{{ formatDate(fixtureData.date) }}</div>
+				</div>
+
+				<div class="team-box">
+					<span class="team-label">Away</span>
+					@if (awayTeam(); as team) {
+						@if (team['logo']) {
+							<img [src]="team['logo']" [alt]="team['name']" class="team-logo" />
+						} @else {
+							<div class="team-logo-placeholder">{{ getInitial(team['name']) }}</div>
+						}
+						<span class="team-name">{{ team['name'] }}</span>
+					} @else {
+						<span class="team-id">Team #{{ fixtureData.away_team_id }}</span>
+					}
+					@if (fixtureData.away_goals !== null) {
+						<span class="team-goals">{{ fixtureData.away_goals }} Goals</span>
+					}
+				</div>
+			</div>
+
+			<div class="info-grid">
+				<div class="info-item">
+					<span class="info-label">Location</span>
+					<span class="info-value">{{ fixtureData.location }}</span>
+				</div>
+				@if (fixtureData.league_id) {
+					<div class="info-item">
+						<span class="info-label">League</span>
+						<span class="info-value">League #{{ fixtureData.league_id }}</span>
+					</div>
+				}
+				@if (fixtureData.season_id) {
+					<div class="info-item">
+						<span class="info-label">Season</span>
+						<span class="info-value">Season #{{ fixtureData.season_id }}</span>
+					</div>
+				}
+				@if (fixtureData.stadium_id) {
+					<div class="info-item">
+						<span class="info-label">Stadium</span>
+						<span class="info-value">Stadium #{{ fixtureData.stadium_id }}</span>
+					</div>
+				}
+				@if (fixtureData.referee_id) {
+					<div class="info-item">
+						<span class="info-label">Referee</span>
+						<span class="info-value">Referee #{{ fixtureData.referee_id }}</span>
+					</div>
+				}
+				@if (fixtureData.timezone) {
+					<div class="info-item">
+						<span class="info-label">Timezone</span>
+						<span class="info-value">{{ fixtureData.timezone }}</span>
+					</div>
+				}
+			</div>
+		</section>
+
+		@if (statistics(); as stats) {
+			<section class="panel">
+				<h2>Statistics</h2>
+
+				<div class="stats-container">
+					<pre>{{ stats | json }}</pre>
+				</div>
+			</section>
+		}
+	} @else {
+		<div class="loading">Loading fixture details...</div>
+	}
+</section>
