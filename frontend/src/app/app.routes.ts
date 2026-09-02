@@ -14,6 +14,8 @@ import { PlayerDetail } from './pages/player-detail/player-detail';
 import { CoachDetail } from './pages/coach-detail/coach-detail';
 import { StadiumDetail } from './pages/stadium-detail/stadium-detail';
 import { SearchResults } from './pages/search-results/search-results';
+import { Fixtures } from './pages/fixtures/fixtures';
+import { FixtureDetail } from './pages/fixture-detail/fixture-detail';
 
 export const routes: Routes = [
 	{
@@ -68,6 +70,14 @@ export const routes: Routes = [
 	{
 		path: 'stadiums/:stadiumId',
 		component: StadiumDetail,
+	},
+	{
+		path: 'fixtures',
+		component: Fixtures,
+	},
+	{
+		path: 'fixtures/:fixtureId',
+		component: FixtureDetail,
 	},
 	{
 		path: '**',
