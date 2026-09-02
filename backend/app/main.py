@@ -2,8 +2,8 @@ from fastapi import FastAPI
 
 from app.routers import (
     coach,
+    fixture,
     league,
-    match,
     player,
     referee,
     season,
@@ -28,7 +28,7 @@ app.add_middleware(
 app.include_router(users.router)
 app.include_router(team.router)
 app.include_router(league.router)
-app.include_router(match.router)
+app.include_router(fixture.router)
 app.include_router(player.router)
 app.include_router(coach.router)
 app.include_router(referee.router)
