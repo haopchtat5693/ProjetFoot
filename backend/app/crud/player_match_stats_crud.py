@@ -27,12 +27,12 @@ def get_matches_stats_by_player_and_season(db: Session, player_id: int, season_i
     )
 
 
-def get_stats_by_player_and_match(db: Session, player_id: int, match_id: int):
+def get_stats_by_player_and_fixture(db: Session, player_id: int, fixture_id: int):
     return (
         db.query(models.PlayerMatchStats)
         .filter(
             models.PlayerMatchStats.player_id == player_id,
-            models.PlayerMatchStats.match_id == match_id,
+            models.PlayerMatchStats.fixture_id == fixture_id,
         )
         .first()
     )
