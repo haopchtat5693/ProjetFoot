@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { tap, shareReplay } from 'rxjs';
 import type {
   League,
   LeagueLookupQuery,
@@ -11,6 +12,7 @@ import type {
   PlayerSeasonStats,
   TeamSeasonStats,
   Coach,
+  Fixture,
 } from '../interfaces/dashboard';
 
 @Injectable({
@@ -19,13 +21,20 @@ import type {
 export class ApiService {
   private readonly http = inject(HttpClient);
   private readonly apiUrl = 'http://127.0.0.1:8000';
+  private readonly teamCache = new Map<number, Observable<Team>>();
 
   getTeams(): Observable<Team[]> {
     return this.http.get<Team[]>(`${this.apiUrl}/teams`);
   }
 
   getTeamById(teamId: number): Observable<Team> {
-    return this.http.get<Team>(`${this.apiUrl}/teams/${teamId}`);
+    if (!this.teamCache.has(teamId)) {
+      this.teamCache.set(
+        teamId,
+        this.http.get<Team>(`${this.apiUrl}/teams/${teamId}`).pipe(shareReplay(1))
+      );
+    }
+    return this.teamCache.get(teamId)!;
   }
 
   searchTeamsByName(name: string): Observable<Team[]> {
@@ -117,5 +126,51 @@ export class ApiService {
     const params = new URLSearchParams({ name });
 
     return this.http.get<Coach[]>(`${this.apiUrl}/coaches/search?${params.toString()}`);
+  }
+
+  getFixtures(): Observable<Fixture[]> {
+    return this.http.get<Fixture[]>(`${this.apiUrl}/fixtures`);
+  }
+
+  getFixtureById(fixtureId: number): Observable<Fixture> {
+    return this.http.get<Fixture>(`${this.apiUrl}/fixtures/${fixtureId}`);
+  }
+
+  getFixtureStatistics(fixtureId: number): Observable<Record<string, unknown>> {
+    return this.http.get<Record<string, unknown>>(`${this.apiUrl}/fixtures/${fixtureId}/statistics`);
+  }
+
+  getFixturesByLeague(leagueId: number, seasonId: number): Observable<Fixture[]> {
+    const params = new URLSearchParams({ league_id: String(leagueId), season_id: String(seasonId) });
+    const url = `${this.apiUrl}/fixtures?${params.toString()}`;
+    console.log('[ApiService] GET fixtures by league:', url);
+    return this.http.get<Fixture[]>(url);
+  }
+
+  getFixturesByTeam(teamId: number): Observable<Fixture[]> {
+    const params = new URLSearchParams({ team_id: String(teamId) });
+    return this.http.get<Fixture[]>(`${this.apiUrl}/fixtures?${params.toString()}`);
+  }
+
+  getFixturesByTeamAndSeason(teamId: number, seasonId: number, leagueId?: number): Observable<Fixture[]> {
+    const params = new URLSearchParams({ team_id: String(teamId), season_id: String(seasonId) });
+    if (leagueId) {
+      params.append('league_id', String(leagueId));
+    }
+    const url = `${this.apiUrl}/fixtures?${params.toString()}`;
+    console.log('[ApiService] GET fixtures by team and season:', { teamId, seasonId, leagueId, url });
+    return this.http.get<Fixture[]>(url).pipe(
+      tap((fixtures) => {
+        console.log('[ApiService] Fixtures response:', { count: fixtures.length, teamId, seasonId, leagueId });
+        fixtures.forEach((f, idx) => {
+          console.log(`  [${idx}] Fixture ID=${f.id}, home_team=${f.home_team_id}, away_team=${f.away_team_id}, league=${f.league_id}, season=${f.season_id}`);
+        });
+      })
+    );
+  }
+
+  getFixturesByDate(date: string): Observable<Fixture[]> {
+    const params = new URLSearchParams({ date });
+    return this.http.get<Fixture[]>(`${this.apiUrl}/fixtures?${params.toString()}`);
   }
 }
