@@ -1,0 +1,63 @@
+<a 
+  [routerLink]="['/fixtures', fixture.id]" 
+  class="fixture-card" 
+  [class.loading]="loading()"
+  (click)="onFixtureClick()">
+  <div class="fixture-container">
+    <!-- Date/Time Section -->
+    <div class="fixture-datetime">
+      <div class="date">{{ getDateDisplay() }}</div>
+      <div class="time">{{ getTimeDisplay() }}</div>
+    </div>
+
+    <!-- Match Section -->
+    <div class="fixture-match">
+      <!-- Home Team -->
+      <div class="team home-team">
+        <div class="team-logo">
+          @if (getTeamLogo(homeTeam())) {
+            <img
+              [src]="getTeamLogo(homeTeam())!"
+              [alt]="getTeamName(homeTeam(), fixture.home_team_id)"
+              class="logo"
+            />
+          } @else {
+            <div class="logo-placeholder">{{ getTeamName(homeTeam(), fixture.home_team_id).charAt(0) }}</div>
+          }
+        </div>
+        <div class="team-name">{{ getTeamName(homeTeam(), fixture.home_team_id) }}</div>
+      </div>
+
+      <!-- Score -->
+      <div class="fixture-score">
+        <div class="score-display">{{ getScoreDisplay() }}</div>
+        <div class="status" [class]="getStatusClass()">
+          {{ getStatusText() }}
+        </div>
+      </div>
+
+      <!-- Away Team -->
+      <div class="team away-team">
+        <div class="team-name">{{ getTeamName(awayTeam(), fixture.away_team_id) }}</div>
+        <div class="team-logo">
+          @if (getTeamLogo(awayTeam())) {
+            <img
+              [src]="getTeamLogo(awayTeam())!"
+              [alt]="getTeamName(awayTeam(), fixture.away_team_id)"
+              class="logo"
+            />
+          } @else {
+            <div class="logo-placeholder">{{ getTeamName(awayTeam(), fixture.away_team_id).charAt(0) }}</div>
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- Location -->
+    <div class="fixture-location">
+      @if (fixture.location) {
+        <small>{{ fixture.location }}</small>
+      }
+    </div>
+  </div>
+</a>
