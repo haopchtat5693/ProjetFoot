@@ -26,7 +26,8 @@
 				<div class="selection-grid">
 					<label>
 						<span>League</span>
-						<select [value]="selectedLeagueId() ?? ''" (change)="onLeagueChange($any($event.target).value)">
+						<select #leagueSelect [value]="selectedLeagueId() ?? ''" (change)="onLeagueChange(leagueSelect.value)">
+							<option value="">-- Select a league --</option>
 							@for (league of leagues(); track league.id) {
 								<option [value]="league.id">{{ league.name }}</option>
 							}
@@ -35,7 +36,8 @@
 
 					<label>
 						<span>Season</span>
-						<select [value]="selectedSeasonId() ?? ''" (change)="onSeasonChange($any($event.target).value)">
+						<select #seasonSelect [value]="selectedSeasonId() ?? ''" (change)="onSeasonChange(seasonSelect.value)">
+							<option value="">-- Select a season --</option>
 							@for (season of availableSeasons(); track season.id) {
 								<option [value]="season.id">Season #{{ season.id }}</option>
 							}
@@ -108,6 +110,19 @@
 				</div>
 			} @else {
 				<p class="panel-note">No players loaded for the selected season yet.</p>
+			}
+		</section>
+
+		<section class="panel fixtures-panel">
+			<h2>Fixtures for the selected season</h2>
+			@if (teamFixtures().length) {
+				<div class="fixtures-list">
+					@for (fixture of teamFixtures(); track fixture.id) {
+						<app-fixture-card [fixture]="fixture" />
+					}
+				</div>
+			} @else {
+				<p class="panel-note">No fixtures loaded for the selected season yet.</p>
 			}
 		</section>
 
