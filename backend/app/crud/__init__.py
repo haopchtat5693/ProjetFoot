@@ -1,8 +1,8 @@
 from . import auth_token_crud as auth_token_crud
 from . import coach_crud as coach_crud
 from . import contract_crud as contract_crud
+from . import fixture_crud as fixture_crud
 from . import league_crud as league_crud
-from . import match_crud as match_crud
 from . import player_crud as player_crud
 from . import player_match_stats_crud as player_match_stats_crud
 from . import player_season_stats_crud as player_season_stats_crud
