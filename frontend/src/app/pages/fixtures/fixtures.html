@@ -1,0 +1,92 @@
+<section class="list-shell">
+	<header class="list-hero">
+		<div>
+			<p class="eyebrow">Browse all fixtures</p>
+			<h1>Fixtures</h1>
+			<p>Browse all fixtures with filtering options.</p>
+		</div>
+		<a routerLink="/" class="back-link">Back to home</a>
+	</header>
+
+	<section class="panel search-panel">
+		<div class="panel-heading">
+			<div>
+				<p class="eyebrow">Filter fixtures</p>
+				<h2>Use search and filters to find fixtures.</h2>
+			</div>
+			<div class="search-grid">
+				<label>
+					<span>Search</span>
+					<input
+						type="text"
+						placeholder="Search by location, ID, or team ID..."
+						[value]="searchQuery()"
+						(input)="searchQuery.set($any($event.target).value)"
+					/>
+				</label>
+
+				<label>
+					<span>Status</span>
+					<select [value]="statusFilter()" (change)="statusFilter.set($any($event.target).value)">
+						@for (status of statusOptions(); track status) {
+							<option [value]="status">{{ status === 'all' ? 'All Statuses' : status }}</option>
+						}
+					</select>
+				</label>
+			</div>
+		</div>
+	</section>
+
+	<section class="fixtures-list">
+		@if (filteredFixtures().length === 0) {
+			<p class="no-results">No fixtures found. Try adjusting your filters.</p>
+		} @else {
+			<div class="fixtures-grid">
+				@for (fixture of filteredFixtures(); track fixture.id) {
+					<article class="fixture-card" [routerLink]="['/fixtures', fixture.id]">
+						<div class="fixture-header">
+							<span class="fixture-id">#{{ fixture.id }}</span>
+							<span [ngClass]="getStatusClass(fixture.status)" class="fixture-status">
+								{{ fixture.status || 'N/A' }}
+							</span>
+						</div>
+
+						<div class="fixture-match">
+							<div class="team">
+								<span class="team-id">{{ fixture.home_team_id }}</span>
+								<span class="team-role">Home</span>
+							</div>
+
+							<div class="score">
+								@if (fixture.home_goals !== null && fixture.away_goals !== null) {
+									<span class="goals">{{ fixture.home_goals }}-{{ fixture.away_goals }}</span>
+								} @else {
+									<span class="goals">—</span>
+								}
+							</div>
+
+							<div class="team">
+								<span class="team-id">{{ fixture.away_team_id }}</span>
+								<span class="team-role">Away</span>
+							</div>
+						</div>
+
+						<div class="fixture-details">
+							<p class="location">{{ fixture.location || 'Unknown' }}</p>
+							<p class="date">{{ formatDate(fixture.date) }}</p>
+						</div>
+
+						@if (fixture.league_id) {
+							<div class="fixture-league">
+								<span>League: #{{ fixture.league_id }}</span>
+								@if (fixture.season_id) {
+									<span>Season: #{{ fixture.season_id }}</span>
+								}
+							</div>
+						}
+					</article>
+				}
+			</div>
+		}
+	</section>
+</section>
